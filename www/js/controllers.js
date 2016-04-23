@@ -1,8 +1,9 @@
 angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope, $state, $ionicPopup, Amount, Stats) {
+  $scope.stats = Stats.all();
   $scope.available = Amount.getAvailable();
-  $scope.spent = Amount.getSpent();
+  $scope.spentTotal = Amount.getSpentTotal($scope.stats);
   $scope.go = function(state) {
     $state.go(state);
   };
@@ -26,8 +27,6 @@ angular.module('starter.controllers', [])
       ]
     });
   };
-
-  $scope.stats = Stats.all();
   // Triggered on a button click, or some other target
   $scope.showPay = function() {
     // An elaborate, custom popup
