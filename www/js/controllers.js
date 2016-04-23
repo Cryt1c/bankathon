@@ -37,7 +37,7 @@ angular.module('starter.controllers', [])
   $scope.showPay = function() {
     // An elaborate, custom popup
     var myPopup = $ionicPopup.show({
-      template: '<ion-list>'+
+      template: '<ion-list href="showPayOk()">'+
                 '<ion-item ng-repeat="stat in stats">'+
                 '{{stat.name}}'+
                 '</ion-item>'+
@@ -46,14 +46,21 @@ angular.module('starter.controllers', [])
       subTitle: 'Eine Kategorie wählen:',
       scope: $scope,
       buttons: [
-        { text: 'Abbrechen' },
-        {
-          text: '<b>OK</b>',
-          type: 'button-positive',
-          onTap: function(e) {
-          }
+        { text: 'Abbrechen',
+          type: 'button-positive'
         }
       ]
+    });
+  };
+
+  $scope.showPayOk = function() {
+    var alertPopup = $ionicPopup.alert({
+      title: 'Zahlung bereit',
+      template: 'Du kannst jetzt an der Kassa bezahlen'
+    });
+
+    alertPopup.then(function(res) {
+      console.log('Thank you for not eating my delicious ice cream cone');
     });
   };
 })
