@@ -12,7 +12,11 @@ h2, p {
   bottom: 0;
 }
 
+.spent {
+  color: red;
+}
+
 #pay {
   position: absolute;
-  bottom: 50%;
+  bottom: 45%;
 }

@@ -1,12 +1,58 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope, $state, Amount) {
+.controller('DashCtrl', function($scope, $state, $ionicPopup, Amount, Stats) {
   $scope.available = Amount.getAvailable();
   $scope.spent = Amount.getSpent();
-  $scope.stats = function() {
-    $state.go('tab.stats');
+  $scope.go = function(state) {
+    $state.go(state);
+  };
+
+  $scope.showPlead = function() {
+    var myPlead = $ionicPopup.show({
+      template: '<label for="amount">Betrag</label>'+
+                '<input type="text" id="amount">'+
+                '<label for="message">Nachricht</label>'+
+                '<input type="text" id="message">',
+      title: 'Geld anfordern',
+      scope: $scope,
+      buttons: [
+        { text: 'Abbrechen' },
+        {
+          text: '<b>OK</b>',
+          type: 'button-positive',
+          onTap: function(e) {
+          }
+        }
+      ]
+    });
+  };
+
+  $scope.stats = Stats.all();
+  // Triggered on a button click, or some other target
+  $scope.showPay = function() {
+    // An elaborate, custom popup
+    var myPopup = $ionicPopup.show({
+      template: '<ion-list>'+
+                '<ion-item ng-repeat="stat in stats">'+
+                '{{stat.name}}'+
+                '</ion-item>'+
+                '</ion-list>',
+      title: 'Bezahlung vorbereiten',
+      subTitle: 'Eine Kategorie wählen:',
+      scope: $scope,
+      buttons: [
+        { text: 'Abbrechen' },
+        {
+          text: '<b>OK</b>',
+          type: 'button-positive',
+          onTap: function(e) {
+          }
+        }
+      ]
+    });
   };
 })
+
 
 .controller('StatsCtrl', function($scope, $state, Stats) {
   // With the new view caching in Ionic, Controllers are only called

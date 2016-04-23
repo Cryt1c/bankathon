@@ -1,14 +1,16 @@
-<ion-view view-title="Hauptmenü">
+<ion-view view-title="Dashboard">
   <ion-content class="padding">
     <h2>Du hast noch: </h2>
     <h2>{{available}}€</h2>
     <div class="available"></div>
 
-    <div class="button" id="pay">Bezahlen</div>
+    <div class="button" id="plead" ng-click="showPlead()"><h3>Geld anfordern</h3></div>
 
-    <div class="button" id="spent" ng-click="stats()">
+    <div class="button" id="pay" ng-click="showPay()"><h3>Bezahlen</h3></div>
+
+    <div class="button" id="spent" ng-click="go('tab.stats')">
       <h2>Schon weg:</h2>
-      <h2>{{spent}}€</h2>
+      <h2 class="spent">{{spent}}€</h2>
     </div>
   </ion-content>
 </ion-view>

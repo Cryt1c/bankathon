@@ -3,7 +3,7 @@ angular.module('starter.services', [])
 .factory('Amount', function() {
 
   var available = 40;
-  var spent = 20;
+  var spent = -20;
 
   return {
     getAvailable: function() {
