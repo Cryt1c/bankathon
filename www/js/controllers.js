@@ -1,10 +1,15 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope, $state, $ionicPopup, Amount, Stats) {
+.controller('DashCtrl', function($scope, $state, $ionicPopup, $ionicSlideBoxDelegate, Amount, Stats) {
   $scope.available = Amount.getAvailable();
   $scope.spent = Amount.getSpent();
-  $scope.go = function(state) {
-    $state.go(state);
+  // $scope.go = function(state) {
+  //   $state.go(state);
+  // };
+
+  $scope.go = function() {
+    $ionicSlideBoxDelegate.next();
+    $state.go('tab.stats');
   };
 
   $scope.showPlead = function() {
@@ -54,7 +59,7 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('StatsCtrl', function($scope, $state, Stats) {
+.controller('StatsCtrl', function($scope, $state, $ionicSlideBoxDelegate, Stats) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -67,7 +72,9 @@ angular.module('starter.controllers', [])
   $scope.remove = function(stats) {
     Stats.remove(stats);
   };
+
   $scope.dash = function() {
+    $ionicSlideBoxDelegate.previous();
     $state.go('tab.dash');
   };
 });
