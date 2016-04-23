@@ -1,1 +1,18 @@
 /* Empty. Add your own CSS if you like */
+h2, p {
+  text-align: center;
+}
+
+.button {
+  width: 100%;
+}
+
+#spent {
+  position: absolute;
+  bottom: 0;
+}
+
+#pay {
+  position: absolute;
+  bottom: 50%;
+}

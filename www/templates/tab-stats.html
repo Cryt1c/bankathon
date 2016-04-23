@@ -1,0 +1,18 @@
+<ion-view view-title="Statistik">
+  <ion-content>
+    <ion-list>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="stat in stats" type="item-text-wrap">
+        <h2>{{stat.name}}</h2>
+        <p>{{stat.spent}}</p>
+        <!--<i class="icon ion-chevron-right icon-accessory"></i>-->
+
+        <ion-option-button class="button-assertive" ng-click="remove(stat)">
+          Delete
+        </ion-option-button>
+      </ion-item>
+      <ion-item>
+          <p ng-click="dash()">Zurück</p>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
