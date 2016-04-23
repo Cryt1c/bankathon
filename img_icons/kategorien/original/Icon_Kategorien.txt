@@ -19,3 +19,12 @@ ion-log-out
 
 ion-ios-filling-outline
 
+
+
+- Essen & Trinken
+- Spaß (Spielzeug,Bücher/Musik,Kino/Unterhaltung)
+- Sport & Hobbies
+- Telefon
+- Kleidung
+- Geschenk
+
