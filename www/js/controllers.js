@@ -10,7 +10,7 @@ angular.module('starter.controllers', [])
   });
   $scope.go = function() {
     $ionicSlideBoxDelegate.next();
-    $state.go('tab.stats');
+    $state.go('tab.stats', {}, { reload: true });
   };
 
   $scope.showRequest = function() {
