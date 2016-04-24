@@ -74,7 +74,7 @@ angular.module('starter.services', [])
     height: '50'
   }, {
     id: 6,
-    name: 'Geschenk',
+    name: 'Geschenke',
     spent: 7,
     file: 'geschenk.png',
     color: '#98D8ED',

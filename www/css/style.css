@@ -5,6 +5,12 @@ h2, p {
 
 .button {
   width: 100%;
+  background-color: white;
+}
+
+#top-area, #bottom-area {
+  padding: 5px;
+  border: solid grey 1px;
 }
 
 #spent {
