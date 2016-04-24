@@ -52,25 +52,25 @@ h2, p {
   margin: 0px 30px 2px 0;
 }
 
-ion-list ion-item .pot{
-  background: url("../img/pot_middle.png");
-  background-size: 100% 5px;
-  background-repeat: repeat-y;
-  min-height: 50px;
+@keyframes height {
+  from {max-height: 0px;}
+  to {max-height:200px;}
 }
 
-ion-list ion-item:nth-child(1) .box {
-  margin-top: 20px;
-}
+
+
 
 .box {
   width: 76%;
   margin-left: 12%;
-  min-height: 50px;
+  max-height: 500px;
   border-right: 15px solid #000000;
   border-left: 15px solid #000000;
   margin: auto;
   position:relative;
+  animation-name: height;
+  animation-duration: 4s;
+  animation-timing-function: ease-in-out;
 }
 
 .child {
@@ -82,6 +82,11 @@ ion-list ion-item:nth-child(1) .box {
   height: 85%;
   margin: auto;
 }
+
+ion-list ion-item:nth-child(1) .box {
+  margin-top: 20px;
+}
+
 
 ion-list ion-item:nth-last-child(1) .box {
   border-bottom: 15px solid #000000;
