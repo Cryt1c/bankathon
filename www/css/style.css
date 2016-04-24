@@ -4,7 +4,6 @@
   width: 200px;
   left: 45px;
   margin-right: 40px;
-
 }
 
 .greeting {
@@ -22,16 +21,35 @@ h2, p {
 
 .button {
   width: 100%;
-  background-color: white;
+  background-color: #d7ecff;
 }
 
-#top-area, #bottom-area {
+#statistics {
+  color: black;
+  position: relative;
+  min-height: 30px;
+}
+
+#top-area {
   padding: 5px;
+  border: solid grey 2px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+#top-area .button {
+  width: 70%;
+  display: block;
+  margin: auto;
 }
 
 #spent {
+  width: 100%;
   position: absolute;
   bottom: 0;
+  left: 0;
+  padding: 0;
+  border: solid grey 2px;
 }
 
 .spentTotal {
@@ -44,7 +62,7 @@ h2, p {
 
 #pay {
   position: absolute;
-  bottom: 20%;
+  bottom: 17.1%;
 }
 
 .category_img {
@@ -52,7 +70,6 @@ h2, p {
   height: 85%;
   float:left;
   margin-left: 50px;
-
 }
 
 
@@ -100,7 +117,7 @@ h2, p {
 }
 
 ion-list ion-item:nth-child(1) .box {
-  margin-top: 20px;
+  margin-top: 8px;
 }
 
 
@@ -108,7 +125,7 @@ ion-list ion-item:nth-last-child(1) .box {
   border-bottom: 15px solid #000000;
   border-bottom-right-radius: 60px;
   border-bottom-left-radius: 60px;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
 
 }
 
@@ -131,7 +148,7 @@ ion-list ion-item:nth-last-child(1) .box {
 .moneystack-container {
   margin-top: 15px;
   position: relative;
-  height:  250px;
+  height:  240px;
   width: 100%;
   overflow: hidden;
 }
@@ -140,4 +157,8 @@ ion-list ion-item:nth-last-child(1) .box {
   height: 150px;
   left: 0;
   box-shadow: 0px 3px 5px #444;
+}
+
+.moneystack-value-1, .moneystack-value-2 {
+  box-shadow: none !important;
 }
