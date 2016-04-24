@@ -33,18 +33,28 @@
     };
     var reshufflePieces = function($this) {
     	// rearrange remaining pieces so they're neatly in line
+    	//var allPieces = [500,200,100,50,20,10,5, 2, 1]; // a list of available pieces
+    	var allPieces = [1, 2, 5,10,20,50,100,200,500]; // a list of available pieces
+    	
     	var y = 0;
     	data = $this.data("moneystack");
     	var yShift = data.yShift;
 
-    	var $pieces = $(".moneystack-piece").not(".moneystack-reserved");
 
+		var zIndex = 1000;
+		for (denomination in allPieces) {
+			var $pieces = $(".moneystack-value-" + denomination).not(".moneystack-reserved");
+			$pieces.each(function(index) {
+			    		$(this).css("top", y + "px");
+			    		$(this).css("z-index", zIndex);
+			    		y += yShift;
+			    		zIndex--;
+						
+			    	});
+			
+		}
 
-    	$pieces.each(function(index) {
-    		$(this).css("top", y + "px");
-    		y += yShift;
-
-    	});
+    	
     };
     var animateChangePieceToPieces = function($this, originalPiece, neededNewPieces) {
     	var data = $this.data("moneystack");
@@ -119,9 +129,14 @@
 
     	// see if a transition is already applied
     	var style = window.getComputedStyle($piece.get(0));  // Need the DOM object
-    	var matrix = new WebKitCSSMatrix(style.webkitTransform);
-    	offsetX +=  matrix.m41;
-    	offsetY +=  matrix.m42;
+    	//var matrix = new WebKitCSSMatrix(style.transform);
+    	var splitStyle= style.transform.split(",");
+    	
+    	var xTransform = parseFloat(splitStyle[4]);
+    	var yTransform = parseFloat(splitStyle[5].substr(0, 1));
+    	
+    	offsetX +=  xTransform;
+    	offsetY +=  yTransform;
 
     	//
     	var currentSize = {width: $piece.width(), height: $piece.height()};
@@ -231,6 +246,9 @@
 
 
     		var $matchedPieces = $(".moneystack-reserved");
+    		var $unmatchedPieces = $(".moneystack-piece").not(".moneystack-reserved");
+    		$unmatchedPieces.transition({opacity: 0.3});
+    		
     		setTimeout(function() {
     			$matchedPieces.each( function(index) {
     				// gather everything in the center of the screen first
@@ -241,10 +259,15 @@
 
     				var $thisPiece = $(this);
     				setTimeout(function() {sendPieceToPositionAndDisappear($this, $thisPiece, targetPosition);}, 1000);
-    				setTimeout(function() {reshufflePieces($this);} , 500);
+    				
     			});
     		}, 1000);
-
+			setTimeout(function() {
+			
+				reshufflePieces($this); 
+				$unmatchedPieces.transition({opacity: 1});
+				
+		} , 2500);
 
     	},
     	init: function(options) {
