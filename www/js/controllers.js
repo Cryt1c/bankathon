@@ -65,11 +65,14 @@ angular.module('starter.controllers', [])
   $scope.Math = window.Math;
   $scope.stats = Stats.all();
   $scope.spentTotal = Amount.getSpentTotal($scope.stats);
+  $scope.stats = Stats.getHeights($scope.spentTotal);
+
+
   $scope.remove = function(stats) {
     Stats.remove(stats);
   };
 
-  
+
   $scope.dash = function() {
     $state.go('tab.dash');
   };

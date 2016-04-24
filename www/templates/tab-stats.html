@@ -1,16 +1,26 @@
 <ion-view view-title="Statistik">
   <ion-content>
     <ion-list class="list">
-      <ion-item ng-repeat="stat in stats | orderBy:'-spent':true">
-        <div class="item-group" ng-class="getClass($index,true)">
-          <img src="img/{{stat.file}}" class="category_img"/>
-          <h2>{{stat.name}}</h2>
-          <p>{{stat.spent}}€, {{Math.round(stat.spent/spentTotal*100)}}%</p>
+      <ion-item class="item-elem" ng-repeat="stat in stats | orderBy:'-spent':true">
+        <div class="pot" style="height:{{stat.height}}px">
+          <div class="box" style="background-color:{{stat.color}}; background-size: 100% {{stat.height}}px; height:{{stat.height}}px">
+            <img src="img/{{stat.file}}" class="category_img"/>
+            {{Math.round(stat.spent/spentTotal*100)}}%</p>
+          </div>
         </div>
       </ion-item>
-      <ion-item>
-          <div class="button" ng-click="dash()">Zurück</div>
+    </ion-list>
+
+
+    <ion-list class="category">
+      <ion-item class="cat-elem" ng-repeat="stat in stats | orderBy:'-spent':true">
+
+        <p><div class="color" style="background-color:{{stat.color}}"></div>{{stat.name}}: {{stat.spent}}€ </p>
+
       </ion-item>
     </ion-list>
+
+
+    <div class="button" ng-click="dash()">Zurück</div>
   </ion-content>
 </ion-view>
