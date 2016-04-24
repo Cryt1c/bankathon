@@ -2,12 +2,13 @@
   <ion-content>
     <ion-list class="list">
       <ion-item class="item-elem" ng-repeat="stat in stats | orderBy:'-spent':true">
-        <div class="pot" style="height:{{stat.height}}px">
           <div class="box" style="background-color:{{stat.color}}; background-size: 100% {{stat.height}}px; height:{{stat.height}}px">
-            <img src="img/{{stat.file}}" class="category_img"/>
-            {{Math.round(stat.spent/spentTotal*100)}}%</p>
+            <div class="child">
+              <img src="img/{{stat.file}}" class="category_img"/>
+              <p>{{Math.round(stat.spent/spentTotal*100)}}%</p>
+            </div>
+
           </div>
-        </div>
       </ion-item>
     </ion-list>
 
