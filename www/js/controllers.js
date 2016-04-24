@@ -50,7 +50,7 @@ angular.module('starter.controllers', [])
                 }
                 var alertPopup = $ionicPopup.alert({
                   title: (answer ? "Hallo Michi, weil du so brav warst, darfst du dir " + $scope.data.message + " kaufen." : reason),
-                  template: (answer ? "+" + $scope.data.amount + "€" : "")
+                  template: (answer ? '<h2 style="color: green"> +' + $scope.data.amount + '€ </h2>' : "")
                 });
               }, 3000);
             }
