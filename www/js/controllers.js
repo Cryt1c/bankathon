@@ -14,41 +14,45 @@ angular.module('starter.controllers', [])
   };
 
   $scope.showRequest = function() {
-    $scope.requestAmount = 10;
+    $scope.data = {};
     var myRequest = $ionicPopup.show({
-      template: '<label for="amount">Betrag {{requestAmount}}€</label>'+
-                '<input type="range" id="amount" min="0" max="20" ng-model="requestAmount">'+
+      template: '<label for="amount">Betrag {{data.amount}}€</label>'+
+                '<input type="range" id="amount" min="0" max="20" ng-model="data.amount">'+
                 '<label for="message">Grund</label>'+
-                '<input type="text" id="message">',
+                '<input type="text" id="message" ng-model="data.message">',
       title: 'Geld anfordern',
       scope: $scope,
       buttons: [
-        { text: 'Abbrechen' },
+      { text: 'Abbrechen' },
         {
           text: '<b>OK</b>',
           type: 'button-positive',
-          onTap: function(e) {
+          onTap: function() {
+            setTimeout(function(){
+              console.log($scope.data.amount);
 
-            console.log("test");
-            $scope.requestAmount = requestAmount;
-            var answer;
-            var reason;
-            if($scope.requestAmount <= 10) {
-              answer = true;
-              reason = "";
-            }
-            else {
-              answer = false;
-              reason = "Du hast diesen Monat schon genug für Spielsachen ausgegeben";
-            }
-            var alertPopup = $ionicPopup.alert({
-              title: (answer ? "Deine Eltern haben zugestimmt" : reason),
-              template: (answer ? "+" + $scope.requestAmount: "")
-            });
+              var answer;
+              var reason;
+              if($scope.data.amount <= 10) {
+                answer = true;
+                reason = "";
+                Amount.request($scope.data.amount);
+                $scope.available = Amount.getAvailable();
+              }
+              else {
+                answer = false;
+                reason = "Du hast diesen Monat schon genug für "+ $scope.data.message + " ausgegeben.";
+              }
+              var alertPopup = $ionicPopup.alert({
+                title: (answer ? "Du darfst dir " + $scope.data.message + "kaufen." : reason),
+                template: (answer ? "+" + $scope.data.amount + "€": "")
+              });
+            }, 3000);
           }
         }
       ]
     });
+    console.log($scope.requestAmount);
   };
 
   // Triggered on a button click, or some other target
@@ -81,7 +85,7 @@ angular.module('starter.controllers', [])
                 ' an der Kassa bezahlen'
     });
     console.log("start interval");
-    setTimeout(function(){ $scope.showPayResult(stat); }, 2000);
+    setTimeout(function(){ $scope.showPayResult(stat); }, 3000);
     console.log("end interval");
   };
   $scope.showPayResult = function(stat) {
@@ -104,7 +108,8 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('StatsCtrl', function($scope, $state, $ionicSlideBoxDelegate, Stats) {
+
+.controller('StatsCtrl', function($scope, $state, $ionicSlideBoxDelegate,Amount, Stats) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -112,8 +117,9 @@ angular.module('starter.controllers', [])
   //
   //$scope.$on('$ionicView.enter', function(e) {
   //});
-
+  $scope.Math = window.Math;
   $scope.stats = Stats.all();
+  $scope.spentTotal = Amount.getSpentTotal($scope.stats);
   $scope.remove = function(stats) {
     Stats.remove(stats);
   };
