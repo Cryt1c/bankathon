@@ -4,7 +4,10 @@ angular.module('starter.controllers', [])
   $scope.stats = Stats.all();
   $scope.available = Amount.getAvailable();
   $scope.spentTotal = Amount.getSpentTotal($scope.stats);
-
+  angular.element(document).ready(function() {
+  	$("#available-moneystack").moneystack();
+    $("#available-moneystack").moneystack("setMoney", $scope.available);
+  });
   $scope.go = function() {
     $ionicSlideBoxDelegate.next();
     $state.go('tab.stats');
@@ -39,6 +42,7 @@ angular.module('starter.controllers', [])
                   reason = "";
                   Amount.request(amount);
                   $scope.available = Amount.getAvailable();
+                  $("#available-moneystack").moneystack("setMoney", $scope.available);
                 }
                 else {
                   answer = false;
@@ -98,6 +102,7 @@ angular.module('starter.controllers', [])
     });
     Amount.spend(payment);
     $scope.available = Amount.getAvailable();
+    $("#available-moneystack").moneystack("setMoney", $scope.available);
     Stats.spend(stat.id, payment);
     $scope.spentTotal = Amount.getSpentTotal($scope.stats);
 

@@ -1,10 +1,11 @@
 <ion-view view-title="Dashboard">
   <ion-content class="padding">
+
     <div id="top-area">
       <h2 id="headline">Du hast noch: </h2>
       <h2 id="available">{{available}}€</h2>
-      <div class="available"></div>
-      <div class="button button-positive" id="plead" ng-click="showRequest()">Eltern um mehr Geld fragen</div>
+      <div class="button button-positive" id="request" ng-click="showRequest()">Eltern um mehr Geld fragen</div>
+      <div id="available-moneystack"></div>
     </div>
 
     <div class="button button-positive" id="pay" ng-click="showPay()">Etwas bezahlen</div>

@@ -10,7 +10,6 @@ h2, p {
 
 #top-area, #bottom-area {
   padding: 5px;
-  border: solid grey 1px;
 }
 
 #spent {
@@ -28,7 +27,7 @@ h2, p {
 
 #pay {
   position: absolute;
-  bottom: 40%;
+  bottom: 20%;
 }
 
 .category_img {
@@ -108,3 +107,16 @@ ion-list ion-item:nth-last-child(1) .box {
   margin-right: 15px;
 }
 
+.moneystack-container {
+  margin-top: 15px;
+  position: relative;
+  height:  250px;
+  width: 100%;
+  overflow: hidden;
+}
+.moneystack-piece {
+  position:  absolute;
+  height: 150px;
+  left: 0;
+  box-shadow: 0px 3px 5px #444;
+}
