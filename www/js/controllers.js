@@ -5,7 +5,7 @@ angular.module('starter.controllers', [])
   $scope.available = Amount.getAvailable();
   $scope.spentTotal = Amount.getSpentTotal($scope.stats);
   angular.element(document).ready(function() {
-  	$("#available-moneystack").moneystack();
+  	$("#available-moneystack").moneystack({yShift: 10});
     $("#available-moneystack").moneystack("setMoney", $scope.available);
   });
   $scope.go = function() {
@@ -102,10 +102,16 @@ angular.module('starter.controllers', [])
     });
     Amount.spend(payment);
     $scope.available = Amount.getAvailable();
-    $("#available-moneystack").moneystack("setMoney", $scope.available);
+    var x = $(".spentTotal").eq(0).position().left;
+    var y = $(".spentTotal").eq(0).position().top;
+
+    console.log(x);
+    console.log(y);
+
+    $("#available-moneystack").moneystack("deductAndSendAmountToLocation", payment, {x: x, y: y});
+    //$("#available-moneystack").moneystack("setMoney", $scope.available);
     Stats.spend(stat.id, payment);
     $scope.spentTotal = Amount.getSpentTotal($scope.stats);
-
   }
 })
 
