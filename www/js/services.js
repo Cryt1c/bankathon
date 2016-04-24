@@ -27,37 +27,37 @@ angular.module('starter.services', [])
   var stats = [{
     id: 0,
     name: 'Essen & Trinken',
-    spent: 10,
+    spent: 32,
     file: 'food.png',
   }, {
     id: 1,
     name: 'Spaß',
-    spent: 20,
+    spent: 28,
     file: 'spass.png'
   }, {
     id: 2,
     name: 'Sport & Hobbies',
-    spent: 4,
+    spent: 12,
     file: 'sport.png'
   }, {
     id: 3,
     name: 'Schulsachen',
-    spent: 5,
+    spent: 15,
     file: 'schule.png'
   }, {
     id: 4,
     name: 'Kleidung',
-    spent: 2,
+    spent: 23,
     file: 'kleidung.png'
   }, {
     id: 5,
     name: 'Telefon',
-    spent: 2,
+    spent: 20,
     file: 'telefon.png'
   }, {
     id: 6,
     name: 'Geschenk',
-    spent: 2,
+    spent: 7,
     file: 'geschenk.png'
   }];
 
