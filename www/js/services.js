@@ -82,7 +82,7 @@ angular.module('starter.services', [])
     getHeights: function(spentTotal) {
 
       for (var i = 0; i < stats.length; i++) {
-          stats[i].height = stats[i].spent/spentTotal*500;
+          stats[i].height = stats[i].spent/spentTotal*400;
         console.log(stats[i].height);
       }
       return stats;
