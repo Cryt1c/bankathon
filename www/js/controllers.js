@@ -4,7 +4,9 @@ angular.module('starter.controllers', [])
   $scope.stats = Stats.all();
   $scope.available = Amount.getAvailable();
   $scope.spentTotal = Amount.getSpentTotal($scope.stats);
-
+  angular.element(document).ready(function() {
+  	$("#available-moneystack").moneystack();
+  });
   $scope.go = function() {
     $ionicSlideBoxDelegate.next();
     $state.go('tab.stats');
