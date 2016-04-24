@@ -4,9 +4,6 @@ angular.module('starter.controllers', [])
   $scope.stats = Stats.all();
   $scope.available = Amount.getAvailable();
   $scope.spentTotal = Amount.getSpentTotal($scope.stats);
-  // $scope.go = function(state) {
-  //   $state.go(state);
-  // };
 
   $scope.go = function() {
     $ionicSlideBoxDelegate.next();
@@ -15,11 +12,12 @@ angular.module('starter.controllers', [])
 
   $scope.showRequest = function() {
     $scope.data = {};
+    $scope.data.amount = 10;
     var myRequest = $ionicPopup.show({
       template: '<label for="amount">Betrag {{data.amount}}€</label>'+
-                '<input type="range" id="amount" min="0" max="20" ng-model="data.amount">'+
+                '<input type="range" id="amount" min="0" max="20"  ng-model="data.amount">'+
                 '<label for="message">Grund</label>'+
-                '<input type="text" id="message" ng-model="data.message">',
+                '<input type="text" id="message" ng-model="data.message" required="required">',
       title: 'Geld anfordern',
       scope: $scope,
       buttons: [
@@ -27,32 +25,35 @@ angular.module('starter.controllers', [])
         {
           text: '<b>OK</b>',
           type: 'button-positive',
-          onTap: function() {
-            setTimeout(function(){
-              console.log($scope.data.amount);
-
-              var answer;
-              var reason;
-              if($scope.data.amount <= 10) {
-                answer = true;
-                reason = "";
-                Amount.request($scope.data.amount);
-                $scope.available = Amount.getAvailable();
-              }
-              else {
-                answer = false;
-                reason = "Du hast diesen Monat schon genug für "+ $scope.data.message + " ausgegeben.";
-              }
-              var alertPopup = $ionicPopup.alert({
-                title: (answer ? "Du darfst dir " + $scope.data.message + "kaufen." : reason),
-                template: (answer ? "+" + $scope.data.amount + "€": "")
-              });
-            }, 3000);
+          onTap: function(e) {
+            if (!$scope.data.message) {
+              e.preventDefault();
+            }
+            else {
+              setTimeout(function () {
+                var answer;
+                var reason;
+                var amount = parseInt($scope.data.amount);
+                if (amount <= 10) {
+                  answer = true;
+                  reason = "";
+                  Amount.request(amount);
+                  $scope.available = Amount.getAvailable();
+                }
+                else {
+                  answer = false;
+                  reason = "Du hast diesen Monat schon genug für " + $scope.data.message + " ausgegeben.";
+                }
+                var alertPopup = $ionicPopup.alert({
+                  title: (answer ? "Du darfst dir " + $scope.data.message + " kaufen." : reason),
+                  template: (answer ? "+" + $scope.data.amount + "€" : "")
+                });
+              }, 3000);
+            }
           }
         }
       ]
     });
-    console.log($scope.requestAmount);
   };
 
   // Triggered on a button click, or some other target
@@ -77,16 +78,13 @@ angular.module('starter.controllers', [])
 
   $scope.showPayOk = function(stat, myPopup) {
     $scope.myPopup.close();
-    console.log(stat);
     var alertPopup = $ionicPopup.alert({
       title: 'Zahlung bereit',
       template: 'Du kannst jetzt ' +
                 stat.name +
                 ' an der Kassa bezahlen'
     });
-    console.log("start interval");
     setTimeout(function(){ $scope.showPayResult(stat); }, 3000);
-    console.log("end interval");
   };
   $scope.showPayResult = function(stat) {
     var payment = 2.50;
@@ -99,7 +97,6 @@ angular.module('starter.controllers', [])
                 ' ausgegeben.'
     });
     Amount.spend(payment);
-    console.log(stat);
     $scope.available = Amount.getAvailable();
     Stats.spend(stat.id, payment);
     $scope.spentTotal = Amount.getSpentTotal($scope.stats);
@@ -120,6 +117,9 @@ angular.module('starter.controllers', [])
   $scope.Math = window.Math;
   $scope.stats = Stats.all();
   $scope.spentTotal = Amount.getSpentTotal($scope.stats);
+  $scope.stats = Stats.getHeights($scope.spentTotal);
+
+
   $scope.remove = function(stats) {
     Stats.remove(stats);
   };

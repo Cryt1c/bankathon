@@ -32,43 +32,65 @@ angular.module('starter.services', [])
   // Some fake testing data
   var stats = [{
     id: 0,
-    name: 'Essen & Trinken',
-    spent: 32,
+    name: 'Essen',
+    spent: 17,
     file: 'food.png',
+    color: '#709C96',
+    height: '50'
   }, {
     id: 1,
     name: 'Spaß',
-    spent: 28,
-    file: 'spass.png'
+    spent: 8,
+    file: 'spass.png',
+    color: '#D99DF5',
+    height: '50'
   }, {
     id: 2,
-    name: 'Sport & Hobbies',
+    name: 'Sport',
     spent: 12,
-    file: 'sport.png'
+    file: 'sport.png',
+    color: '#A9F5C1',
+    height: '50'
   }, {
     id: 3,
     name: 'Schulsachen',
     spent: 15,
-    file: 'schule.png'
+    file: 'schule.png',
+    color: '#F7BE5C',
+    height: '50'
   }, {
     id: 4,
     name: 'Kleidung',
-    spent: 23,
-    file: 'kleidung.png'
+    spent: 11,
+    file: 'kleidung.png',
+    color: '#F7F55C',
+    height: '50'
   }, {
     id: 5,
     name: 'Telefon',
-    spent: 20,
-    file: 'telefon.png'
+    spent: 10,
+    file: 'telefon.png',
+    color: '#F75C5E',
+    height: '50'
   }, {
     id: 6,
     name: 'Geschenk',
     spent: 7,
-    file: 'geschenk.png'
+    file: 'geschenk.png',
+    color: '#98D8ED',
+    height: '50'
   }];
 
   return {
     all: function() {
+      return stats;
+    },
+    getHeights: function(spentTotal) {
+
+      for (var i = 0; i < stats.length; i++) {
+          stats[i].height = stats[i].spent/spentTotal*500;
+        console.log(stats[i].height);
+      }
       return stats;
     },
     remove: function(stats) {
