@@ -7,6 +7,8 @@
 
 }
 
+.ion-arrow-down-a
+
 .greeting {
   color: #fff;
   font-size: 15px;
@@ -25,13 +27,18 @@ h2, p {
   background-color: white;
 }
 
-#top-area, #bottom-area {
+#top-area {
   padding: 5px;
+  border: solid grey 2px;
+  margin-bottom: 5px;
 }
 
 #spent {
+  width: 100%;
   position: absolute;
   bottom: 0;
+  left: 0;
+  padding: 0;
 }
 
 .spentTotal {
@@ -44,7 +51,7 @@ h2, p {
 
 #pay {
   position: absolute;
-  bottom: 20%;
+  bottom: 17%;
 }
 
 .category_img {
@@ -52,7 +59,6 @@ h2, p {
   height: 85%;
   float:left;
   margin-left: 50px;
-
 }
 
 
@@ -131,7 +137,7 @@ ion-list ion-item:nth-last-child(1) .box {
 .moneystack-container {
   margin-top: 15px;
   position: relative;
-  height:  250px;
+  height:  240px;
   width: 100%;
   overflow: hidden;
 }

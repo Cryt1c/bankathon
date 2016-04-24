@@ -46,10 +46,10 @@ angular.module('starter.controllers', [])
                 }
                 else {
                   answer = false;
-                  reason = "Du hast diesen Monat schon genug für " + $scope.data.message + " ausgegeben.";
+                  reason = "Hallo Michael, du hast diesen Monat schon genug für " + $scope.data.message + " ausgegeben.";
                 }
                 var alertPopup = $ionicPopup.alert({
-                  title: (answer ? "Du darfst dir " + $scope.data.message + " kaufen." : reason),
+                  title: (answer ? "Hallo Michi, weil du so brav warst, darfst du dir " + $scope.data.message + " kaufen." : reason),
                   template: (answer ? "+" + $scope.data.amount + "€" : "")
                 });
               }, 3000);
@@ -78,17 +78,18 @@ angular.module('starter.controllers', [])
         }
       ]
     });
-  };
+    };
 
-  $scope.showPayOk = function(stat, myPopup) {
-    $scope.myPopup.close();
-    var alertPopup = $ionicPopup.alert({
-      title: 'Zahlung bereit',
-      template: 'Du kannst jetzt ' +
+    $scope.showPayOk = function(stat, myPopup) {
+      $scope.myPopup.close();
+      var alertPopup = $ionicPopup.alert({
+        title: 'Zahlung bereit',
+        template: 'Du kannst jetzt dein Handy ans Terminal halten und ' +
                 stat.name +
-                ' an der Kassa bezahlen'
+                ' an der Kassa bezahlen.'
     });
-    setTimeout(function(){ $scope.showPayResult(stat); }, 3000);
+    setTimeout(function(){ $scope.showPayResult(stat); }, 5000);
+    setTimeout(function(){ alertPopup.close(); }, 5000);
   };
   $scope.showPayResult = function(stat) {
     var payment = 2.50;
