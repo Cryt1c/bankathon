@@ -1,8 +1,9 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope, $state, $ionicPopup, $ionicSlideBoxDelegate, Amount, Stats) {
+.controller('DashCtrl', function($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats) {
+  $scope.stats = Stats.all();
   $scope.available = Amount.getAvailable();
-  $scope.spent = Amount.getSpent();
+  $scope.spentTotal = Amount.getSpentTotal($scope.stats);
   // $scope.go = function(state) {
   //   $state.go(state);
   // };
@@ -12,11 +13,12 @@ angular.module('starter.controllers', [])
     $state.go('tab.stats');
   };
 
-  $scope.showPlead = function() {
-    var myPlead = $ionicPopup.show({
-      template: '<label for="amount">Betrag</label>'+
-                '<input type="text" id="amount">'+
-                '<label for="message">Nachricht</label>'+
+  $scope.showRequest = function() {
+    $scope.requestAmount = 10;
+    var myRequest = $ionicPopup.show({
+      template: '<label for="amount">Betrag {{requestAmount}}€</label>'+
+                '<input type="range" id="amount" min="0" max="20" ng-model="requestAmount">'+
+                '<label for="message">Grund</label>'+
                 '<input type="text" id="message">',
       title: 'Geld anfordern',
       scope: $scope,
@@ -26,19 +28,35 @@ angular.module('starter.controllers', [])
           text: '<b>OK</b>',
           type: 'button-positive',
           onTap: function(e) {
+
+            console.log("test");
+            $scope.requestAmount = requestAmount;
+            var answer;
+            var reason;
+            if($scope.requestAmount <= 10) {
+              answer = true;
+              reason = "";
+            }
+            else {
+              answer = false;
+              reason = "Du hast diesen Monat schon genug für Spielsachen ausgegeben";
+            }
+            var alertPopup = $ionicPopup.alert({
+              title: (answer ? "Deine Eltern haben zugestimmt" : reason),
+              template: (answer ? "+" + $scope.requestAmount: "")
+            });
           }
         }
       ]
     });
   };
 
-  $scope.stats = Stats.all();
   // Triggered on a button click, or some other target
   $scope.showPay = function() {
     // An elaborate, custom popup
-    var myPopup = $ionicPopup.show({
-      template: '<ion-list href="showPayOk()">'+
-                '<ion-item ng-repeat="stat in stats">'+
+    $scope.myPopup = $ionicPopup.show({
+      template: '<ion-list>'+
+                '<ion-item ng-repeat="stat in stats" ng-click="showPayOk(stat)">'+
                 '{{stat.name}}'+
                 '</ion-item>'+
                 '</ion-list>',
@@ -53,16 +71,36 @@ angular.module('starter.controllers', [])
     });
   };
 
-  $scope.showPayOk = function() {
+  $scope.showPayOk = function(stat, myPopup) {
+    $scope.myPopup.close();
+    console.log(stat);
     var alertPopup = $ionicPopup.alert({
       title: 'Zahlung bereit',
-      template: 'Du kannst jetzt an der Kassa bezahlen'
+      template: 'Du kannst jetzt ' +
+                stat.name +
+                ' an der Kassa bezahlen'
     });
-
-    alertPopup.then(function(res) {
-      console.log('Thank you for not eating my delicious ice cream cone');
-    });
+    console.log("start interval");
+    setTimeout(function(){ $scope.showPayResult(stat); }, 2000);
+    console.log("end interval");
   };
+  $scope.showPayResult = function(stat) {
+    var payment = 2.50;
+    var alertPopup = $ionicPopup.alert({
+      title: 'Bezahlt',
+      template: 'Du hast ' +
+                payment +
+                '€ für ' +
+                stat.name +
+                ' ausgegeben.'
+    });
+    Amount.spend(payment);
+    console.log(stat);
+    $scope.available = Amount.getAvailable();
+    Stats.spend(stat.id, payment);
+    $scope.spentTotal = Amount.getSpentTotal($scope.stats);
+
+  }
 })
 
 
