@@ -21,7 +21,13 @@ h2, p {
 
 .button {
   width: 100%;
-  background-color: white;
+  background-color: #d7ecff;
+}
+
+#statistics {
+  color: black;
+  position: relative;
+  min-height: 30px;
 }
 
 #top-area {
