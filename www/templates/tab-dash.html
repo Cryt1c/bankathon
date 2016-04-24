@@ -9,17 +9,21 @@
 </ion-header-bar>
 <ion-view view-title="Dashboard">
   <ion-content class="padding">
-    <h2 id="headline">Du hast noch: </h2>
-    <h2 id="available">{{available}}€</h2>
-    <div id="available-moneystack"></div>
 
-    <div class="button button-positive" id="plead" ng-click="showRequest()">Geld anfordern</div>
+    <div id="top-area">
+      <h2 id="headline">Du hast noch: </h2>
+      <h2 id="available">{{available}}€</h2>
+      <div class="button button-positive" id="request" ng-click="showRequest()">Eltern um mehr Geld fragen</div>
+      <div id="available-moneystack"></div>
+    </div>
 
-    <div class="button button-positive" id="pay" ng-click="showPay()">Bezahlen</div>
+    <div class="button button-positive" id="pay" ng-click="showPay()">Etwas bezahlen</div>
 
-    <div class="button" id="spent" ng-click="go()">
-      <h2>Schon weg:</h2>
-      <h2 class="spentTotal">{{spentTotal}}€</h2>
+    <div id="bottom-area">
+      <div class="button" id="spent" ng-click="go()">
+        <h2>Schon weg:</h2>
+        <h2 class="spentTotal">{{spentTotal}}€</h2>
+      </div>
     </div>
   </ion-content>
 </ion-view>
