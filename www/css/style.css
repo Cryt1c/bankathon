@@ -16,9 +16,13 @@ h2, p {
   color: red;
 }
 
+#headline {
+  padding-top: 20px;
+}
+
 #pay {
   position: absolute;
-  bottom: 45%;
+  bottom: 40%;
 }
 
 .category_img {
@@ -102,3 +106,4 @@ ion-list ion-item:nth-last-child(1) .box {
   margin: 5px;
   margin-right: 15px;
 }
+

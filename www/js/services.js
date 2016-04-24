@@ -1,10 +1,9 @@
 angular.module('starter.services', [])
 
 .factory('Amount', function() {
-
   var available = 40;
   var spentTotal = 0;
-
+  var requestAmount = 10;
   return {
     getAvailable: function() {
       return available;
@@ -16,13 +15,20 @@ angular.module('starter.services', [])
       }
       spentTotal = temp;
       return spentTotal;
+    },
+    spend: function(spent) {
+      spentTotal += spent;
+      available -= spent;
+    },
+    request: function(amount) {
+      available += amount;
     }
   };
 })
 
 .factory('Stats', function() {
   // Might use a resource here that returns a JSON array
-
+  var nextBuy = -1;
   // Some fake testing data
   var stats = [{
     id: 0,
@@ -89,6 +95,13 @@ angular.module('starter.services', [])
     },
     remove: function(stats) {
       stats.splice(stats.indexOf(stats), 1);
+    },
+    spend: function(statId, spent) {
+      for (var i = 0; i < stats.length; i++) {
+        if (stats[i].id === parseInt(statId)) {
+          stats[i].spent += spent;
+        }
+      }
     },
     get: function(statId) {
       for (var i = 0; i < stats.length; i++) {
