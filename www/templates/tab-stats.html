@@ -1,32 +1,39 @@
-<ion-header-bar class="bar-positive">
-  <div class="buttons"></div>
-  <div>
-    <img src="img/logo_weis.png" class="logo"/>
-  </div>
+<ion-header-bar class="bar-positive" align-title="middle">
   <div class="buttons">
-    <p class="greeting">Hi, Michael!</p>
+    <button class="button" ng-click="dash()">
+      <i ng-class="{'ion-android-arrow-back': platform.isAndroid(), 'ion-ios-arrow-back': !platform.isAndroid()}" class="icon"></i>
+      Zurück
+    </button>
   </div>
+  <h1 class="title">Historie</h1>
 </ion-header-bar>
+
 <ion-view view-title="Statistik">
   <ion-content>
     <ion-list class="list">
+      <ion-item class="item-elem">
+        <div class="box" style="background-color:white; background-size: 100% {{available/(available+spentTotal)*550}}px; height:{{available/(available+spentTotal)*550}}px;">
+          <div class="child">
+            <p></p>
+          </div>
+        </div>
+      </ion-item>
+
+
+
       <ion-item class="item-elem" ng-repeat="stat in stats | orderBy:'-spent':true">
           <div class="box" style="background-color:{{stat.color}}; background-size: 100% {{stat.height}}px; height:{{stat.height}}px;">
-            <div class="child">
-              <img src="img/{{stat.file}}" class="category_img"/>
-              <p>{{Math.round(stat.spent/spentTotal*100)}}%</p>
-            </div>
+
+              <a class="child item-icon-left item-icon-right" href="#" style="padding-top: {{stat.spent/spentTotal*25}}%">
+                <i ng-class="{'{{stat.icon_android}}': platform.isAndroid(), '{{stat.icon_ios}}': !platform.isAndroid()}" class="icon"></i>
+                <span class="child--name">
+                  {{stat.name}}: {{Math.round(stat.spent/spentTotal*100)}}%
+                </span>
+                <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon"></i>
+              </a>
 
           </div>
       </ion-item>
     </ion-list>
-
-
-    <ion-list class="category">
-      <ion-item class="cat-elem" ng-repeat="stat in stats | orderBy:'-spent':true">
-        <p><div class="color" style="background-color:{{stat.color}}"></div>{{stat.name}}: {{stat.spent}}€ </p>
-      </ion-item>
-    </ion-list>
-    <div class="button" ng-click="dash()">Zurück</div>
   </ion-content>
 </ion-view>

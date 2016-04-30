@@ -4,7 +4,7 @@
     <img src="img/logo_weis.png" class="logo"/>
   </div>
   <div class="buttons">
-    <p class="greeting">Hi, Michael!</p>
+    <p class="greeting">Hi Michael!</p>
   </div>
 </ion-header-bar>
 <ion-view view-title="Dashboard">
@@ -13,16 +13,16 @@
     <div id="top-area">
       <h2 id="headline">Du hast noch: </h2>
       <h2 id="available">{{available}}€</h2>
-      <div class="button button-positive" id="request" ng-click="showRequest()">Eltern um mehr Geld fragen</div>
+      <div class="button button-positive" id="request" ng-click="showRequest()">Um mehr Geld bitten</div>
       <div id="available-moneystack"></div>
     </div>
 
 
     <div id="bottom-area">
     <div class="button button-positive" id="pay" ng-click="showPay()">
-      <i class="icon ion-arrow-down-a">   Etwas bezahlen  <i class="icon ion-arrow-down-a"></div>
+      Bezahlen </div>
       <div class="button" id="spent" ng-click="go()">
-        <h2>Schon weg: <span style="color: red">{{spentTotal}}€ </span> </h2>
+        <h2>Bereits ausgegeben: {{spentTotal}}€ </h2>
         <div id="statistics" class="ion-ios-pie"></div></h2>
       </div>
     </div>

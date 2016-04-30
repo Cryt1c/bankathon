@@ -126,10 +126,13 @@ angular.module('starter.controllers', [])
   //
   //$scope.$on('$ionicView.enter', function(e) {
   //});
+  $scope.patform = ionic.Platform;
   $scope.Math = window.Math;
   $scope.stats = Stats.all();
+  $scope.available = Amount.getAvailable();
   $scope.spentTotal = Amount.getSpentTotal($scope.stats);
-  $scope.stats = Stats.getHeights($scope.spentTotal);
+  $scope.stats = Stats.getHeights($scope.spentTotal, $scope.available);
+
 
 
   $scope.remove = function(stats) {

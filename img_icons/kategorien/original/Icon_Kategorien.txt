@@ -1,11 +1,10 @@
 - Essen & Trinken: ion-pizza, ion-ios-nutrition, ion-icecream, fa-cutlery
 - Spielzeug: ion-ios-game-controller-a-outline, fa-gamepad
 - Bücher/Musik: ios-ions-musical-notes, fa-book
-- Schulsachen: ion-university
+
 - Kino (Unterhaltung): ion-videocamera, ion-android-film
-- Sport: ion-ios-tennisball, ion-ios-football, ion-android-bicycle
-- Telefon: ion-ios-telephone, ion-android-call
-- Kleidung: ion-tshirts
+
+
 - Geschenk: fa-gift
 
 
@@ -17,7 +16,7 @@ Bezahlen: ion-ios-cart, ion-android-cart
 ion-log-in
 ion-log-out
 
-ion-ios-filling-outline
+ion-ios-filing-outline
 
 
 
