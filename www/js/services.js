@@ -103,8 +103,7 @@ angular.module('starter.services', [])
     getHeights: function(spentTotal, available) {
 
       for (var i = 0; i < stats.length; i++) {
-          stats[i].height = stats[i].spent/(spentTotal+available)*550;
-        console.log(stats[i].height);
+          stats[i].height = stats[i].spent/(spentTotal+available)*500;
       }
       return stats;
     },
@@ -127,4 +126,33 @@ angular.module('starter.services', [])
       return null;
     }
   };
+})
+
+.factory('Months', function() {
+
+  var months = [
+    {id: 1, name: 'Jänner'},
+    {id: 2, name: 'Feburar'},
+    {id: 3, name: 'März'},
+    {id: 4, name: 'April'},
+    {id: 5, name: 'Mai'},
+    {id: 6, name: 'Juni'},
+    {id: 7, name: 'Juli'},
+    {id: 8, name: 'August'},
+    {id: 9, name: 'September'},
+    {id: 10, name: 'Oktober'},
+    {id: 11, name: 'November'},
+    {id: 12, name: 'Dezember'},
+  ];
+
+  return {
+    getMonth: function(id) {
+      return months[id].name;
+    },
+    getAll: function() {
+     return months;
+    }
+  };
+
 });
+

@@ -1,6 +1,7 @@
 angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats) {
+  $scope.patform = ionic.Platform;
   $scope.stats = Stats.all();
   $scope.available = Amount.getAvailable();
   $scope.spentTotal = Amount.getSpentTotal($scope.stats);
@@ -65,7 +66,7 @@ angular.module('starter.controllers', [])
     // An elaborate, custom popup
     $scope.myPopup = $ionicPopup.show({
       template: '<ion-list>'+
-                '<ion-item ng-repeat="stat in stats" ng-click="showPayOk(stat)">'+
+                '<ion-item ng-repeat="stat in stats" ng-click="showPayOk(stat)" style="background-color:{{stat.color}};" class="item-icon-left">'+
                 '{{stat.name}}'+
                 '</ion-item>'+
                 '</ion-list>',
@@ -102,7 +103,10 @@ angular.module('starter.controllers', [])
                 ' ausgegeben.'
     });
     Amount.spend(payment);
+
     $scope.available = Amount.getAvailable();
+    Stats.spend(stat.id, payment);
+    $scope.spentTotal = Amount.getSpentTotal($scope.stats);
     var x = $(".spentTotal").eq(0).position().left;
     var y = $(".spentTotal").eq(0).position().top;
 
@@ -111,14 +115,14 @@ angular.module('starter.controllers', [])
 
     $("#available-moneystack").moneystack("deductAndSendAmountToLocation", payment, {x: x, y: y});
     //$("#available-moneystack").moneystack("setMoney", $scope.available);
-    Stats.spend(stat.id, payment);
-    $scope.spentTotal = Amount.getSpentTotal($scope.stats);
+
+
   }
 })
 
 
 
-.controller('StatsCtrl', function($scope, $state, $ionicSlideBoxDelegate,Amount, Stats) {
+.controller('StatsCtrl', function($scope, $state, $ionicSlideBoxDelegate,Amount, Stats, Months) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -133,6 +137,8 @@ angular.module('starter.controllers', [])
   $scope.spentTotal = Amount.getSpentTotal($scope.stats);
   $scope.stats = Stats.getHeights($scope.spentTotal, $scope.available);
 
+  var date = new Date();
+  $scope.currDate = Months.getMonth(date.getMonth()) + " " + date.getFullYear();
 
 
   $scope.remove = function(stats) {

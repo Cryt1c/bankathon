@@ -8,11 +8,15 @@
   <h1 class="title">Historie</h1>
 </ion-header-bar>
 
+<ion-subheader-bar class="bar bar-subheader">
+  <h2 class="title">{{currDate}}</h2>
+</ion-subheader-bar>
+
 <ion-view view-title="Statistik">
   <ion-content>
     <ion-list class="list">
       <ion-item class="item-elem">
-        <div class="box" style="background-color:white; background-size: 100% {{available/(available+spentTotal)*550}}px; height:{{available/(available+spentTotal)*550}}px;">
+        <div class="box" style="background-color:white; background-size: 100% {{available/(available+spentTotal)*500}}px; height:{{available/(available+spentTotal)*500}}px;">
           <div class="child">
             <p></p>
           </div>
