@@ -1,8 +1,8 @@
 angular.module('starter.services', [])
 
 .factory('Amount', function() {
-  var available = 40;
-  var spentTotal = 0;
+  var available = 40.00;
+  var spentTotal = 0.00;
   var requestAmount = 10;
   return {
     getAvailable: function() {
@@ -33,7 +33,7 @@ angular.module('starter.services', [])
   var stats = [{
     id: 0,
     name: 'Essen',
-    spent: 17,
+    spent: 17.27,
     file: 'food.png',
     color: '#709C96',
     height: '50',
@@ -42,7 +42,7 @@ angular.module('starter.services', [])
   }, {
     id: 1,
     name: 'Spaß',
-    spent: 8,
+    spent: 8.98,
     file: 'spass.png',
     color: '#D99DF5',
     height: '50',
@@ -52,7 +52,7 @@ angular.module('starter.services', [])
   }, {
     id: 2,
     name: 'Sport',
-    spent: 12,
+    spent: 12.03,
     file: 'sport.png',
     color: '#A9F5C1',
     height: '50',
@@ -61,7 +61,7 @@ angular.module('starter.services', [])
   }, {
     id: 3,
     name: 'Schulsachen',
-    spent: 15,
+    spent: 15.30,
     file: 'schule.png',
     color: '#F7BE5C',
     height: '50',
@@ -70,7 +70,7 @@ angular.module('starter.services', [])
   }, {
     id: 4,
     name: 'Kleidung',
-    spent: 11,
+    spent: 11.20,
     file: 'kleidung.png',
     color: '#F7F55C',
     height: '50',
@@ -79,7 +79,7 @@ angular.module('starter.services', [])
   }, {
     id: 5,
     name: 'Telefon',
-    spent: 10,
+    spent: 10.20,
     file: 'telefon.png',
     color: '#F75C5E',
     height: '50',
@@ -88,7 +88,7 @@ angular.module('starter.services', [])
   }, {
     id: 6,
     name: 'Geschenke',
-    spent: 7,
+    spent: 7.10,
     file: 'geschenk.png',
     color: '#98D8ED',
     height: '50',

@@ -19,10 +19,37 @@ h2, p {
   text-align: center;
 }
 
+.label {
+  font-weight:normal;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.value {
+  font-size: 38px;
+  font-weight:bold;
+  margin-bottom: 30px;
+  color: #000000;
+}
+
+#spent .value {
+  font-weight: normal;
+}
+
+#top-area .value {
+  color: #28a54c;
+}
+
 .button {
   width: 100%;
-  background-color: #d7ecff;
+  margin: auto;
+  display: block;
 }
+
+#pay, #request {
+  font-size: 20px;
+}
+
 
 #statistics {
   color: black;
@@ -32,24 +59,18 @@ h2, p {
 
 #top-area {
   padding: 5px;
-  border: solid grey 2px;
-  border-radius: 5px;
   margin-bottom: 5px;
 }
 
 #top-area .button {
-  width: 70%;
+  width: 100%;
   display: block;
   margin: auto;
 }
 
 #spent {
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  padding: 0;
-  border: solid grey 2px;
+  margin-bottom: 10px;
+  margin-top: 30px;
 }
 
 .spentTotal {
@@ -58,11 +79,6 @@ h2, p {
 
 #headline {
   padding-top: 20px;
-}
-
-#pay {
-  position: absolute;
-  bottom: 17.1%;
 }
 
 .category_img {

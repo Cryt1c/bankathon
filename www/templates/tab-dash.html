@@ -11,19 +11,21 @@
   <ion-content class="padding">
 
     <div id="top-area">
-      <h2 id="headline">Du hast noch: </h2>
-      <h2 id="available">{{available}}€</h2>
+      <h2 class="label" id="headline">Dein aktuelles Taschengeld: </h2>
+      <p  class="value" id="available">€ {{available}}</p>
       <div class="button button-positive" id="request" ng-click="showRequest()">Um mehr Geld bitten</div>
-      <div id="available-moneystack"></div>
     </div>
+
+      <div id="available-moneystack"></div>
+
 
 
     <div id="bottom-area">
     <div class="button button-positive" id="pay" ng-click="showPay()">
       Bezahlen </div>
-      <div class="button" id="spent" ng-click="go()">
-        <h2>Bereits ausgegeben: {{spentTotal}}€ </h2>
-        <div id="statistics" class="ion-ios-pie"></div></h2>
+      <div id="spent" ng-click="go()">
+        <h2 class="label">Deine bisherigen Ausgaben: </h2>
+        <p class="value">€ {{spentTotal}}</p>
       </div>
     </div>
   </ion-content>

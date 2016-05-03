@@ -3,11 +3,11 @@ angular.module('starter.controllers', [])
 .controller('DashCtrl', function($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats) {
   $scope.patform = ionic.Platform;
   $scope.stats = Stats.all();
-  $scope.available = Amount.getAvailable();
-  $scope.spentTotal = Amount.getSpentTotal($scope.stats);
+  $scope.available = KommaPunkt(Amount.getAvailable());
+  $scope.spentTotal = KommaPunkt(Amount.getSpentTotal($scope.stats));
   angular.element(document).ready(function() {
   	$("#available-moneystack").moneystack({yShift: 10});
-    $("#available-moneystack").moneystack("setMoney", $scope.available);
+    $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
   });
   $scope.go = function() {
     $ionicSlideBoxDelegate.next();
@@ -42,8 +42,8 @@ angular.module('starter.controllers', [])
                   answer = true;
                   reason = "";
                   Amount.request(amount);
-                  $scope.available = Amount.getAvailable();
-                  $("#available-moneystack").moneystack("setMoney", $scope.available);
+                  $scope.available = KommaPunkt(Amount.getAvailable());
+                  $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
                 }
                 else {
                   answer = false;
@@ -51,7 +51,7 @@ angular.module('starter.controllers', [])
                 }
                 var alertPopup = $ionicPopup.alert({
                   title: (answer ? "Hallo Michi, weil du so brav warst, darfst du dir " + $scope.data.message + " kaufen." : reason),
-                  template: (answer ? '<h2 style="color: green"> +' + $scope.data.amount + '€ </h2>' : "")
+                  template: (answer ? '<h2 style="color: green"> + € ' + $scope.data.amount + '</h2>' : "")
                 });
               }, 3000);
             }
@@ -96,17 +96,17 @@ angular.module('starter.controllers', [])
     var payment = 2.50;
     var alertPopup = $ionicPopup.alert({
       title: 'Bezahlt',
-      template: 'Du hast ' +
-                payment +
-                '€ für ' +
+      template: 'Du hast € ' +
+                KommaPunkt(payment) +
+                ' für ' +
                 stat.name +
                 ' ausgegeben.'
     });
     Amount.spend(payment);
 
-    $scope.available = Amount.getAvailable();
+    $scope.available = KommaPunkt(Amount.getAvailable());
     Stats.spend(stat.id, payment);
-    $scope.spentTotal = Amount.getSpentTotal($scope.stats);
+    $scope.spentTotal = KommaPunkt(Amount.getSpentTotal($scope.stats));
     var x = $(".spentTotal").eq(0).position().left;
     var y = $(".spentTotal").eq(0).position().top;
 
