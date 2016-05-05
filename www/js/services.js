@@ -35,7 +35,7 @@ angular.module('starter.services', [])
     name: 'Essen',
     spent: 17.27,
     file: 'food.png',
-    color: '#709C96',
+    color: '#38D42F',
     height: '50',
     icon_android: 'ion-icecream',
     icon_ios: 'ion-ios-nutrition'
@@ -44,7 +44,7 @@ angular.module('starter.services', [])
     name: 'Spaß',
     spent: 8.98,
     file: 'spass.png',
-    color: '#D99DF5',
+    color: '#0D7DBF',
     height: '50',
     icon_android: 'ion-android-happy',
     icon_ios: 'ion-happy-outline'
@@ -54,7 +54,7 @@ angular.module('starter.services', [])
     name: 'Sport',
     spent: 12.03,
     file: 'sport.png',
-    color: '#A9F5C1',
+    color: '#FFE910',
     height: '50',
     icon_android: 'ion-android-bicycle',
     icon_ios: 'ion-ios-tennisball'
@@ -63,7 +63,7 @@ angular.module('starter.services', [])
     name: 'Schulsachen',
     spent: 15.30,
     file: 'schule.png',
-    color: '#F7BE5C',
+    color: '#FFA212',
     height: '50',
     icon_android: 'ion-university',
     icon_ios: 'ion-university'
@@ -72,25 +72,25 @@ angular.module('starter.services', [])
     name: 'Kleidung',
     spent: 11.20,
     file: 'kleidung.png',
-    color: '#F7F55C',
+    color: '#ED3338',
     height: '50',
     icon_android: 'ion-tshirt',
     icon_ios: 'ion-tshirt'
   }, {
     id: 5,
     name: 'Telefon',
-    spent: 10.20,
+    spent: 10.00,
     file: 'telefon.png',
-    color: '#F75C5E',
+    color: '#AA6ADF',
     height: '50',
     icon_android: 'ion-android-call',
     icon_ios: 'ion-ios-telephone'
   }, {
     id: 6,
     name: 'Geschenke',
-    spent: 7.10,
+    spent: 7.98,
     file: 'geschenk.png',
-    color: '#98D8ED',
+    color: '#05DEE0',
     height: '50',
     icon_android: 'ion-heart',
     icon_ios: 'ion-heart'
