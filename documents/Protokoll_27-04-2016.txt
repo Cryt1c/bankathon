@@ -23,11 +23,10 @@ TODO Marcel:
 - Anordnung + Animation Geldscheine
 
 TODO Martina:
-- Auswahlliste android, iOS: liste geht nicht im iOS, 
+- Auswahlliste android, iOS: liste geht nicht im iOS
 - Letzter Einkauf visualisieren, Historie der Transaktionen 
 - Topf Mindesthöhe (muss klickbar sein)
 - In Statistik: Tags für Needs und wants 
-- Animation Topf
 - Eltern nach Visualiserung befragen
 
 
@@ -41,6 +40,7 @@ TODO Evaluierung:
 
 
 DONE Martina:
+- Animation Topf: jedes Mal, wenn die View geöffnet wird
 - Konzept fertig
 - Statistik: Titel hinzugefügt, Zeitraum angeben
 - Zurück Button, oben oder ganz weg weil eh durch swipe und backbutton am android

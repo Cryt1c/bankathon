@@ -57,6 +57,11 @@ h2, p {
   min-height: 30px;
 }
 
+.title .icon {
+  font-size: 25px;
+  padding-left: 10px;
+}
+
 #top-area {
   padding: 5px;
   margin-bottom: 5px;
@@ -110,6 +115,7 @@ h2, p {
 
 
 .box {
+  display: none;
   width: 76%;
   margin-left: 12%;
   max-height: 500px;
@@ -138,6 +144,7 @@ h2, p {
 
 .child .icon {
   font-size: 25px;
+  padding-left: 10px;
 }
 
 ion-list ion-item:nth-child(1) .box {

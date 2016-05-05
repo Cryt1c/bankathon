@@ -9,25 +9,25 @@
 </ion-header-bar>
 
 <ion-subheader-bar class="bar bar-subheader">
-  <h2 class="title">{{currDate}}</h2>
+  <h2 class="title">
+    {{currDate}}
+    <i ng-class="{'ion-android-arrow-down': platform.isAndroid(), 'ion-ios-arrow-down': !platform.isAndroid()}" class="icon"></i>
+  </h2>
 </ion-subheader-bar>
 
 <ion-view view-title="Statistik">
   <ion-content>
     <ion-list class="list">
       <ion-item class="item-elem">
-        <div class="box" style="background-color:white; background-size: 100% {{available/(available+spentTotal)*500}}px; height:{{available/(available+spentTotal)*500}}px;">
+        <div class="box" id="box--empty" style="background-color:white; background-size: 100% {{available/(available+spentTotal)*500}}px; height:{{available/(available+spentTotal)*500}}px;">
           <div class="child">
             <p></p>
           </div>
         </div>
       </ion-item>
 
-
-
       <ion-item class="item-elem" ng-repeat="stat in stats | orderBy:'-spent':true">
-          <div class="box" style="background-color:{{stat.color}}; background-size: 100% {{stat.height}}px; height:{{stat.height}}px;">
-
+          <div class="box" id="box{{stat.id}}" style="background-color:{{stat.color}}; background-size: 100% {{stat.height}}px; height:{{stat.height}}px;">
               <a class="child item-icon-left item-icon-right" href="#" style="padding-top: {{stat.spent/spentTotal*25}}%">
                 <i ng-class="{'{{stat.icon_android}}': platform.isAndroid(), '{{stat.icon_ios}}': !platform.isAndroid()}" class="icon"></i>
                 <span class="child--name">
@@ -35,7 +35,6 @@
                 </span>
                 <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon"></i>
               </a>
-
           </div>
       </ion-item>
     </ion-list>
