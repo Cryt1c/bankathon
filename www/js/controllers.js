@@ -152,9 +152,11 @@ angular.module('starter.controllers', [])
 
   $scope.$on('$ionicView.enter', function() {
 
+    $(".box").show();
+    $('.child').delay(1200).fadeIn(400);
+
+    /*
     //$('.list').last('.item-elem').find('.box').addClass('highlight'); //.animate({maxheight:"200px"}, 1000, function(){});
-
-
     $("#box0").show();
     $("#box1").show();
     $("#box2").show();
@@ -162,12 +164,13 @@ angular.module('starter.controllers', [])
     $("#box4").show();
     $("#box5").show();
     $("#box6").show();
-    $("#box--empty").show();
-    
+    $("#box--empty").show();*/
+
   });
 
   $scope.$on('$ionicView.beforeEnter', function() {
     $(".box").hide();
+    $('.child').hide();
   });
 
 });
