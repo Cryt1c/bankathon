@@ -50,6 +50,13 @@ h2, p {
   font-size: 20px;
 }
 
+.small_button{
+  line-height: 5px !important;
+  min-height: 24px !important;
+  font-size: 12px !important;
+  width: 50% !important;
+  padding: 10px;
+}
 
 #statistics {
   color: black;
@@ -75,7 +82,7 @@ h2, p {
 
 #spent {
   margin-bottom: 10px;
-  margin-top: 30px;
+  margin-top: 5px;
 }
 
 .spentTotal {
@@ -83,7 +90,7 @@ h2, p {
 }
 
 #headline {
-  padding-top: 20px;
+  padding-top: 10px;
 }
 
 .category_img {
@@ -93,6 +100,9 @@ h2, p {
   margin-left: 50px;
 }
 
+#available {
+  margin-bottom: 15px;
+}
 
 .item-elem {
   padding: 0px;
