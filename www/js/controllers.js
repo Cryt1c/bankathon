@@ -47,10 +47,10 @@ angular.module('starter.controllers', [])
                 }
                 else {
                   answer = false;
-                  reason = "Hallo Michael, du hast diesen Monat schon genug für " + $scope.data.message + " ausgegeben.";
+                  reason = '"Hallo Michael, du hast diesen Monat schon genug für ' + $scope.data.message + ' ausgegeben."';
                 }
                 var alertPopup = $ionicPopup.alert({
-                  title: (answer ? "Hallo Michi, weil du so brav warst, darfst du dir " + $scope.data.message + " kaufen." : reason),
+                  title: (answer ? '"Hallo Michi, weil du so brav warst, darfst du dir  ' + $scope.data.message + ' kaufen."' : reason),
                   template: (answer ? '<h2 style="color: green"> + € ' + $scope.data.amount + '</h2>' : "")
                 });
               }, 3000);

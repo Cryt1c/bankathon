@@ -13,7 +13,6 @@ TODO Eltern App:
 
 TODO David:
 - Slider und Eingabe machen, Button disable solange kein Grund eingegeben
-- Antwort unter Anführungszeichen
 - Restbetrag anzeigen; kein Popup,das wegklickbar ist 
 - Position vom Pop Up verändern, sodass die Animation im Hintergrund besser sichtbar ist oder Animation erst auslösen, wenn man OK gedrückt hat
 
@@ -39,6 +38,7 @@ TODO Evaluierung:
 
 DONE David:
 - Schon weg: kein Button, Icon nicht erkennbar, muss sich vom content abheben -> am besten Navbar mit "Home" und "Historie"
+- Antwort unter Anführungszeichen
 
 DONE Martina:
 - Animation Topf: jedes Mal, wenn die View geöffnet wird
