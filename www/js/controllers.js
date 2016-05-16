@@ -53,7 +53,7 @@ angular.module('starter.controllers', [])
                   title: (answer ? '"Hallo Michi, weil du so brav warst, darfst du dir  ' + $scope.data.message + ' kaufen."' : reason),
                   template: (answer ? '<h2 style="color: green"> + € ' + $scope.data.amount + '</h2>' : "")
                 });
-              }, 3000);
+              }, 1000);
             }
           }
         }
@@ -89,8 +89,8 @@ angular.module('starter.controllers', [])
                 stat.name +
                 ' an der Kassa bezahlen.'
     });
-    setTimeout(function(){ $scope.showPayResult(stat); }, 5000);
-    setTimeout(function(){ alertPopup.close(); }, 5000);
+    setTimeout(function(){ $scope.showPayResult(stat); }, 1000);
+    setTimeout(function(){ alertPopup.close(); }, 2000);
   };
   $scope.showPayResult = function(stat) {
     var payment = 2.50;
@@ -107,15 +107,15 @@ angular.module('starter.controllers', [])
     $scope.available = KommaPunkt(Amount.getAvailable());
     Stats.spend(stat.id, payment);
     $scope.spentTotal = KommaPunkt(Amount.getSpentTotal($scope.stats));
-    var x = $(".spentTotal").eq(0).position().left;
-    var y = $(".spentTotal").eq(0).position().top;
+    
+    //var x = $(".spentTotal").eq(0).position().left;
+    //var y = $(".spentTotal").eq(0).position().top;
 
-    console.log(x);
-    console.log(y);
+    //console.log(x);
+    //console.log(y);
 
-    $("#available-moneystack").moneystack("deductAndSendAmountToLocation", payment, {x: x, y: y});
-    //$("#available-moneystack").moneystack("setMoney", $scope.available);
-
+    //$("#available-moneystack").moneystack("deductAndSendAmountToLocation", payment, {x: x, y: y});
+    $("#available-moneystack").moneystack("setMoney", parseFloat(Amount.getAvailable()));
 
   }
 })
