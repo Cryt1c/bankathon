@@ -130,7 +130,7 @@ angular.module('starter.controllers', [])
   //
   //$scope.$on('$ionicView.enter', function(e) {
   //});
-  $scope.patform = ionic.Platform;
+  $scope.platform = ionic.Platform;
   $scope.Math = window.Math;
   $scope.stats = Stats.all();
   $scope.available = Amount.getAvailable();
