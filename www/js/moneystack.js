@@ -1,6 +1,142 @@
 (function ( $ ) {
 
     var sum = "";
+    var coinRowDiv = function (){
+    	// retrieve or create coin row div
+    	var coinRowDiv = $("#moneystack-coinrow");
+    	if (coinRowDiv.length <= 0) coinRowDiv = $("<div id='moneystack-coinrow' style='position:absolute;bottom:0; left:0; right:0;height:30px'>").appendTo($(this));
+    	return coinRowDiv;
+    }
+    
+    // add coin
+    var addCoinFromPrototype = function(prototypeElement) {
+        var clonedElement = prototypeElement.clone(true);
+		var coinRow = coinRowDiv.call(this);
+		coinRowDiv.call(this).append(clonedElement);
+
+		//TODO no no don't do this!!!
+		var coinRowCenter = coinRow.width() / 2;
+		var allCoinsLength = (coinRow.children().length + 1) * 20; // in px
+		var newCoinIndex = coinRow.children().length;
+		
+		clonedElement.css("left", (coinRowCenter - allCoinsLength) + newCoinIndex * 20);
+		//clonedElement.css("left", coinRowDiv.call(this).children().length * 20 + 20);
+		clonedElement.css("height", "30px");
+		clonedElement.addClass("moneystack-value-" + key);
+	};
+    var addBanknoteFromPrototype = function(prototypeElement) {
+    	var $this = $(this);
+    	var clonedElement = prototypeElement.clone(true);
+		clonedElement.css("top", 10 + "px");
+		
+		$this.append(clonedElement);
+		var targetLeft = 
+			(clonedElement[0].complete ? 
+			(($this.width() /2) - (clonedElement[0].width / 2)) :
+			0);
+		clonedElement.css("left", targetLeft + "px").css("visibility", "hidden").one("load", function() {
+			// reposition myself when I'm loaded
+			$(this).css("left", (($this.width() /2) - (this.width / 2)));
+			// and appear
+			$(this).css("visibility", "visible");
+		}); 
+		clonedElement.addClass("moneystack-value-" + key);
+
+    };
+    var sortMoney = function(shouldAnimate) {
+        	// sort the money that is currently visible
+        	var $this, data;
+        	$this = $(this);
+        	data = $this.data("moneystack");
+        	var allPieces = [1, 2, 5,10,20,50,100,200,500]; // a list of available pieces
+        	   
+        	allPieces.reverse(); // start with higher denominations
+        	
+        	var y = 0;
+        	var yShift = data.yShift;
+    
+    
+    		var zIndex = 1000;
+    		for (var denominationI = 0; denominationI< allPieces.length; denominationI++) {
+    			var denomination = allPieces[denominationI];
+    			var $pieces = $(".moneystack-value-" + denomination).not(".moneystack-reserved");
+    			for (var pieceI = 0; pieceI < $pieces.length; pieceI++) 
+    			{
+    				var thisPiece = $pieces.eq(pieceI);
+    				if (thisPiece.data("moneystack-value") >= 5) {
+    				// only sort banknotes here
+    					thisPiece.css("z-index", zIndex);
+    					if (!shouldAnimate) {
+    						// do not animate
+    						thisPiece.css("top", y + "px");
+    					}
+    					else {
+    						// should animate
+    						var offset = 
+    							{x: 0,
+    							y: y -thisPiece.position().top}; // offset we need to move this by
+    							
+    						var targetPosition = {top: y, 
+    						left:  (($this.width() /2) - (thisPiece[0].width / 2))};
+    						//inject this info so it's available after the transform is complete
+    						thisPiece.data("anim_targetPosition", targetPosition);
+    						thisPiece.transition(offset,
+    						function() {
+    							// called once the transition is complete.
+    							var targetPos = $(this).data("anim_targetPosition");
+    							$(this).css(
+    								{"transform": "none",
+    								"top": targetPos.top + "px",
+    								"left": (($this.width() /2) - ((this[0]||this).width / 2)) + "px"}
+    							);
+    						});
+    						// make sure that once 
+    					}
+    					
+    					
+    					y += yShift;
+    					zIndex++;
+    					
+    				}
+    			
+    			}
+    			
+    			
+    		}
+    
+        	
+        };
+    
+    // add the specified money pieces
+    var addMoneyPieces = function(amountDictionary) {
+    	// input amountDictionary: a dictionary with denominations and the respective amount needed
+    	var y = 0;
+    	
+    	var $this = $(this);
+    	var data = $this.data("moneystack");
+    	var yShift = data.yShift;
+    	var neededChange = amountDictionary;
+    	for (key in neededChange) {
+    	  if (neededChange.hasOwnProperty(key)) {
+    	    var prototypeElement = data.moneyPrototypes[key];
+    	    if (prototypeElement) {
+    	      for (var i = 0; i < neededChange[key]; i++) {
+    				if (parseFloat(prototypeElement.data("moneystack-value")) < 5) {
+    					// this is a coin
+    					addCoinFromPrototype.call($this, prototypeElement);
+    				}
+    				else {
+    		              addBanknoteFromPrototype.call($this, prototypeElement);    		              
+    		              y+=yShift;
+    		        }
+    	      }
+    	    }
+    	  }
+    	}
+    	// sort everything into place
+    	sortMoney.call(this, true);
+    };
+    
     function neededPiecesForAmount(amount) {
     	var allPieces = [500,200,100,50,20,10,5, 2, 1]; // a list of available pieces
     	var neededPieces = {}; // the needed number of pieces per piece
@@ -31,7 +167,10 @@
 
     	return neededPieces;
     };
-    var reshufflePieces = function($this) {
+    //var removeAmount = function($this, shouldAnimateChange) {
+    	
+    //};
+    var relayout = function($this) {
     	// rearrange remaining pieces so they're neatly in line
     	//var allPieces = [500,200,100,50,20,10,5, 2, 1]; // a list of available pieces
     	var allPieces = [1, 2, 5,10,20,50,100,200,500]; // a list of available pieces
@@ -45,17 +184,37 @@
 		for (denomination in allPieces) {
 			var $pieces = $(".moneystack-value-" + denomination).not(".moneystack-reserved");
 			$pieces.each(function(index) {
-			    		$(this).css("top", y + "px");
-			    		$(this).css("z-index", zIndex);
-			    		y += yShift;
-			    		zIndex--;
-						
+						if ($(this).data("moneystack-value") >= 5) {
+							$(this).css("top", y + "px");
+							$(this).css("z-index", zIndex);
+							y += yShift;
+							zIndex--;
+							
+						}
+			    		
 			    	});
 			
 		}
 
     	
     };
+   var changePieceToPieces = function(originalPiece, neededNewPiecesDict, shouldAnimate) {
+   		var $this, data, neededPieces, returnedNewPieces, remainder;
+   		$this = $(this);
+   		data = $this.data("moneystack");
+   		returnedNewPieces = [];
+   		
+   		remainder = originalPiece.data("moneystack-value"); // how much value remains from the original moneypiece
+   		for (key in neededMoney) {
+   			if (neededMoney.hasOwnProperty(key)) {
+   				var prototypeElement = data.moneyPrototypes[key];
+   				if (prototypeElement) {
+   				
+   				}
+   			}
+   		}
+   		
+   }; 
     var animateChangePieceToPieces = function($this, originalPiece, neededNewPieces) {
     	var data = $this.data("moneystack");
     	var y = originalPiece.offset().top;
@@ -74,7 +233,21 @@
     					clonedElement.css("top", y + "px");
               remainder -= parseFloat(key);
     					$this.append(clonedElement);
-    					clonedElement.css("left", (($this.width() /2) - (clonedElement.width() / 2)) + "px");
+    					
+    					
+    					
+    					
+    					var targetLeft = 
+    						(clonedElement[0].complete ? 
+    						(($this.width() /2) - (clonedElement[0].width / 2)) :
+    						0);
+    					clonedElement.css("left", targetLeft + "px").css("visibility", "hidden").one("load", function() {
+    						// reposition myself when I'm loaded
+    						$(this).css("left", (($this.width() /2) - (this.width / 2)));
+    						// and appear
+    						$(this).css("visibility", "visible");
+    					}); 
+    					    					//clonedElement.css("left", "0px");
     					clonedElement.addClass("moneystack-value-" + key);
     					y+=yShift;
     					returnedNewPieces.push(clonedElement);
@@ -91,14 +264,29 @@
           var prototypeElement = data.moneyPrototypes[key];
           if (prototypeElement) {
             for (var i = 0; i < neededChange[key]; i++) {
-
-              var clonedElement = prototypeElement.clone(true);
-              clonedElement.css("top", y + "px");
-
-              $this.append(clonedElement);
-              clonedElement.css("left", (($this.width() /2) - (clonedElement.width() / 2)) + "px");
-              clonedElement.addClass("moneystack-value-" + key);
-              y+=yShift;
+				if (parseFloat(prototypeElement.data("moneystack-value")) < 5) {
+					// this is a coin
+					clonePrototypeAndAddCoin.call($this, prototypeElement);
+				}
+				else {
+		              var clonedElement = prototypeElement.clone(true);
+		              clonedElement.css("top", y + "px");
+		
+		              $this.append(clonedElement);
+		              var targetLeft = 
+		              	(clonedElement[0].complete ? 
+		              	(($this.width() /2) - (clonedElement[0].width / 2)) :
+		              	0);
+		              clonedElement.css("left", targetLeft + "px").css("visibility", "hidden").one("load", function() {
+		              	// reposition myself when I'm loaded
+		              	$(this).css("left", (($this.width() /2) - (this.width / 2)));
+		              	// and appear
+		              	$(this).css("visibility", "visible");
+		              }); 
+		              clonedElement.addClass("moneystack-value-" + key);
+		              
+		              y+=yShift;
+		        }
             }
           }
         }
@@ -168,6 +356,15 @@
 
     	data.moneyPrototypes = moneyPrototypes;
     };
+    var relayout = function() {
+    //alert("HALLO");
+    	var $this = $(this);
+    	var moneyPieces = $(".moneystack-piece");
+    	moneyPieces.each(function() {
+    		//$(this).css("left", (($this.width() /2) - ($(this).width() / 2)) + "px");
+    	});
+    };
+    
     var renderMoney = function($this, neededMoney) { // neededMoney is a dictionary with the denominations as keys, the amount of them needed as values
     	// render the money
     	var data = $this.data("moneystack");
@@ -175,7 +372,19 @@
     	$this.empty();
 
     	var y = 0;
+    	// get total count of banknotes
+    	var totalCount = 0;
+    	for (key in neededMoney) {
+    		if (parseFloat(key) >= 5 && neededMoney.hasOwnProperty(key)) {
+    			for (var i = 0; i < neededMoney[key]; i++) {
+    				totalCount++;
+    			}
+    		}
+    	}
     	var yShift = data.yShift;
+    	var drawingHeight =  (( ($this.height() - coinRowDiv.call($this).height()) ) - yShift*totalCount) / totalCount;
+    	
+    	
     	//var y = 0;
 
     	for (key in neededMoney) {
@@ -183,14 +392,33 @@
     			var prototypeElement = data.moneyPrototypes[key];
     			if (prototypeElement) {
     				for (var i = 0; i < neededMoney[key]; i++) {
-
-    					var clonedElement = prototypeElement.clone(true);
-    					clonedElement.css("top", y + "px");
-
-    					$this.append(clonedElement);
-    					clonedElement.css("left", (($this.width() /2) - (clonedElement.width() / 2)) + "px");
-    					clonedElement.addClass("moneystack-value-" + key);
-    					y+=yShift;
+						if (parseFloat(prototypeElement.data("moneystack-value")) < 5) {
+							// this is a coin
+							clonePrototypeAndAddCoin.call($this, prototypeElement);
+						}
+						else {
+							var clonedElement = prototypeElement.clone(true);
+	    					clonedElement.css("top", y + "px");
+							clonedElement.css("height", drawingHeight + "px");
+	    					$this.append(clonedElement);
+	    					
+	    					//TODO no no don't do this!!!
+	    					var targetLeft = 
+	    						(clonedElement[0].complete ? 
+	    						(($this.width() /2) - (clonedElement[0].width / 2)) :
+	    						0);
+	    					clonedElement.css("left", targetLeft + "px").css("visibility", "hidden").one("load", function() {
+	    						// reposition myself when I'm loaded
+	    						$(this).css("left", (($this.width() /2) - (this.width / 2)));
+	    						// and appear
+	    						$(this).css("visibility", "visible");
+	    					}); 
+	    					//clonedElement.css("left", "0px");
+	    					clonedElement.addClass("moneystack-value-" + key);
+	    					y+=(drawingHeight+yShift);
+						}
+    					
+    					
     				}
     			}
     		}
@@ -276,8 +504,16 @@
     		if (!data) {
     			// initial run
     			$( window ).resize(function() {
-    				reshufflePieces($this);
+    				//reshufflePieces($this);
+    				relayout.call($this);
     			});
+    			// create mainDiv
+    			$this.addClass("moneystack-container");
+    			// add coin row div
+    			//setTimeout(function() {
+    			//	var coinRowDiv = $('<div id="moneystack-coinrow">Hallo</div>').appendTo($this);
+    			//}, 100);
+    			
 	    		data = $.extend(options, {
 	    		                    mainDiv : null,
 	    		                    denominationFilenameDict: {
@@ -293,14 +529,14 @@
 
 	    		                    },
 	    		                    moneyPrototypes: null,
-	    		                    yShift: 30
+	    		                    yShift: 30,
+	    		                    amount: 40
 
 
     		               	 });
 
 
-    		    // create mainDiv
-    		    $this.addClass("moneystack-container");
+    		   
 
 
 
@@ -308,17 +544,46 @@
     		    $this.data("moneystack", data);
 
     		    loadMoneyPieces($this, data.denominationFilenameDict);
+    		    addMoneyPieces.call($this, neededPiecesForAmount(data.amount));
     		}
     	},
 
-    	setMoney: function(amount) {
-    		var $this= $(this);
-    		var neededPieces = neededPiecesForAmount(amount);
-
-    		renderMoney($(this), neededPieces);
+    	setMoney: function(amt) {
+    		var amount = parseFloat(amt);
+    		var $this,
+    			neededPieces,
+    			data,
+    			currentAmount;
+    		$this =  $(this);
+    		//neededPieces = neededPiecesForAmount(amount),
+    		data = $this.data("moneystack");
+    		currentAmount = data.amount;
+    		
+			// see if we need to add or remove money
+			if (amount == currentAmount) return; // no change needed
+			else if (amount < currentAmount) {
+				// remove money
+				// TODO
+				//removeAmount.call($this, (currentAmount-amount) );	
+				data.amount = amount;
+				// clear
+				$this.empty();
+				var neededNewMoney = neededPiecesForAmount(amount);
+				addMoneyPieces.call($this, neededNewMoney);
+				
+			}
+			else if (amount > currentAmount) {
+				// add money
+				var difference = amount - currentAmount;
+				var neededNewMoney = neededPiecesForAmount(difference);
+				addMoneyPieces.call($this, neededNewMoney);
+				
+				data.amount = amount;
+			}
+    		//renderMoney($(this), neededPieces);
     	},
     	deductMoney: function(amount, target) {
-
+			
     	},
     	addMoney: function(amount, source) {
 

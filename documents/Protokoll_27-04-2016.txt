@@ -1,4 +1,4 @@
-TODO Allgemein:
+﻿TODO Allgemein:
 - Konzept fertig machen mit Screens und Mockups, Verbindung Eltern und Kinder, Evaluierung 
 
 TODO Kinder App Allgemein:
@@ -13,9 +13,7 @@ TODO Eltern App:
 
 TODO David:
 - Slider und Eingabe machen, Button disable solange kein Grund eingegeben
-- Antwort unter Anführungszeichen
 - Restbetrag anzeigen; kein Popup,das wegklickbar ist 
-- Schon weg: kein Button, Icon nicht erkennbar, muss sich vom content abheben -> am besten Navbar mit "Home" und "Historie"
 - Position vom Pop Up verändern, sodass die Animation im Hintergrund besser sichtbar ist oder Animation erst auslösen, wenn man OK gedrückt hat
 
 TODO Marcel:
@@ -38,6 +36,9 @@ TODO Evaluierung:
 - Konzept überlegen, was verbessern Konzept und Funktionalität, muss noch nicht alles programmiert sein, Testpersonen? 
 - Einmal Feedback bekommen, von einer Zielgruppe, eine Interation 
 
+DONE David:
+- Schon weg: kein Button, Icon nicht erkennbar, muss sich vom content abheben -> am besten Navbar mit "Home" und "Historie"
+- Antwort unter Anführungszeichen
 
 DONE Martina:
 - Animation Topf: jedes Mal, wenn die View geöffnet wird
