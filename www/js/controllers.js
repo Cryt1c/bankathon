@@ -1,7 +1,7 @@
 angular.module('starter.controllers', [])
 
 .controller('DashCtrl', function($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats) {
-  $scope.patform = ionic.Platform;
+  $scope.platform = ionic.Platform;
   $scope.stats = Stats.all();
   $scope.available = KommaPunkt(Amount.getAvailable());
   $scope.spentTotal = KommaPunkt(Amount.getSpentTotal($scope.stats));
