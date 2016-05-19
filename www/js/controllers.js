@@ -1,12 +1,15 @@
 angular.module('starter.controllers', [])
+
 .service('webService', function($http) {
   var url = "/api/"; // change this for production -- gets proxied on to heroku app location
   this.getUserName = function() {
     return $http.get(url + "users?userId=1");
   };
 })
+
 .controller('DashCtrl', function($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats, webService) {
-  $scope.patform = ionic.Platform;
+  $scope.platform = ionic.Platform;
+
   $scope.stats = Stats.all();
   $scope.available = KommaPunkt(Amount.getAvailable());
   $scope.spentTotal = KommaPunkt(Amount.getSpentTotal($scope.stats));

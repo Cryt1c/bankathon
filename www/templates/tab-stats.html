@@ -1,14 +1,13 @@
 <ion-header-bar class="bar-positive" align-title="middle">
   <div class="buttons">
-    <button class="button" ng-click="dash()">
-      <i ng-class="{'ion-android-arrow-back': platform.isAndroid(), 'ion-ios-arrow-back': !platform.isAndroid()}" class="icon"></i>
-      Zurück
-    </button>
   </div>
-  <h1 class="title">Historie</h1>
+  <h1 ng-class="{'title-android':platform.isAndroid(), 'title-ios': !platform.isAndroid()}" class="title">Statistik</h1>
+  <div class="buttons">
+    <p ng-class="{'greeting-android':platform.isAndroid(), 'greeting-ios': !platform.isAndroid()}" class="greeting">Michael</p>
+  </div>
 </ion-header-bar>
 
-<ion-subheader-bar class="bar bar-subheader">
+<ion-subheader-bar ng-class="{'subheader-android':platform.isAndroid(), 'subheader-ios': !platform.isAndroid()}" class="bar bar-subheader ">
   <h2 class="title">
     {{currDate}}
     <i ng-class="{'ion-android-arrow-down': platform.isAndroid(), 'ion-ios-arrow-down': !platform.isAndroid()}" class="icon"></i>
@@ -29,7 +28,7 @@
       <ion-item class="item-elem" ng-repeat="stat in stats | orderBy:'-spent':true">
           <div class="box" id="box{{stat.id}}" style="background-color:{{stat.color}}; background-size: 100% {{stat.height}}px; height:{{stat.height}}px;">
               <a class="child item-icon-left item-icon-right" href="#" style="padding-top: {{stat.spent/spentTotal*25}}%">
-                <i ng-class="{'{{stat.icon_android}}': platform.isAndroid(), '{{stat.icon_ios}}': !platform.isAndroid()}" class="icon"></i>
+                <i class="icon {{stat.icon_ios}}"></i>
                 <span class="child--name">
                   {{stat.name}}: {{Math.round(stat.spent/spentTotal*100)}}%
                 </span>
