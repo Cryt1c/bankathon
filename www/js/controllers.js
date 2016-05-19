@@ -1,10 +1,21 @@
 angular.module('starter.controllers', [])
-
-.controller('DashCtrl', function($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats) {
+.service('webService', function($http) {
+  var url = "/api/"; // change this for production -- gets proxied on to heroku app location
+  this.getUserName = function() {
+    return $http.get(url + "users?userId=1");
+  };
+})
+.controller('DashCtrl', function($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats, webService) {
   $scope.patform = ionic.Platform;
   $scope.stats = Stats.all();
   $scope.available = KommaPunkt(Amount.getAvailable());
   $scope.spentTotal = KommaPunkt(Amount.getSpentTotal($scope.stats));
+  webService.getUserName().success(function(data) {
+    $scope.user = data;
+  }).error(function(data) {
+    $scope.user = data;
+  });
+
   angular.element(document).ready(function() {
   	$("#available-moneystack").moneystack({yShift: 10});
     $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
@@ -15,10 +26,11 @@ angular.module('starter.controllers', [])
   };
 
   $scope.showRequest = function() {
+
     $scope.data = {};
     $scope.data.amount = 10;
     var myRequest = $ionicPopup.show({
-      template: '<label for="amount">Betrag {{data.amount}}€</label>'+
+      template: '<label for="amount">{{user.name}} {{user.balance}}  Betrag {{data.amount}}€</label>'+
                 '<input type="range" id="amount" min="0" max="20"  ng-model="data.amount">'+
                 '<label for="message">Grund</label>'+
                 '<input type="text" id="message" ng-model="data.message" required="required">',
@@ -107,7 +119,7 @@ angular.module('starter.controllers', [])
     $scope.available = KommaPunkt(Amount.getAvailable());
     Stats.spend(stat.id, payment);
     $scope.spentTotal = KommaPunkt(Amount.getSpentTotal($scope.stats));
-    
+
     //var x = $(".spentTotal").eq(0).position().left;
     //var y = $(".spentTotal").eq(0).position().top;
 
