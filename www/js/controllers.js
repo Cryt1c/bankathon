@@ -1,23 +1,67 @@
 angular.module('starter.controllers', [])
 
-.service('webService', function($http) {
+.service('webService', function($http, transactionsService, Amount) {
   var url = "/api/"; // change this for production -- gets proxied on to heroku app location
-  this.getUserName = function() {
-    return $http.get(url + "users?userId=1");
+  var userId = 1;
+  this.getUser = function() {
+    return $http.get(url + "getChild?childId=" + userId);
+  };
+  this.getTransactions = function() {
+    return $http.get(url + "getTransactionsByChild?childId=" + userId);
+  };
+  this.writeTransactions = function() {
+    for (var i = 0; i<transactionsService.transactions().length; i++) {
+      var tTrans = transactionsService.transactions()[i];
+      if (!tTrans.writtenToServer) {
+        // not yet written to server
+        $http.post(url + "addTransaction",
+          {"recipient": tTrans.recipient,
+          "amount": tTrans.amount,
+          "category": tTrans.category,
+          "child_id": userId,
+          "is_need": false
+        });
+        //flag as already written
+        tTrans.writtenToServer = true;
+      }
+    }
+
+  };
+  this.writeBalance = function() {
+    // write balance to server
+    //var postString = url + "setBalance?childId=" + userId + "&newBalance=" + parseFloat(Amount.getAvailable());
+    var json = {
+      "childId": userId,
+      "newBalance": parseFloat(Amount.getAvailable())
+      };
+      console.log(json);
+    $http.post(url + "setBalance", json);
+
   };
 })
 
-.controller('DashCtrl', function($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats, webService) {
+.controller('DashCtrl', function($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats, webService, transactionsService) {
   $scope.platform = ionic.Platform;
-
+  $scope.webService = webService;
   $scope.stats = Stats.all();
   $scope.available = KommaPunkt(Amount.getAvailable());
   $scope.spentTotal = KommaPunkt(Amount.getSpentTotal($scope.stats));
-  webService.getUserName().success(function(data) {
-    $scope.user = data;
-  }).error(function(data) {
-    $scope.user = data;
-  });
+  $scope.transactionsService = transactionsService;
+
+  var userCallback = function(user) {
+    $scope.user = user;
+    Amount.setAvailable($scope.user.balance);
+    $scope.available = KommaPunkt(Amount.getAvailable());
+    $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
+
+    // get transactions from this user since we now know they exist
+    var transactionsCallback = function(data) {
+      transactionsService.loadTransactionsJSON(data);
+      // $scope.$apply();
+    };
+    webService.getTransactions().success(transactionsCallback).error(transactionsCallback);
+  }
+  webService.getUser().success(userCallback).error(userCallback);
 
   angular.element(document).ready(function() {
   	$("#available-moneystack").moneystack({yShift: 10});
@@ -59,6 +103,7 @@ angular.module('starter.controllers', [])
                   Amount.request(amount);
                   $scope.available = KommaPunkt(Amount.getAvailable());
                   $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
+                  $scope.webService.writeBalance();
                 }
                 else {
                   answer = false;
@@ -108,7 +153,16 @@ angular.module('starter.controllers', [])
     setTimeout(function(){ alertPopup.close(); }, 2000);
   };
   $scope.showPayResult = function(stat) {
-    var payment = 2.50;
+    //add transaction
+    var recipientNames = ["Spar", "Billa", "Libro", "Amazon", "Mensa", "Der Mann"];
+    var randomName = recipientNames[Math.floor(Math.random() * recipientNames.length)];
+    var payment = parseFloat(parseFloat(Math.random() * 17.40).toFixed(2)); //2.50;
+
+    $scope.transactionsService.createAndAddTransaction(randomName, payment, stat.id);
+    // write to server immediately
+    $scope.webService.writeTransactions();
+    // also write new balance -- TODO you'd actually want to postpone this and relegate to a regular sync function
+
     var alertPopup = $ionicPopup.alert({
       title: 'Bezahlt',
       template: 'Du hast € ' +
@@ -120,6 +174,7 @@ angular.module('starter.controllers', [])
     Amount.spend(payment);
 
     $scope.available = KommaPunkt(Amount.getAvailable());
+    $scope.webService.writeBalance();
     Stats.spend(stat.id, payment);
     $scope.spentTotal = KommaPunkt(Amount.getSpentTotal($scope.stats));
 
@@ -136,7 +191,13 @@ angular.module('starter.controllers', [])
 })
 
 
+.controller('HistoryCtrl', function($scope, $state, $ionicSlideBoxDelegate, transactionsService) {
+   $scope.platform = ionic.Platform;
+   var date = new Date();
+   // $scope.currDate = Months.getMonth(date.getMonth()) + " " + date.getFullYear();
+  $scope.transactionsService = transactionsService;
 
+})
 .controller('StatsCtrl', function($scope, $state, $ionicSlideBoxDelegate,Amount, Stats, Months) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.

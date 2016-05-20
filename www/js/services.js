@@ -8,6 +8,9 @@ angular.module('starter.services', [])
     getAvailable: function() {
       return available;
     },
+    setAvailable: function(newValue) {
+      available = newValue;
+    },
     getSpentTotal: function(stats) {
       var temp = 0;
       for (var i = 0; i < stats.length; i++) {
@@ -25,7 +28,40 @@ angular.module('starter.services', [])
     }
   };
 })
+.service('transactionsService', function() {
+  var _transactions = [];
+  this.transactions = function() {
+    return _transactions;
+  };
+  this.createTransaction = function(recipient, amount, category) {
+    return {recipient: recipient, amount: amount, category: category, writtenToServer: false};
+  };
+  this.addTransaction = function (transaction) {
+    _transactions.push(transaction);
+  };
+  this.loadTransactionsJSON = function (existingTransactions) {
+    //_transactions = existingTransactions;
+    _transactions = [];
+    for (var i = 0; i<existingTransactions.length; i++) {
+      var thisT = existingTransactions[i];
+      var trans = this.createAndAddTransaction(thisT.recipient, thisT.amount, thisT.category);
+      trans.writtenToServer = true; // flag this as already being written to the server
+    }
 
+  };
+  this.createAndAddTransaction = function(recipient, amount, category) {
+    var trans = this.createTransaction(recipient, amount, category);
+    trans.writtenToServer = false;
+    this.addTransaction(trans);
+    return trans;
+  };
+  this.all = function() {
+      return _transactions;
+  };
+  this.get = function(index) {
+      return _transactions[index];
+  };
+})
 .factory('Stats', function() {
   // Might use a resource here that returns a JSON array
   var nextBuy = -1;

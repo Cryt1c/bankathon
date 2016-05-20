@@ -2,7 +2,7 @@
   <div class="buttons"></div>
   <h1 ng-class="{'title-android':platform.isAndroid(), 'title-ios': !platform.isAndroid()}" class="title">Home</h1>
   <div class="buttons">
-    <p ng-class="{'greeting-android':platform.isAndroid(), 'greeting-ios': !platform.isAndroid()}" class="greeting">Michael</p>
+    <p ng-class="{'greeting-android':platform.isAndroid(), 'greeting-ios': !platform.isAndroid()}" class="greeting">{{user.name}}</p>
   </div>
 </ion-header-bar>
 
