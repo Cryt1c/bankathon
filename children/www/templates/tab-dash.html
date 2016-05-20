@@ -1,12 +1,12 @@
-<ion-header-bar class="bar-positive">
+<ion-header-bar class="bar-positive" align-title="middle">
   <div class="buttons"></div>
-  <div>
-    <img src="img/logo_weis.png" class="logo"/>
-  </div>
+  <h1 ng-class="{'title-android':platform.isAndroid(), 'title-ios': !platform.isAndroid()}" class="title">Home</h1>
   <div class="buttons">
-    <p class="greeting">Hi Michael!</p>
+    <p ng-class="{'greeting-android':platform.isAndroid(), 'greeting-ios': !platform.isAndroid()}" class="greeting">Michael</p>
   </div>
 </ion-header-bar>
+
+
 <ion-view view-title="Dashboard">
   <ion-content class="padding">
 
