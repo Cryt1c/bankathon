@@ -40,37 +40,47 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('DashCtrl', function($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats, webService, transactionsService) {
+.controller('DashCtrl', function($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats, PunktZuKomma, webService, transactionsService) {
   $scope.platform = ionic.Platform;
-  $scope.webService = webService;
-  $scope.stats = Stats.all();
-  $scope.available = KommaPunkt(Amount.getAvailable());
-  $scope.spentTotal = KommaPunkt(Amount.getSpentTotal($scope.stats));
+
+  $scope.$on('$ionicView.beforeEnter', function() {
+    $scope.punktZuKomma = PunktZuKomma;
+    $scope.webService = webService;
+
+
+    var userCallback = function(user) {
+      $scope.user = user;
+      Amount.setAvailable($scope.user.balance);
+      $scope.available = Amount.getAvailable();
+      $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
+
+      // get transactions from this user since we now know they exist
+      var transactionsCallback = function(data) {
+        transactionsService.loadTransactionsJSON(data);
+        // $scope.$apply();
+        var transactions = transactionsService.transactions();
+
+        Stats.resetSpent();
+        Stats.setSpent(transactions);
+        $scope.spentTotal = Amount.getSpentTotal(Stats.all());
+
+
+      };
+      webService.getTransactions().success(transactionsCallback).error(transactionsCallback);
+    }
+    webService.getUser().success(userCallback).error(userCallback);
+  });
+
   $scope.transactionsService = transactionsService;
+  $scope.stats = Stats.all();
+  $scope.spentTotal = Amount.getSpentTotal($scope.stats);
 
-  var userCallback = function(user) {
-    $scope.user = user;
-    Amount.setAvailable($scope.user.balance);
-    $scope.available = KommaPunkt(Amount.getAvailable());
-    $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
 
-    // get transactions from this user since we now know they exist
-    var transactionsCallback = function(data) {
-      transactionsService.loadTransactionsJSON(data);
-      // $scope.$apply();
-    };
-    webService.getTransactions().success(transactionsCallback).error(transactionsCallback);
-  }
-  webService.getUser().success(userCallback).error(userCallback);
 
   angular.element(document).ready(function() {
   	$("#available-moneystack").moneystack({yShift: 10});
     $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
   });
-  $scope.go = function() {
-    $ionicSlideBoxDelegate.next();
-    $state.go('tab.stats', {}, { reload: true });
-  };
 
   $scope.showRequest = function() {
 
@@ -101,7 +111,7 @@ angular.module('starter.controllers', [])
                   answer = true;
                   reason = "";
                   Amount.request(amount);
-                  $scope.available = KommaPunkt(Amount.getAvailable());
+                  $scope.available = $scope.punktZuKomma.parse(Amount.getAvailable());
                   $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
                   $scope.webService.writeBalance();
                 }
@@ -166,17 +176,17 @@ angular.module('starter.controllers', [])
     var alertPopup = $ionicPopup.alert({
       title: 'Bezahlt',
       template: 'Du hast € ' +
-                KommaPunkt(payment) +
+                  $scope.punktZuKomma.parse(payment) +
                 ' für ' +
                 stat.name +
                 ' ausgegeben.'
     });
     Amount.spend(payment);
 
-    $scope.available = KommaPunkt(Amount.getAvailable());
+    $scope.available = Amount.getAvailable();
     $scope.webService.writeBalance();
     Stats.spend(stat.id, payment);
-    $scope.spentTotal = KommaPunkt(Amount.getSpentTotal($scope.stats));
+    $scope.spentTotal = Amount.getSpentTotal($scope.stats);
 
     //var x = $(".spentTotal").eq(0).position().left;
     //var y = $(".spentTotal").eq(0).position().top;
@@ -191,62 +201,102 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('HistoryCtrl', function($scope, $state, $ionicSlideBoxDelegate, transactionsService) {
+.controller('HistoryCtrl', function($scope, $state, $ionicSlideBoxDelegate, Months, transactionsService) {
    $scope.platform = ionic.Platform;
    var date = new Date();
-   // $scope.currDate = Months.getMonth(date.getMonth()) + " " + date.getFullYear();
+    $scope.currDate = Months.getMonth(date.getMonth()) + " " + date.getFullYear();
   $scope.transactionsService = transactionsService;
 
 })
-.controller('StatsCtrl', function($scope, $state, $ionicSlideBoxDelegate,Amount, Stats, Months) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
+.controller('StatsCtrl', function($scope, $state, $ionicSlideBoxDelegate,Amount, Stats, Months, transactionsService, PunktZuKomma) {
+
   $scope.platform = ionic.Platform;
   $scope.Math = window.Math;
-  $scope.stats = Stats.all();
-  $scope.available = Amount.getAvailable();
-  $scope.spentTotal = Amount.getSpentTotal($scope.stats);
-  $scope.stats = Stats.getHeights($scope.spentTotal, $scope.available);
 
   var date = new Date();
   $scope.currDate = Months.getMonth(date.getMonth()) + " " + date.getFullYear();
 
 
-  $scope.remove = function(stats) {
-    Stats.remove(stats);
-  };
-
-  $scope.dash = function() {
-    $ionicSlideBoxDelegate.previous();
-    $state.go('tab.dash');
-  };
-
   $scope.$on('$ionicView.enter', function() {
 
-    $(".box").show();
-    $('.child').delay(1200).fadeIn(400);
+    var bottom = 0;
+    var len = $("#list .item-elem").length;
+    var height_total = 0;
+    var height_ausgaben = 0;
 
-    /*
-    //$('.list').last('.item-elem').find('.box').addClass('highlight'); //.animate({maxheight:"200px"}, 1000, function(){});
-    $("#box0").show();
-    $("#box1").show();
-    $("#box2").show();
-    $("#box3").show();
-    $("#box4").show();
-    $("#box5").show();
-    $("#box6").show();
-    $("#box--empty").show();*/
+    $("#list .item-elem").each(function(index, element) {
+      //Hoehe holen
+      var height = $(this).data('target');
+
+      //Bottom ist der Startwert fuer das Element
+      $(this).css("bottom", bottom);
+
+      if(index == len - 2) {
+        $('#line').css("bottom", bottom);
+      };
+
+
+      /* Animation; jede Animation wird verzoegert ausgeloest;
+      *  um das linear auszufuehren, wird das mit dem jeweiligen Index multipliziert
+      * (bei 400, 800, 1200 sek. eine Animation)
+      */
+      $(this).delay(400*index).animate({
+        'height' : height + "px"
+      },
+        {
+          duration: 500,
+          complete: function() {
+            //Text + Icons werden direkt nach der Animation eingeblendet
+            $(this).find(".child").show();
+
+            if(index == len - 2) {
+              $('#line').show();
+              $(".ausgaben").show();
+            };
+
+            if(index == len - 1) {
+              $(".total").show();
+            };
+          },
+        });
+      //Startwert fuer das naechste Element erhoehen
+      bottom += parseFloat(height);
+
+      if(index == len - 2) {
+        height_ausgaben = bottom - 5;
+        $(".ausgaben").css("bottom", height_ausgaben);
+      };
+
+      if(index == len - 1) {
+        height_total = bottom - 5;
+        $(".total").css("bottom", height_total);
+      };
+
+    });
+
+
 
   });
 
   $scope.$on('$ionicView.beforeEnter', function() {
-    $(".box").hide();
-    $('.child').hide();
+
+    $scope.punktZuKomma = PunktZuKomma;
+
+    $scope.stats = Stats.all();
+    $scope.available = Amount.getAvailable();
+    $scope.spentTotal = Amount.getSpentTotal($scope.stats);
+    $scope.stats = Stats.getHeights($scope.spentTotal, $scope.available);
+
+    $("#list .item-elem").each(function(key, bar) {
+          /* Hoehe und Startwert (=bottom) muessen jedes Mal zurueck gesetzt werden,
+          *  damit die Animation wieder von vorne beginnt, wenn der Tab wieder geoeffnet wird
+          */
+          $('#line').hide();
+          $(".ausgaben").hide();
+          $(".total").hide();
+          $(this).css("height", "0px");
+          $(this).css("bottom", "0px");
+    });
   });
 
 });

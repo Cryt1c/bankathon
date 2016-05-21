@@ -1,7 +1,7 @@
 angular.module('starter.services', [])
 
 .factory('Amount', function() {
-  var available = 40.00;
+  var available = 0.00;
   var spentTotal = 0.00;
   var requestAmount = 10;
   return {
@@ -12,11 +12,10 @@ angular.module('starter.services', [])
       available = newValue;
     },
     getSpentTotal: function(stats) {
-      var temp = 0;
+      spentTotal = 0;
       for (var i = 0; i < stats.length; i++) {
-        temp += stats[i].spent;
+        spentTotal += stats[i].spent;
       }
-      spentTotal = temp;
       return spentTotal;
     },
     spend: function(spent) {
@@ -69,7 +68,7 @@ angular.module('starter.services', [])
   var stats = [{
     id: 0,
     name: 'Essen',
-    spent: 17.27,
+    spent: 0.00,
     file: 'food.png',
     color: '#38D42F',
     height: '50',
@@ -78,7 +77,7 @@ angular.module('starter.services', [])
   }, {
     id: 1,
     name: 'Spaß',
-    spent: 8.98,
+    spent: 0.00,
     file: 'spass.png',
     color: '#0D7DBF',
     height: '50',
@@ -88,7 +87,7 @@ angular.module('starter.services', [])
   }, {
     id: 2,
     name: 'Sport',
-    spent: 12.03,
+    spent: 0.00,
     file: 'sport.png',
     color: '#FFE910',
     height: '50',
@@ -97,7 +96,7 @@ angular.module('starter.services', [])
   }, {
     id: 3,
     name: 'Schulsachen',
-    spent: 15.30,
+    spent: 0.00,
     file: 'schule.png',
     color: '#FFA212',
     height: '50',
@@ -106,7 +105,7 @@ angular.module('starter.services', [])
   }, {
     id: 4,
     name: 'Kleidung',
-    spent: 11.20,
+    spent: 0.00,
     file: 'kleidung.png',
     color: '#ED3338',
     height: '50',
@@ -115,7 +114,7 @@ angular.module('starter.services', [])
   }, {
     id: 5,
     name: 'Telefon',
-    spent: 10.00,
+    spent: 0.00,
     file: 'telefon.png',
     color: '#AA6ADF',
     height: '50',
@@ -124,7 +123,7 @@ angular.module('starter.services', [])
   }, {
     id: 6,
     name: 'Geschenke',
-    spent: 7.98,
+    spent: 0.00,
     file: 'geschenk.png',
     color: '#05DEE0',
     height: '50',
@@ -136,10 +135,27 @@ angular.module('starter.services', [])
     all: function() {
       return stats;
     },
+    setSpent: function(transactions) {
+      for(var i = 0; i < transactions.length; i++) {
+        var category = transactions[i].category;
+        stats[category].spent += transactions[i].amount;
+      }
+    },
+    resetSpent: function() {
+      for(var i = 0; i < stats.length; i++) {
+        stats[i].spent = 0;
+      }
+    },
     getHeights: function(spentTotal, available) {
-
       for (var i = 0; i < stats.length; i++) {
-          stats[i].height = stats[i].spent/(spentTotal+available)*500;
+           var temp = stats[i].spent/(spentTotal+available)*500;
+
+        if (temp > 0 && temp < 25) {
+          temp = 25;
+        }
+        else {
+          stats[i].height = temp;
+        }
       }
       return stats;
     },
@@ -190,5 +206,14 @@ angular.module('starter.services', [])
     }
   };
 
+})
+
+.factory('PunktZuKomma', function() {
+  return {
+    parse: function(value) {
+      var text = parseFloat(value).toFixed(2).toString().replace(".",",");
+      return text;
+    },
+  };
 });
 

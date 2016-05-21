@@ -120,8 +120,11 @@ h2, p {
 }
 
 .item-elem {
-  padding: 0px;
   border: none;
+  text-align: center;
+  padding: 0px;
+  display: none;
+  height: 0px;
 }
 
 .item-elem p {
@@ -138,30 +141,89 @@ h2, p {
   to {max-height:200px;}
 }
 
-
-.box {
-  display: none;
-  width: 76%;
-  margin-left: 12%;
-  max-height: 500px;
+.border {
+  height: 520px;
+  width: 280px;
   border-right: 15px solid #000000;
   border-left: 15px solid #000000;
-  margin: auto;
-  position:relative;
-  animation-name: height;
-  animation-duration: 2s;
-  animation-timing-function: ease-in-out;
+  border-bottom: 15px solid #000000;
+  border-bottom-right-radius: 60px;
+  border-bottom-left-radius: 60px;
+  margin-bottom: 8px;
+  z-index: 100;
+  margin-left: 15px;
+  top: 50px;
+  position: absolute;
 }
 
-.child {
+hr {
   display: none;
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 85%;
+  height: 4px;
+  color: red;
+  width: 285px;
+  bottom: 0px;
+  z-index: 100;
+  background-color: red;
+  margin-top: 0px;
+  margin-bottom: -6px;
+  margin-left: -15px;
+  padding: 0px;
+  border: none;
+}
+
+.anzeige {
+  float: right;
+  position: relative;
+  height: 520px;
+  width: 80px;
+  top: 44px;
+}
+
+.anzeige .total {
+  display: none;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
   margin: auto;
+}
+
+.anzeige .ausgaben {
+  display: none;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  margin: auto;
+}
+
+
+#list .list {
+  position: relative;
+  height: 500px;
+  width: 260px;
+  top: 60px;
+  left: 25px;
+}
+
+.item-elem {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  margin: auto;
+}
+
+.item-elem:nth-child(1) {
+  border-bottom: 15px solid transparent;
+  border-bottom-right-radius: 60px;
+  border-bottom-left-radius: 60px;
+}
+
+
+.child {
+
+}
+
+.child a {
   color: #000;
   text-decoration: none;
   text-align: center;
@@ -172,7 +234,42 @@ h2, p {
   font-size: 25px;
   padding-left: 10px;
 }
+.child__name {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  padding-left: 55px;
+}
 
+.child__betrag {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  -moz-align-items: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  padding-left: 165px;
+}
+
+
+/*
 ion-list ion-item:nth-child(1) .box {
   margin-top: 50px;
 }
@@ -183,8 +280,7 @@ ion-list ion-item:nth-last-child(1) .box {
   border-bottom-right-radius: 60px;
   border-bottom-left-radius: 60px;
   margin-bottom: 8px;
-
-}
+*/
 
 .cat-elem {
   float:left;
