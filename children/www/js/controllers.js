@@ -111,7 +111,7 @@ angular.module('starter.controllers', [])
                   answer = true;
                   reason = "";
                   Amount.request(amount);
-                  $scope.available = $scope.punktZuKomma.parse(Amount.getAvailable());
+                  $scope.available = Amount.getAvailable();
                   $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
                   $scope.webService.writeBalance();
                 }
@@ -201,14 +201,23 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('HistoryCtrl', function($scope, $state, $ionicSlideBoxDelegate, Months, transactionsService) {
+.controller('HistoryCtrl', function($scope, $state, $ionicSlideBoxDelegate, Amount, Stats, Months, transactionsService, PunktZuKomma) {
    $scope.platform = ionic.Platform;
    var date = new Date();
     $scope.currDate = Months.getMonth(date.getMonth()) + " " + date.getFullYear();
-  $scope.transactionsService = transactionsService;
+    $scope.transactionsService = transactionsService;
+  $scope.available = Amount.getAvailable();
+
+
+  $scope.$on('$ionicView.beforeEnter', function() {
+     $scope.punktZuKomma = PunktZuKomma;
+      $scope.available = Amount.getAvailable();
+  });
 
 })
-.controller('StatsCtrl', function($scope, $state, $ionicSlideBoxDelegate,Amount, Stats, Months, transactionsService, PunktZuKomma) {
+
+
+.controller('StatsCtrl', function($scope, $state, $ionicSlideBoxDelegate, Amount, Stats, Months, transactionsService, PunktZuKomma) {
 
   $scope.platform = ionic.Platform;
   $scope.Math = window.Math;
@@ -231,7 +240,7 @@ angular.module('starter.controllers', [])
       //Bottom ist der Startwert fuer das Element
       $(this).css("bottom", bottom);
 
-      if(index == len - 2) {
+      if(index == len - 1) {
         $('#line').css("bottom", bottom);
       };
 
@@ -263,12 +272,12 @@ angular.module('starter.controllers', [])
       bottom += parseFloat(height);
 
       if(index == len - 2) {
-        height_ausgaben = bottom - 5;
+        height_ausgaben = bottom;
         $(".ausgaben").css("bottom", height_ausgaben);
       };
 
       if(index == len - 1) {
-        height_total = bottom - 5;
+        height_total = bottom;
         $(".total").css("bottom", height_total);
       };
 
@@ -286,6 +295,16 @@ angular.module('starter.controllers', [])
     $scope.available = Amount.getAvailable();
     $scope.spentTotal = Amount.getSpentTotal($scope.stats);
     $scope.stats = Stats.getHeights($scope.spentTotal, $scope.available);
+
+    var height_available = $scope.available/($scope.available + $scope.spentTotal)*480;
+
+    if(height_available < 25) {
+      $scope.height_available = 25;
+    }
+    else {
+      $scope.height_available = height_available;
+    }
+
 
     $("#list .item-elem").each(function(key, bar) {
           /* Hoehe und Startwert (=bottom) muessen jedes Mal zurueck gesetzt werden,

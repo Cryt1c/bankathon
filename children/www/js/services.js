@@ -71,7 +71,7 @@ angular.module('starter.services', [])
     spent: 0.00,
     file: 'food.png',
     color: '#38D42F',
-    height: '50',
+    height: '25',
     icon_android: 'ion-icecream',
     icon_ios: 'ion-ios-nutrition'
   }, {
@@ -80,7 +80,7 @@ angular.module('starter.services', [])
     spent: 0.00,
     file: 'spass.png',
     color: '#0D7DBF',
-    height: '50',
+    height: '25',
     icon_android: 'ion-android-happy',
     icon_ios: 'ion-happy-outline'
 
@@ -90,7 +90,7 @@ angular.module('starter.services', [])
     spent: 0.00,
     file: 'sport.png',
     color: '#FFE910',
-    height: '50',
+    height: '25',
     icon_android: 'ion-android-bicycle',
     icon_ios: 'ion-ios-tennisball'
   }, {
@@ -99,7 +99,7 @@ angular.module('starter.services', [])
     spent: 0.00,
     file: 'schule.png',
     color: '#FFA212',
-    height: '50',
+    height: '25',
     icon_android: 'ion-university',
     icon_ios: 'ion-university'
   }, {
@@ -108,7 +108,7 @@ angular.module('starter.services', [])
     spent: 0.00,
     file: 'kleidung.png',
     color: '#ED3338',
-    height: '50',
+    height: '25',
     icon_android: 'ion-tshirt',
     icon_ios: 'ion-tshirt'
   }, {
@@ -117,7 +117,7 @@ angular.module('starter.services', [])
     spent: 0.00,
     file: 'telefon.png',
     color: '#AA6ADF',
-    height: '50',
+    height: '25',
     icon_android: 'ion-android-call',
     icon_ios: 'ion-ios-telephone'
   }, {
@@ -126,7 +126,7 @@ angular.module('starter.services', [])
     spent: 0.00,
     file: 'geschenk.png',
     color: '#05DEE0',
-    height: '50',
+    height: '25',
     icon_android: 'ion-heart',
     icon_ios: 'ion-heart'
   }];
@@ -148,10 +148,10 @@ angular.module('starter.services', [])
     },
     getHeights: function(spentTotal, available) {
       for (var i = 0; i < stats.length; i++) {
-           var temp = stats[i].spent/(spentTotal+available)*500;
+           var temp = stats[i].spent/(spentTotal+available)*480;
 
         if (temp > 0 && temp < 25) {
-          temp = 25;
+          stats[i].height = 25;
         }
         else {
           stats[i].height = temp;

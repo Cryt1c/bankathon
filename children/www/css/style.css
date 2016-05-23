@@ -219,10 +219,6 @@ hr {
 }
 
 
-.child {
-
-}
-
 .child a {
   color: #000;
   text-decoration: none;
@@ -327,3 +323,55 @@ ion-list ion-item:nth-last-child(1) .box {
 .requestButton {
   display: none !important;
 }
+
+
+
+
+/*
+ Transactions
+
+*/
+
+.transaction_list {}
+
+
+.transaction_elem {}
+
+
+.transaction_name {
+  width: 30%;
+  float: left;
+}
+
+.transaction_cat {
+  width: 10%;
+  float: left;
+  font-size: 25px;
+  padding: 5px;
+  margin: 5px;
+  color: #000;
+}
+
+
+.transaction_nw {
+  width: 25%;
+  float: left;
+  text-align: center;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border: 1px solid #ddd;
+  margin-left: 5%;
+  margin-right: 5%;
+
+  -moz-border-radius: 100px / 50px;
+  border-radius: 100px / 50px;
+}
+
+.transaction_amount {
+  width: 20%;
+  float: left;
+  text-align: center;
+  padding-top: 8px;
+
+}
+
