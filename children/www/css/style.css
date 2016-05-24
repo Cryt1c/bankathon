@@ -65,7 +65,7 @@ h2, p {
   font-size: 20px;
 }
 
-.small_button{
+.button-small {
   line-height: 5px !important;
   min-height: 24px !important;
   font-size: 12px !important;
@@ -324,7 +324,7 @@ ion-list ion-item:nth-last-child(1) .box {
   height: 10px;
 }
 
-.requestButton {
+.button-hidden {
   display: none !important;
 }
 
