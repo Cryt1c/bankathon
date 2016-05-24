@@ -109,7 +109,6 @@ angular.module('starter.controllers', [])
                     reason = "";
                     Amount.request(amount);
                     $scope.available = Amount.getAvailable();
-                    $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
                     $scope.webService.writeBalance();
                   }
                   else {
@@ -119,6 +118,9 @@ angular.module('starter.controllers', [])
                   var alertPopup = $ionicPopup.alert({
                     title: (answer ? '"Hallo Michi, weil du so brav warst, darfst du dir  ' + $scope.data.message + ' kaufen."' : reason),
                     template: (answer ? '<h2 style="color: green"> + ' + $scope.data.amount + '€ </h2>' : "")
+                  });
+                  alertPopup.then(function () {
+                    $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
                   });
                 }, 1000);
               }
@@ -200,13 +202,13 @@ angular.module('starter.controllers', [])
 
         //var x = $(".spentTotal").eq(0).position().left;
         //var y = $(".spentTotal").eq(0).position().top;
-
         //console.log(x);
         //console.log(y);
-
         //$("#available-moneystack").moneystack("deductAndSendAmountToLocation", payment, {x: x, y: y});
-        $("#available-moneystack").moneystack("setMoney", parseFloat(Amount.getAvailable()));
 
+        alertPopup.then(function () {
+          $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
+        });
       }
     }
   )
