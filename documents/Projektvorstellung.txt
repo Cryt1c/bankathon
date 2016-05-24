@@ -1,0 +1,14 @@
+* (Finaler) Teamname / Projektname: PoMMo - Pocket Money Mobile
+* Namen aller Team-Mitglieder: Marcel Hansemann, Martina Kratky, David Peherstorfer
+* Allgemeine Kurzbeschreibung des Projekts:
+DEUTSCH: (102 Wörter)
+PoMMo - Pocket Money Mobile ist eine Anwendung für Kinder und ihre Eltern, bei der das Taschengeld digital von den Eltern zur Verfügung gestellt wird.
+Durch das selbstständige Verwalten des Taschengelds sollen die Kinder den Umgang mit (digitalem) Geld lernen und Verantwortung für ihre Transaktionen übernehmen. Es gibt zwei separate Apps für Eltern und für Kinder, die jeweils mit unterschiedlichen Funktionen ausgestattet sind.
+Die Kinder können in der App mittels NFC bezahlen, bei den Eltern um Geld bitten und sich die Historie anzeigen. Die Eltern haben eine zusammengefasste Darstellung über den Verlauf der Transaktionen, können Geld senden und Einstellungen für die Kinder-App konfigurieren. 
+
+
+
+ENGLISCH: (118 Wörter)
+PoMMo - Pocket Money Mobile is an application for both kids and their parents, in which the allowance from the parents is provided digitally to the kids. 
+Due to the independent managing of their own pocket money the kids should learn how to deal with (digital) money and should take responsibilities for their transactions. There are two separate apps for the parents and the kids which each provide different functions.
+The kids can pay with the app via NFC, ask their parents for money and look at the history of their transactions. Parents have a summarized view of the progress of their kids' transactions, are able to send money to them and configure settings for the kids app. 

@@ -121,7 +121,7 @@ angular.module('starter.controllers', [])
                 }
                 var alertPopup = $ionicPopup.alert({
                   title: (answer ? '"Hallo Michi, weil du so brav warst, darfst du dir  ' + $scope.data.message + ' kaufen."' : reason),
-                  template: (answer ? '<h2 style="color: green"> + € ' + $scope.data.amount + '</h2>' : "")
+                  template: (answer ? '<h2 style="color: green"> + ' + $scope.data.amount + '€ </h2>' : "")
                 });
               }, 1000);
             }
@@ -157,7 +157,7 @@ angular.module('starter.controllers', [])
         title: 'Zahlung bereit',
         template: 'Du kannst jetzt dein Handy ans Terminal halten und ' +
                 stat.name +
-                ' an der Kassa bezahlen.'
+                ' an der Kassa bezahlen. <br><img src="../img/icon_nfc.png" class="icon icon_nfc"/>'
     });
     setTimeout(function(){ $scope.showPayResult(stat); }, 1000);
     setTimeout(function(){ alertPopup.close(); }, 2000);
@@ -175,11 +175,12 @@ angular.module('starter.controllers', [])
 
     var alertPopup = $ionicPopup.alert({
       title: 'Bezahlt',
-      template: 'Du hast € ' +
+      template: 'Du hast ' +
                   $scope.punktZuKomma.parse(payment) +
-                ' für ' +
+                ' € für ' +
                 stat.name +
-                ' ausgegeben.'
+                ' ausgegeben. <br> <i class="icon ion-checkmark-round"/><br>' +
+                'Hast du diesen Einkauf gebraucht oder gewollt?'
     });
     Amount.spend(payment);
 
@@ -272,19 +273,10 @@ angular.module('starter.controllers', [])
       bottom += parseFloat(height);
 
       if(index == len - 2) {
-        height_ausgaben = bottom;
+        height_ausgaben = bottom-5;
         $(".ausgaben").css("bottom", height_ausgaben);
       };
-
-      if(index == len - 1) {
-        height_total = bottom;
-        $(".total").css("bottom", height_total);
-      };
-
     });
-
-
-
   });
 
   $scope.$on('$ionicView.beforeEnter', function() {

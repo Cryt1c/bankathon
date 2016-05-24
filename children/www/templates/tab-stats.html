@@ -21,10 +21,10 @@
     </div>
     <div class="anzeige">
       <p class="total">
-        € {{punktZuKomma.parse(Math.round(spentTotal+available))}}
+        {{punktZuKomma.parse(Math.round(spentTotal+available))}} €
       </p>
       <p class="ausgaben">
-        € {{punktZuKomma.parse(Math.round(spentTotal))}}
+        {{punktZuKomma.parse(Math.round(spentTotal))}} €
       </p>
     </div>
 
@@ -38,16 +38,16 @@
                     {{stat.name}}:
                   </span>
                     <span class="child__betrag">
-                      € {{punktZuKomma.parse(stat.spent)}}
+                      {{punktZuKomma.parse(stat.spent)}} €
                   </span>
               <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon"></i>
             </a>
           </div>
       </ion-item>
-      <ion-item class="item-elem" style="background-color:white;" data-target="{{height_available}}">
+      <ion-item class="item-elem" style="background-color:white; margin-bottom: 10px;" data-target="{{height_available}}">
         <div class="child">
           <span class="child__name">Taschengeld: </span>
-          <span class="child__betrag">€ {{punktZuKomma.parse(available)}}</span>
+          <span class="child__betrag">{{punktZuKomma.parse(available)}} €</span>
         </div>
       </ion-item>
     </ion-list>
