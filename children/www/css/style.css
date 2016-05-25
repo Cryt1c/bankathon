@@ -95,10 +95,6 @@ h2, p {
   margin: auto;
 }
 
-.icon_nfc {
-  text-align:center;
-}
-
 #spent {
   margin-bottom: 10px;
   margin-top: 5px;
@@ -328,12 +324,24 @@ ion-list ion-item:nth-last-child(1) .box {
   display: none !important;
 }
 
+/*
+  Pay Popup
+*/
 
+.icon_nfc {
+  display: block;
+  margin: 0 auto;
+}
 
+.icon_check {
+  width: 15%;
+  display: block;
+  margin: 0 auto;
+
+}
 
 /*
  Transactions
-
 */
 
 .transaction_list {}

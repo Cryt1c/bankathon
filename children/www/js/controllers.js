@@ -20,7 +20,7 @@ angular.module('starter.controllers', [])
               "amount": tTrans.amount,
               "category": tTrans.category,
               "child_id": userId,
-              "is_need": false
+              "is_need": tTrans.is_need
             });
           //flag as already written
           tTrans.writtenToServer = true;
@@ -107,7 +107,7 @@ angular.module('starter.controllers', [])
                   var answer;
                   var reason;
                   var amount = parseInt($scope.data.amount);
-                  if (amount <= 10) {
+                  if (amount <= 200) {
                     answer = true;
                     reason = "";
                     Amount.request(amount);
@@ -168,7 +168,9 @@ angular.module('starter.controllers', [])
           title: 'Zahlung bereit',
           template: 'Du kannst jetzt dein Handy ans Terminal halten und ' +
           stat.name +
-          ' an der Kassa bezahlen. <br><img src="../img/icon_nfc.png" class="icon icon_nfc"/>',
+          ' an der Kassa bezahlen.' +
+          ' <div class="spacer"></div>' +
+          '<img src="../img/icon_nfc.png" class="icon icon_nfc"/>',
           buttons: [
             {
               text: 'Zahlung abbrechen',
@@ -195,15 +197,11 @@ angular.module('starter.controllers', [])
         var payment = parseFloat(parseFloat(Math.random() * 17.40).toFixed(2)); //2.50;
 
         $scope.available = Amount.getAvailable();
-        if(payment > $scope.available) {
-          var alertPopup = $ionicPopup.alert ({title: 'Du hast nicht mehr genug Taschengeld'});
+        if (payment > $scope.available) {
+          var alertPopup = $ionicPopup.alert({title: 'Du hast nicht mehr genug Taschengeld übrig.'});
           return;
         }
 
-        $scope.transactionsService.createAndAddTransaction(randomName, payment, stat.id);
-        // write to server immediately
-        $scope.webService.writeTransactions();
-        // also write new balance -- TODO you'd actually want to postpone this and relegate to a regular sync function
 
         var resultPopup = $ionicPopup.alert({
           title: 'Bezahlt',
@@ -211,7 +209,9 @@ angular.module('starter.controllers', [])
           $scope.punktZuKomma.parse(payment) +
           ' € für ' +
           stat.name +
-          ' ausgegeben. <br> <i class="icon ion-checkmark-round"/><br>' +
+          ' ausgegeben.' +
+          '<div class="spacer"></div>' +
+          '<img src="../img/icon_check.png" class="icon icon_check"/>' +
           '<div class="spacer"></div>' +
           'Hast du diesen Einkauf gebraucht oder gewollt?',
           buttons: [
@@ -219,6 +219,11 @@ angular.module('starter.controllers', [])
               text: 'Gebraucht',
               type: 'button-positive',
               onTap: function () {
+                $scope.transactionsService.createAndAddTransaction(randomName, payment, stat.id, true);
+                console.log("is_need true");
+                // write to server immediately
+                $scope.webService.writeTransactions();
+                // also write new balance -- TODO you'd actually want to postpone this and relegate to a regular sync function
 
               }
             },
@@ -226,11 +231,16 @@ angular.module('starter.controllers', [])
               text: 'Gewollt',
               type: 'button-positive',
               onTap: function () {
-
+                $scope.transactionsService.createAndAddTransaction(randomName, payment, stat.id, false);
+                console.log("is_need false");
+                // write to server immediately
+                $scope.webService.writeTransactions();
+                // also write new balance -- TODO you'd actually want to postpone this and relegate to a regular sync function
               }
             }
           ]
         });
+
         Amount.spend(payment);
 
         $scope.available = Amount.getAvailable();
