@@ -95,7 +95,10 @@ angular.module('starter.controllers', [])
           title: 'Geld anfordern',
           scope: $scope,
           buttons: [
-            {text: 'Abbrechen'},
+            {
+              text: 'Abbrechen',
+              type: 'button-positive'
+            },
             {
               text: '<b>OK</b>',
               type: 'button-ok button-hidden button-positive',
@@ -159,39 +162,74 @@ angular.module('starter.controllers', [])
       };
 
       $scope.showPayOk = function (stat, myPopup) {
+        var payment = true;
         $scope.myPopup.close();
-        var alertPopup = $ionicPopup.alert({
+        var payPopup = $ionicPopup.alert({
           title: 'Zahlung bereit',
           template: 'Du kannst jetzt dein Handy ans Terminal halten und ' +
           stat.name +
-          ' an der Kassa bezahlen. <br><img src="../img/icon_nfc.png" class="icon icon_nfc"/>'
+          ' an der Kassa bezahlen. <br><img src="../img/icon_nfc.png" class="icon icon_nfc"/>',
+          buttons: [
+            {
+              text: 'Zahlung abbrechen',
+              type: 'button-positive',
+              onTap: function () {
+                payment = false;
+                $scope.myPopup.close();
+              }
+            }
+          ]
         });
         setTimeout(function () {
-          $scope.showPayResult(stat);
+          if (payment) {
+            payPopup.close();
+            $scope.showPayResult(stat);
+          }
         }, 1000);
-        setTimeout(function () {
-          alertPopup.close();
-        }, 2000);
       };
+
       $scope.showPayResult = function (stat) {
         //add transaction
         var recipientNames = ["Spar", "Billa", "Libro", "Amazon", "Mensa", "Der Mann"];
         var randomName = recipientNames[Math.floor(Math.random() * recipientNames.length)];
         var payment = parseFloat(parseFloat(Math.random() * 17.40).toFixed(2)); //2.50;
 
+        $scope.available = Amount.getAvailable();
+        if(payment > $scope.available) {
+          var alertPopup = $ionicPopup.alert ({title: 'Du hast nicht mehr genug Taschengeld'});
+          return;
+        }
+
         $scope.transactionsService.createAndAddTransaction(randomName, payment, stat.id);
         // write to server immediately
         $scope.webService.writeTransactions();
         // also write new balance -- TODO you'd actually want to postpone this and relegate to a regular sync function
 
-        var alertPopup = $ionicPopup.alert({
+        var resultPopup = $ionicPopup.alert({
           title: 'Bezahlt',
           template: 'Du hast ' +
           $scope.punktZuKomma.parse(payment) +
           ' € für ' +
           stat.name +
           ' ausgegeben. <br> <i class="icon ion-checkmark-round"/><br>' +
-          'Hast du diesen Einkauf gebraucht oder gewollt?'
+          '<div class="spacer"></div>' +
+          'Hast du diesen Einkauf gebraucht oder gewollt?',
+          buttons: [
+            {
+              text: 'Gebraucht',
+              type: 'button-positive',
+              onTap: function () {
+
+              }
+            },
+            {
+              text: 'Gewollt',
+              type: 'button-positive',
+              onTap: function () {
+
+              }
+            }
+          ]
         });
         Amount.spend(payment);
 
@@ -206,7 +244,7 @@ angular.module('starter.controllers', [])
         //console.log(y);
         //$("#available-moneystack").moneystack("deductAndSendAmountToLocation", payment, {x: x, y: y});
 
-        alertPopup.then(function () {
+        resultPopup.then(function () {
           $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
         });
       }
