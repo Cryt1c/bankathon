@@ -1,9 +1,31 @@
 angular.module('starter.services', [])
 
+  .factory('Kids', function() {
+
+    var kids = [{
+      id: 0,
+      name: 'Michael'
+    }, {
+      id: 1,
+      name: 'Sophie'
+    }];
+    var kidsNum = kids.length;
+
+    return {
+      getAll: function () {
+        return kids;
+      },
+      getNum: function(kids) {
+        return kids.length;
+      }
+    };
+  })
+
+
   .factory('Amount', function () {
     var available = 0.00;
     var spentTotal = 0.00;
-    var requestAmount = 10;
+
     return {
       getAvailable: function () {
         return available;
@@ -18,172 +40,49 @@ angular.module('starter.services', [])
         }
         return spentTotal;
       },
-      spend: function (spent) {
-        spentTotal += spent;
-        available -= spent;
-      },
-      request: function (amount) {
-        available += amount;
-      }
-    };
-  })
-  .service('transactionsService', function () {
-    var _transactions = [];
-
-    this.transactions = function () {
-      return _transactions;
-    };
-
-    this.createTransaction = function (recipient, amount, category, is_need) {
-      return {recipient: recipient, amount: amount, category: category, is_need: is_need, writtenToServer: false};
-    };
-
-    this.addTransaction = function (transaction) {
-      _transactions.push(transaction);
-    };
-
-    this.loadTransactionsJSON = function (existingTransactions) {
-      //_transactions = existingTransactions;
-      _transactions = [];
-      for (var i = 0; i < existingTransactions.length; i++) {
-        var thisT = existingTransactions[i];
-        var trans = this.createAndAddTransaction(thisT.recipient, thisT.amount, thisT.category);
-        trans.writtenToServer = true; // flag this as already being written to the server
-      }
-
-    };
-
-    this.createAndAddTransaction = function (recipient, amount, category, is_need) {
-      var trans = this.createTransaction(recipient, amount, category, is_need);
-      trans.writtenToServer = false;
-      this.addTransaction(trans);
-      return trans;
-    };
-
-    this.all = function () {
-      return _transactions;
-    };
-
-    this.get = function (index) {
-      return _transactions[index];
     };
   })
 
-  .factory('Stats', function () {
-    // Might use a resource here that returns a JSON array
-    var nextBuy = -1;
-    // Some fake testing data
+  .factory('Categories', function () {
+
     var stats = [{
       id: 0,
       name: 'Essen',
-      spent: 0.00,
-      file: 'food.png',
-      color: '#38D42F',
-      height: '25',
-      icon_android: 'ion-icecream',
-      icon_ios: 'ion-ios-nutrition'
+      spent: 0.00
     }, {
       id: 1,
       name: 'Spaß',
-      spent: 0.00,
-      file: 'spass.png',
-      color: '#0D7DBF',
-      height: '25',
-      icon_android: 'ion-android-happy',
-      icon_ios: 'ion-happy-outline'
-
+      spent: 0.00
     }, {
       id: 2,
       name: 'Sport',
-      spent: 0.00,
-      file: 'sport.png',
-      color: '#FFE910',
-      height: '25',
-      icon_android: 'ion-android-bicycle',
-      icon_ios: 'ion-ios-tennisball'
+      spent: 0.00
     }, {
       id: 3,
       name: 'Schulsachen',
-      spent: 0.00,
-      file: 'schule.png',
-      color: '#FFA212',
-      height: '25',
-      icon_android: 'ion-university',
-      icon_ios: 'ion-university'
+      spent: 0.00
     }, {
       id: 4,
       name: 'Kleidung',
-      spent: 0.00,
-      file: 'kleidung.png',
-      color: '#ED3338',
-      height: '25',
-      icon_android: 'ion-tshirt',
-      icon_ios: 'ion-tshirt'
+      spent: 0.00
     }, {
       id: 5,
       name: 'Telefon',
-      spent: 0.00,
-      file: 'telefon.png',
-      color: '#AA6ADF',
-      height: '25',
-      icon_android: 'ion-android-call',
-      icon_ios: 'ion-ios-telephone'
+      spent: 0.00
     }, {
       id: 6,
       name: 'Geschenke',
-      spent: 0.00,
-      file: 'geschenk.png',
-      color: '#05DEE0',
-      height: '25',
-      icon_android: 'ion-heart',
-      icon_ios: 'ion-heart'
+      spent: 0.00
     }];
 
     return {
       all: function () {
         return stats;
       },
-      setSpent: function (transactions) {
-        for (var i = 0; i < transactions.length; i++) {
-          var category = transactions[i].category;
-          stats[category].spent += transactions[i].amount;
-        }
-      },
       resetSpent: function () {
         for (var i = 0; i < stats.length; i++) {
           stats[i].spent = 0;
         }
-      },
-      getHeights: function (spentTotal, available) {
-        for (var i = 0; i < stats.length; i++) {
-          var temp = stats[i].spent / (spentTotal + available) * 480;
-
-          if (temp > 0 && temp < 25) {
-            stats[i].height = 25;
-          }
-          else {
-            stats[i].height = temp;
-          }
-        }
-        return stats;
-      },
-      remove: function (stats) {
-        stats.splice(stats.indexOf(stats), 1);
-      },
-      spend: function (statId, spent) {
-        for (var i = 0; i < stats.length; i++) {
-          if (stats[i].id === parseInt(statId)) {
-            stats[i].spent += spent;
-          }
-        }
-      },
-      get: function (statId) {
-        for (var i = 0; i < stats.length; i++) {
-          if (stats[i].id === parseInt(statId)) {
-            return stats[i];
-          }
-        }
-        return null;
       }
     };
   })

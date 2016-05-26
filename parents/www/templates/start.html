@@ -1,20 +1,32 @@
 <ion-view view-title="Übersicht">
-  <ion-nav-buttons side="primary">
-    <button class="button" ng-click="doSomething()">
-      Bearbeiten
+  <ion-nav-buttons side="left">
+    <button class="button" ng-click="showEditMode()">
+      {{editText}}
     </button>
   </ion-nav-buttons>
-  <ion-nav-buttons side="secondary">
-    <button class="button" ng-click="doSomething()">
+  <ion-nav-buttons side="right">
+    <button class="button"  id="button_logout" ng-click="doSomething()">
       Logout
     </button>
   </ion-nav-buttons>
 
   <ion-content>
-    <ion-list>
-      <ion-item ui-sref="detail">Michael</ion-item>
-      <ion-item ui-sref="detail">Sophie</ion-item>
+    <ion-list class="kids_list" ng-controller="StartCtrl" show-delete="shouldShowDelete" show-reorder="shouldShowReorder">
+      <ion-item class="item-icon-right item-elem" ui-sref="detail" ng-repeat="kid in kids" ng-controller="StartCtrl" ng-click="setKid(kid.name)">
+        <div class="name"> {{kid.name}} </div>
+        <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon icon_blue"></i>
+
+        <ion-delete-button class="ion-minus-circled" ng-click="onKidDelete(kid)">
+        </ion-delete-button>
+        <ion-reorder-button class="ion-navicon" on-reorder="reorderKid(kid, $fromIndex, $toIndex)">
+        </ion-reorder-button>
+      </ion-item>
     </ion-list>
+    <button id="add_kid" ng-click="showAddChangeDialog()">
+      <i class="icon ion-android-add-circle icon_blue"></i>
+      <p class="add_title">Kind hinzufügen</p>
+    </button>
+
 
   </ion-content>
 </ion-view>

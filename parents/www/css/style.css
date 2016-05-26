@@ -1,1 +1,62 @@
-/* Empty. Add your own CSS if you like */
+.bar-positive button {
+  border: none;
+}
+
+
+.name {
+  text-align: center;
+  font-size: 20px;
+}
+
+.icon_blue {
+  color:#387EF5;
+}
+
+
+.kids_list .list {
+  padding-top: 150px;
+}
+
+.kids_list .item-elem {
+  padding: 20px;
+}
+
+#add_kid {
+  font-size: 20px;
+  margin-left: 10px;
+  margin-top: 20px;
+  display: none;
+  border: none;
+  background: none;
+}
+
+#add_kid i {
+  font-size: 35px;
+  float: left;
+}
+
+#add_kid .add_title {
+  color: #444444;
+  float: left;
+  margin-left: 15px;
+  margin-top: 10px;
+}
+
+
+#add_input {
+  margin-top: 60px;
+  margin-bottom: 60px;
+}
+
+#add_input p {
+  font-size: 16px;
+}
+
+#add_input input {
+  font-size: 16px;
+}
+
+#add_button{
+  width: 75%;
+  margin: auto;
+}
