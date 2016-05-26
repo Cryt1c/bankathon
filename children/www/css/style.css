@@ -313,6 +313,14 @@ ion-list ion-item:nth-last-child(1) .box {
 }
 
 /*
+  Cancel Buttons
+*/
+
+.button-stable {
+  border: 1px solid grey !important;
+}
+
+/*
   Request Popup
 */
 

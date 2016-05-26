@@ -90,14 +90,14 @@ angular.module('starter.controllers', [])
           template: '<label for="amount">Betrag in €</label>' +
           '<input type="number" id="amount" for="slider" ng-model="data.amount">' +
           '<div class="spacer"></div>' +
-          '<label for="message">Grund</label>' +
+          '<label for="message">Grund*</label>' +
           '<input type="text" id="message" ng-model="data.message" required="required" ng-change="changeButton()">',
           title: 'Geld anfordern',
           scope: $scope,
           buttons: [
             {
               text: 'Abbrechen',
-              type: 'button-positive'
+              type: 'button-stable'
             },
             {
               text: '<b>OK</b>',
@@ -155,7 +155,7 @@ angular.module('starter.controllers', [])
           buttons: [
             {
               text: 'Abbrechen',
-              type: 'button-positive'
+              type: 'button-stable'
             }
           ]
         });
@@ -174,7 +174,7 @@ angular.module('starter.controllers', [])
           buttons: [
             {
               text: 'Zahlung abbrechen',
-              type: 'button-positive',
+              type: 'button-stable',
               onTap: function () {
                 payment = false;
                 $scope.myPopup.close();
