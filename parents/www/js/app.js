@@ -1,4 +1,4 @@
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'ngCordova'])
 
   .run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {
@@ -12,6 +12,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         // org.apache.cordova.statusbar required
         StatusBar.hide();
       }
+
+      $cordovaPlugin.toast().then(sucess, error);
     });
   })
 

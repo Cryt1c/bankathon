@@ -1,13 +1,15 @@
 <ion-view view-title="Geld senden">
 
+  <!--
   <ion-nav-buttons side="right">
-    <button class="button" type="submit" form="send-form" ng-click="sendTransaction(form)">
+    <button class="button" ng-form="sendForm" type="submit" ng-click="sendTransaction(sendForm)">
       Senden
     </button>
   </ion-nav-buttons>
+  -->
 
   <ion-content>
-    <form name="send-form" id="send-form" ng-model="form">
+    <form name="sendForm" id="sendForm" ng-model="sendForm">
       <ion-list>
         <ion-item class="item item-input item-stacked-label">
           <p class="input-label">Betrag</p>
@@ -17,7 +19,7 @@
           <p class="input-label">Grund</p>
           <input type="text" placeholder="" name="reason" ng-model="reason" required />
         </ion-item>
-        <button id="add_button" class="button button-block button-positive" ng-click="sendTransaction(form)">
+        <button id="add_button" class="button button-block button-positive" ng-click="sendTransaction(sendForm)">
           Senden
         </button>
 

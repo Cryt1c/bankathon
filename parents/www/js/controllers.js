@@ -1,4 +1,4 @@
-angular.module('starter.controllers', [])
+angular.module('starter.controllers', ['ngCordova'])
 
 .service('kidsService',function(){
   this.selectedKid;
@@ -111,10 +111,6 @@ angular.module('starter.controllers', [])
   $scope.kidsService = kidsService;
 
 
-  $scope.sendTransactions = function(form) {
-
-  }
-
 })
 
 
@@ -124,8 +120,24 @@ angular.module('starter.controllers', [])
 })
 
 
-.controller('SendCtrl', function ($scope, $state) {
+.controller('SendCtrl', function ($scope, $state, $ionicHistory, $cordovaToast, PunktZuKomma) {
   $scope.platform = ionic.Platform;
+
+  $scope.sendTransaction = function(form) {
+
+    var newTransaction = {};
+    newTransaction.amount = form.amount.$modelValue;
+    newTransaction.text = form.reason.$modelValue;
+
+
+    //TODO: send Transaction to backend here; when successful, run the next line of code, otherwise show some error
+
+    //TODO: activate Toast before release (Toast not working in web browser); tested in emulator
+    var msg = PunktZuKomma.parse(newTransaction.amount) + " € gesendet";
+    //$cordovaToast.show(msg,'long','center');
+    $ionicHistory.goBack();
+
+  }
 
 })
 
