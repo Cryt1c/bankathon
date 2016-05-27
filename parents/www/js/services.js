@@ -23,7 +23,7 @@ angular.module('starter.services', [])
 
 
   .factory('Amount', function () {
-    var available = 0.00;
+    var available = 47.00;
     var spentTotal = 0.00;
 
     return {
@@ -48,31 +48,31 @@ angular.module('starter.services', [])
     var stats = [{
       id: 0,
       name: 'Essen',
-      spent: 0.00
+      spent: 15.00
     }, {
       id: 1,
       name: 'Spaß',
-      spent: 0.00
+      spent: 20.00
     }, {
       id: 2,
       name: 'Sport',
-      spent: 0.00
+      spent: 30.00
     }, {
       id: 3,
       name: 'Schulsachen',
-      spent: 0.00
+      spent: 5.00
     }, {
       id: 4,
       name: 'Kleidung',
-      spent: 0.00
+      spent: 15.00
     }, {
       id: 5,
       name: 'Telefon',
-      spent: 0.00
+      spent: 10.00
     }, {
       id: 6,
       name: 'Geschenke',
-      spent: 0.00
+      spent: 20.00
     }];
 
     return {

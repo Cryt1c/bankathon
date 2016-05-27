@@ -60,3 +60,13 @@
   width: 75%;
   margin: auto;
 }
+
+
+.item-text {
+  font-size:17px;
+}
+
+.item-text-info {
+  font-size: 14px;
+  color: #a49e9e;
+}

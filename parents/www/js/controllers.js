@@ -10,7 +10,7 @@ angular.module('starter.controllers', [])
   $scope.kids = Kids.getAll();
 
 
-
+  //Set List to vertical center depending on how many items are in the list
   NumberUpdate = function(){
     var kidsNum = Kids.getNum($scope.kids);
     if(kidsNum == 1) {
@@ -30,11 +30,11 @@ angular.module('starter.controllers', [])
   NumberUpdate();
 
 
-
   $scope.setKid = function(val) {
     kidsService.selectedKid = val;
   };
 
+  //set everything for edit mode
   var editmode = false;
   $scope.editText = 'Bearbeiten';
   $scope.showEditMode = function () {
@@ -68,7 +68,7 @@ angular.module('starter.controllers', [])
     $scope.kids.splice(toIndex, 0, kid);
   };
 
-  // Load the add / change dialog from the given template URL
+  // Load the add dialog from the given template URL
   $ionicModal.fromTemplateUrl('templates/dialog-addKid.html', function(modal) {
     $scope.addDialog = modal;
   }, {
@@ -105,9 +105,15 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('DetailCtrl', function ($scope, $state, kidsService) {
+
+.controller('DetailCtrl', function ($scope, $state, kidsService, Amount, Categories) {
   $scope.platform = ionic.Platform;
   $scope.kidsService = kidsService;
+
+
+  $scope.sendTransactions = function(form) {
+
+  }
 
 })
 

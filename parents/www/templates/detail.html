@@ -1,14 +1,29 @@
 <ion-view view-title="{{kidsService.selectedKid}}">
   <ion-content>
     <ion-list>
-      <ion-item ui-sref="stat">Statistik <br>
+      <ion-item class="item-icon-right" ui-sref="stat">Statistik <br>
       Liniengraph
+        <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon"></i>
+
       </ion-item>
-      <p> Michael hat aktuell: 47,00 € <br>
-      Letzte ÜBerweisung war am 01.05.2016: 15,00 € </p>
-      <ion-item ui-sref="send">Jetzt Geld senden</ion-item>
-      <ion-item ui-sref="order">Dauerauftrag</ion-item>
-      <ion-item ui-sref="historie">Überweisungshistorie</ion-item>
+      <ion-item class="item-icon-right">
+        <div class=item-text-info>
+          Michael hat aktuell: 47,00 € <br>
+          Letzte Überweisung war am 01.05.16: 15,00 €
+        </div>
+      </ion-item>
+      <ion-item class="item-icon-right" ui-sref="send">
+        <div class="item-text">Jetzt Geld senden</div>
+        <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon"></i>
+      </ion-item>
+      <ion-item class="item-icon-right" ui-sref="order">
+        <div class="item-text">Dauerauftrag</div>
+        <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon"></i>
+      </ion-item>
+      <ion-item class="item-icon-right" ui-sref="historie">
+        <div class="item-text">Überweisungshistorie</div>
+        <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon"></i>
+      </ion-item>
     </ion-list>
 
   </ion-content>
