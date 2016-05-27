@@ -262,7 +262,7 @@ angular.module('starter.controllers', [])
   )
 
 
-  .controller('HistoryCtrl', function ($scope, $state, $ionicSlideBoxDelegate, Amount, Stats, Months, transactionsService, PunktZuKomma) {
+  .controller('HistoryCtrl', function ($scope, $state, $ionicSlideBoxDelegate, Amount, Months, transactionsService, PunktZuKomma) {
     $scope.platform = ionic.Platform;
     var date = new Date();
     $scope.currDate = Months.getMonth(date.getMonth()) + " " + date.getFullYear();

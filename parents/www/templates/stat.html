@@ -1,11 +1,28 @@
 <ion-view title="Statistik">
   <ion-content>
+    <label class="item item-input item-select item-stable">
+      <div class="input-label">
+        Monat
+      </div>
+      <select ng-model='data.months'>
+        <option ng-repeat='month in data.months track by month.id' ng-model='month.id'>{{month.name}}</option>
+      </select>
+    </label>
 
-    Dropdown mit Monat
-
+    <label class="item item-input">
+      <span class="input-label">Month</span>
+      <input type="month">
+    </label>
     Liniengraph mit Kontoverlauf
 
     Toogle mit Kategorien - Need/ Want
+
+    <ion-toggle class='item-stable item-toggle' ng-model="data.showNeed">{{data.toggleLabel}}
+    </ion-toggle>
+
+    <canvas id="doughnut" class="chart chart-doughnut"
+            chart-data="data.chartData" chart-labels="data.chartLabels">
+    </canvas>
 
     Pie Chart
 
