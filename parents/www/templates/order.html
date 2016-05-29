@@ -1,21 +1,50 @@
 <ion-view view-title="Dauerauftrag">
 
-  <ion-nav-buttons side="right">
-    <button class="button" ng-click="doSomething()">
-      Senden
-    </button>
-  </ion-nav-buttons>
-
   <ion-content>
-    <p> Input Betrag</p>
-    <p>Input Grund</p>
-    <a href="#/intervall">Intervall</a>
+    <form name="orderForm" ng-model="orderForm">
+      <ion-list class="orderlist">
 
-    <p> Tag: Input Date-Picker (abhängig vom Intervall, 1.-28. bei monatlich; oder 1.-7. bei wöchentlich) </p>
-    <p>Uhrzeit: Hour-Picker Minute-Picker </p>
+        <ion-item class="item item-input item-stacked-label">
+          <p class="input-label">Betrag* in EUR</p>
+          <input type="number" step="0.01" min="0" max="1000" placeholder="0,00" name="amount" ng-model="amount" required />
+        </ion-item>
 
-    <button> Senden </button>
+        <ion-item class="item item-input item-stacked-label">
+          <p class="input-label">Grund *</p>
+          <textarea rows="4" cols="50" placeholder="" name="reason" ng-model="reason" required style="width:95%;"></textarea>
+        </ion-item>
+
+        <ion-item class="item-icon-right item-elem" ui-sref="intervall">
+          <p class="input-label item-label">
+            <div class="input-value-left">Intervall</div>
+            <div class="input-value-right">{{data.intervall.name}}</div>
+          </p>
+          <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon icon_blue"></i>
+        </ion-item>
+
+        <ion-item class="item item-input item-stacked-label">
+          <label class="item item-input item-select item-stable">
+            <div class="input-label">
+              {{data.description}}
+            </div>
+            <select ng-options="day as day.label for day in data.days track by day.id" name="day" ng-model="selectedDay"></select>
+          </label>
+        </ion-item>
+
+        <ion-item class="item item-input item-stacked-label">
+          <p class="input-label">Uhrzeit</p>
+         </ion-item>
+
+
+        <button id="add_button" class="button button-block button-positive" ng-click="saveOrder(orderForm)">
+          Senden
+        </button>
+
+      </ion-list>
+    </form>
 
   </ion-content>
 </ion-view>
+
+
 

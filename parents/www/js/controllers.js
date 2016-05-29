@@ -145,12 +145,14 @@ angular.module('starter.controllers', ['ngCordova'])
       var newTransaction = {};
       newTransaction.amount = form.amount.$modelValue;
       newTransaction.text = form.reason.$modelValue;
+      console.log(newTransaction.amount);
 
 
-      //TODO: send Transaction to backend here; when successful, run the next line of code, otherwise show some error
+      //TODO: send Transaction to backend here; when successful, run the next lines of code, otherwise show some error
 
-      //TODO: activate Toast before release (Toast not working in web browser); tested in emulator
+      //TODO: activate Toast before release (Toast not working in web browser); tested in emulator for ios + android
       var msg = PunktZuKomma.parse(newTransaction.amount) + " € gesendet";
+      console.log(msg);
       //$cordovaToast.show(msg,'long','center');
       $ionicHistory.goBack();
 
@@ -158,14 +160,71 @@ angular.module('starter.controllers', ['ngCordova'])
   })
 
 
-  .controller('OrderCtrl', function ($scope, $state) {
+  .controller('OrderCtrl', function ($scope, $state, Days, $ionicHistory, $cordovaToast, PunktZuKomma, Intervall) {
     $scope.platform = ionic.Platform;
+
+
+
+    $scope.saveOrder = function(orderForm) {
+
+      var newOrder = {};
+      newOrder.amount = orderForm.amount.$modelValue;
+      newOrder.text = orderForm.reason.$modelValue;
+      newOrder.intervall = $scope.data.intervall.name;
+      //newOrder.day = orderForm.selectedDay.$modelValue;
+      console.log(newOrder.amount + " " + newOrder.text + " " + newOrder.intervall);
+
+
+      //TODO: send Transaction to backend here; when successful, run the next lines of code, otherwise show some error
+
+      //TODO: activate Toast before release (Toast not working in web browser); tested in emulator for ios + android
+      var msg = "Dauerauftrag über " + PunktZuKomma.parse(newOrder.amount) + " € + " + newOrder.intervall +" gespeichert";
+      console.log(msg);
+      //$cordovaToast.show(msg,'long','center');
+      $ionicHistory.goBack();
+    }
+
+    $scope.$on('$ionicView.beforeEnter', function () {
+      $scope.data = {};
+      $scope.list = Intervall.getList();
+
+      $scope.data.intervall = Intervall.getDefault();
+
+      if($scope.data.intervall.id == 1) {
+        $scope.data.days = Days.getMonthdays();
+        $scope.data.description = "Tag im Monat";
+      }
+      else {
+        $scope.data.days = Days.getWeekdays();
+        $scope.data.description = "Wochentag";
+      }
+
+
+    })
 
   })
 
-  .controller('IntervallCtrl', function ($scope, $state) {
+  .controller('IntervallCtrl', function ($scope, $state, $ionicHistory, Intervall) {
     $scope.platform = ionic.Platform;
 
+    $scope.list = Intervall.getList();
+
+    $scope.makeDefault = function(item) {
+      removeDefault();
+      var newDefaultIndex = $scope.list.indexOf(item);
+      $scope.list[newDefaultIndex].useAsDefault = true;
+      Intervall.setList($scope.list);
+      $ionicHistory.goBack();
+    }
+
+    function removeDefault() {
+      //Remove existing default
+      for(var i = 0; i < $scope.list.length; i++) {
+        if($scope.list[i].useAsDefault == true) {
+          $scope.list[i].useAsDefault = false;
+        }
+      }
+    }
   })
 
   .controller('HistorieCtrl', function ($scope, $state) {

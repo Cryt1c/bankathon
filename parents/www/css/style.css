@@ -70,3 +70,28 @@
   font-size: 14px;
   color: #a49e9e;
 }
+
+#add_button {
+  margin-top: 50px;
+}
+
+.item-input .input-label {
+  font-size: 16px;
+}
+
+.orderlist .item-elem p {
+  font-size: 16px;
+}
+
+.item-input input,
+.item-input textarea{
+  font-size: 16px;
+}
+
+.input-value-right {
+  float: right;
+}
+
+.input-value-left {
+  float: left;
+}
