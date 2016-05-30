@@ -20,7 +20,7 @@ angular.module('starter.controllers', [])
               "amount": tTrans.amount,
               "category": tTrans.category,
               "child_id": userId,
-              "is_need": tTrans.is_need
+              "is_need": tTrans.isNeed
             });
           //flag as already written
           tTrans.writtenToServer = true;
@@ -39,6 +39,24 @@ angular.module('starter.controllers', [])
       $http.post(url + "setBalance", json);
 
     };
+    var wsEventHandler = function(wsData) {
+      // handle events incoming via WebSockets
+      // the *event* field gives information about the type of event
+      if (wsData.event = "NEW_TRANSACTION_REQUEST") {
+        // someone requests a payment -- show screen
+
+      }
+    };
+    this.initWebSockets = function(incomingEventHandler) {
+      var host = "ws://pommo-backend.herokuapp.com/" ;/*"ws://localhost:5000"; // url.replace(/^http/, 'ws');*/
+      var ws = new WebSocket(host);
+      ws.onmessage = function(msgEvent) {
+        var msgData = JSON.parse(msgEvent.data);
+        if (msgData.targetType === "child" && msgData.targetId == userId)
+          incomingEventHandler(msgData);
+
+      };
+    };
   })
 
   .controller('DashCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats, PunktZuKomma, webService, transactionsService) {
@@ -54,6 +72,22 @@ angular.module('starter.controllers', [])
           Amount.setAvailable($scope.user.balance);
           $scope.available = Amount.getAvailable();
           $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
+
+          // set up WebSockets
+          webService.initWebSockets(function(eventData) {
+            if (eventData.event == "NEW_TRANSACTION_REQUEST") {
+            // someone requests a payment -- show screen
+              //$scope.showPay();
+              if ($scope.readyToPay && $scope.pendingTransaction) {
+                // update transaction information
+                var trans = $scope.pendingTransaction;
+                trans.amount = parseFloat(eventData.amount);
+                trans.recipient = eventData.vendor;
+                // finish payment
+                $scope.finishPayment();
+              }
+            }
+          });
 
           // get transactions from this user since we now know they exist
           var transactionsCallback = function (data) {
@@ -139,13 +173,17 @@ angular.module('starter.controllers', [])
           $('.button-ok').addClass('button-hidden');
         }
       };
-
+      $scope.initPayment = function() {
+        // create a new pending transaction
+        $scope.pendingTransaction = transactionsService.createTransaction("", 0, -1); // create empty transaction
+        $scope.showPay();
+      };
       // Triggered on a button click, or some other target
       $scope.showPay = function () {
         // An elaborate, custom popup
         $scope.myPopup = $ionicPopup.show({
           template: '<ion-list>' +
-          '<ion-item ng-repeat="stat in stats" ng-click="showPayOk(stat)" style="background-color:{{stat.color}};" class="item-icon-left">' +
+          '<ion-item ng-repeat="stat in stats" ng-click="chooseCategory(stat)" style="background-color:{{stat.color}};" class="item-icon-left">' +
           '{{stat.name}}' +
           '</ion-item>' +
           '</ion-list>',
@@ -155,19 +193,34 @@ angular.module('starter.controllers', [])
           buttons: [
             {
               text: 'Abbrechen',
-              type: 'button-stable'
+              type: 'button-stable',
+              onTap: function() {
+                $scope.pendingTransaction = null; // discard current transaction
+                $scope.myPopup.close();
+
+              }
             }
           ]
         });
       };
-
-      $scope.showPayOk = function (stat, myPopup) {
+      $scope.chooseCategory = function(category) {
+        // choose category for the pending transaction, if there is any
+        if ($scope.pendingTransaction) {
+          $scope.pendingTransaction.category = category.id;
+          $scope.myPopup.close();
+          $scope.readyPayment();
+        }
+      };
+      $scope.readyPayment = function () {
+        if (!$scope.pendingTransaction) return;
+        var trans = $scope.pendingTransaction;
         var payment = true;
+
         $scope.myPopup.close();
         var payPopup = $ionicPopup.alert({
           title: 'Zahlung bereit',
           template: 'Du kannst jetzt dein Handy ans Terminal halten und ' +
-          stat.name +
+          Stats.get(trans.category).name +
           ' an der Kassa bezahlen.' +
           ' <div class="spacer"></div>' +
           '<img src="../img/icon_nfc.png" class="icon icon_nfc"/>',
@@ -177,25 +230,33 @@ angular.module('starter.controllers', [])
               type: 'button-stable',
               onTap: function () {
                 payment = false;
-                $scope.myPopup.close();
+                $scope.pendingTransaction = null; // discard current transaction
+                $scope.payPopup.close();
               }
             }
           ]
         });
-        setTimeout(function () {
+        $scope.payPopup = payPopup;
+        $scope.currentPopup = payPopup;
+        $scope.readyToPay = true;
+       /* setTimeout(function () {
           if (payment) {
             payPopup.close();
-            $scope.showPayResult(stat);
+            $scope.finishPayment();
           }
-        }, 1000);
+        }, 1000);*/
       };
 
-      $scope.showPayResult = function (stat) {
+      $scope.finishPayment = function () {
+        var trans = $scope.pendingTransaction;
+        if  (!trans) return;
         //add transaction
-        var recipientNames = ["Spar", "Billa", "Libro", "Amazon", "Mensa", "Der Mann"];
-        var randomName = recipientNames[Math.floor(Math.random() * recipientNames.length)];
-        var payment = parseFloat(parseFloat(Math.random() * 17.40).toFixed(2)); //2.50;
+        if ($scope.currentPopup) $scope.currentPopup.close();
+        $scope.readyToPay = false; // no longer available for transaction requests from vendor
+        var stat =  Stats.get(trans.category);
 
+        var payment = trans.amount;
+        var recipientName = trans.recipient;
         $scope.available = Amount.getAvailable();
         if (payment > $scope.available) {
           var alertPopup = $ionicPopup.alert({title: 'Du hast nicht mehr genug Taschengeld übrig.'});
@@ -219,7 +280,9 @@ angular.module('starter.controllers', [])
               text: 'Gebraucht',
               type: 'button-positive',
               onTap: function () {
-                $scope.transactionsService.createAndAddTransaction(randomName, payment, stat.id, true);
+                $scope.transactionsService.addTransaction($scope.pendingTransaction);
+                $scope.pendingTransaction = null;
+
                 console.log("is_need true");
                 // write to server immediately
                 $scope.webService.writeTransactions();
@@ -231,7 +294,10 @@ angular.module('starter.controllers', [])
               text: 'Gewollt',
               type: 'button-positive',
               onTap: function () {
-                $scope.transactionsService.createAndAddTransaction(randomName, payment, stat.id, false);
+                //trans = $scope.transactionsService.createAndAddTransaction(randomName, payment, stat.id, false);
+                $scope.transactionsService.addTransaction($scope.pendingTransaction);
+                $scope.pendingTransaction = null;
+
                 console.log("is_need false");
                 // write to server immediately
                 $scope.webService.writeTransactions();

@@ -35,7 +35,7 @@ angular.module('starter.services', [])
     };
 
     this.createTransaction = function (recipient, amount, category, is_need) {
-      return {recipient: recipient, amount: amount, category: category, is_need: is_need, writtenToServer: false};
+      return {recipient: recipient, amount: amount, category: category, isNeed: is_need, writtenToServer: false};
     };
 
     this.addTransaction = function (transaction) {
@@ -48,6 +48,7 @@ angular.module('starter.services', [])
       for (var i = 0; i < existingTransactions.length; i++) {
         var thisT = existingTransactions[i];
         var trans = this.createAndAddTransaction(thisT.recipient, thisT.amount, thisT.category);
+        trans.isNeed = thisT.is_need;
         trans.writtenToServer = true; // flag this as already being written to the server
       }
 

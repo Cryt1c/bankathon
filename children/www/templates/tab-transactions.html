@@ -25,7 +25,7 @@
     </div>
 
     <ion-list class="transaction_list">
-      <ion-item class="transaction_elem">
+      <ion-item class="transaction_elem" ng-repeat="trans in transactionsService.transactions()">
         <div>
           <div class="transaction_icons">
              <span class="transaction_cat" style="background: #38D42F;">
@@ -33,21 +33,21 @@
             </span>
             </div>
           <div class="transaction_name">
-            Billa<br>
+            {{trans.recipient}}<br>
             &nbsp;05.05.16 14:15
           </div>
           <div class="transaction_nw">
-            gebraucht
+            {{(trans.isNeed ? "Gebraucht" : "Gewollt")}}
           </div>
           <div class="transaction_amount">
-            - 3,40 €
+            {{trans.amount.toFixed(2).replace(".", ",")}}
           </div>
           <br>
         </div>
       </ion-item>
 
 
-      <ion-item class="transaction_elem">
+     <!-- <ion-item class="transaction_elem">
         <div>
           <div class="transaction_icons">
              <span class="transaction_cat" style="background: #0D7DBF;">
@@ -86,7 +86,7 @@
           </div>
           <br>
         </div>
-      </ion-item>
+      </ion-item>-->
 
 
 <!--
