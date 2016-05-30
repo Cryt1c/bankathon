@@ -131,7 +131,6 @@ angular.module('starter.services', [])
       {id: 7, label: 'Sonntag'},
     ];
 
-
     return {
       getMonthdays: function () {
         monthdays = [];
@@ -147,9 +146,6 @@ angular.module('starter.services', [])
         return weekdays;
       }
     };
-
-
-
   })
 
 
@@ -173,6 +169,37 @@ angular.module('starter.services', [])
             return list[i];
           }
         }
+      }
+    }
+  })
+
+  .factory('Order', function() {
+
+    var amount = 0;
+    var text = "";
+    var day = 0;
+
+    return {
+      setAmount: function(amountValue) {
+        amount = amountValue;
+        return true;
+      },
+      getAmount: function() {
+        return amount;
+      },
+      setText: function(textValue) {
+        text = textValue;
+        return true;
+      },
+      getText: function() {
+        return text;
+      },
+      setDay: function(dayValue) {
+        day = dayValue;
+        return true;
+      },
+      getDay: function() {
+        return day;
       }
     }
   })

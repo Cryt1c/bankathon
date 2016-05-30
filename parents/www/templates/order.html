@@ -1,24 +1,24 @@
 <ion-view view-title="Dauerauftrag">
 
   <ion-content>
-    <form name="orderForm" ng-model="orderForm">
+    <form name="orderForm" ng-model="orderForm" novalidate>
       <ion-list class="orderlist">
 
         <ion-item class="item item-input item-stacked-label">
           <p class="input-label">Betrag* in EUR</p>
-          <input type="number" step="0.01" min="0" max="1000" placeholder="0,00" name="amount" ng-model="amount" required />
+          <input type="number" step="0.01" min="0" max="1000" placeholder="0,00" name="amount" ng-model="amount" required/>
         </ion-item>
 
         <ion-item class="item item-input item-stacked-label">
           <p class="input-label">Grund *</p>
-          <textarea rows="4" cols="50" placeholder="" name="reason" ng-model="reason" required style="width:95%;"></textarea>
+          <textarea rows="4" cols="50" placeholder="z.B. Taschengeld" name="reason" ng-model="reason" style="width:95%;" required></textarea>
         </ion-item>
 
         <ion-item class="item-icon-right item-elem" ui-sref="intervall">
-          <p class="input-label item-label">
+          <div class="item-label">
             <div class="input-value-left">Intervall</div>
             <div class="input-value-right">{{data.intervall.name}}</div>
-          </p>
+          </div>
           <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon icon_blue"></i>
         </ion-item>
 
@@ -35,8 +35,14 @@
           <p class="input-label">Uhrzeit</p>
          </ion-item>
 
+        <div class="padding order-errors">
+          <p ng-show="orderForm.amount.$error.required && !orderForm.amount.$pristine">* Bitte geben Sie einen Betrag ein.</p>
+          <p ng-show="orderForm.reason.$error.required && !orderForm.reason.$pristine">* Bitte geben Sie einen Grund an. </p>
+          <p ng-show="orderForm.amount.$invalid && !orderForm.amount.$pristine">* Im Feld Betrag sind nur Zahlen erlaubt. </p>
+        </div>
 
-        <button id="add_button" class="button button-block button-positive" ng-click="saveOrder(orderForm)">
+
+        <button id="add_button" class="button button-block button-positive" ng-disabled="orderForm.$invalid"  ng-click="saveOrder(orderForm)">
           Senden
         </button>
 
