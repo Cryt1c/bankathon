@@ -31,14 +31,21 @@
           </label>
         </ion-item>
 
-        <ion-item class="item item-input item-stacked-label">
-          <p class="input-label">Uhrzeit</p>
+        <ion-item class="item item-input">
+         <label class="input-label">Uhrzeit</label>
+          <input type="time" ng-model="timeValue" name="timeValue" id="timepicker" value="{{timeValue | date: 'HH:mm'}}" required>
+
+          <!--<p class="" ion-datetime-picker time ng-model="timeValue">
+            Uhrzeit: {{timeValue| date: "H:mm"}}
+          </p>-->
+
          </ion-item>
 
         <div class="padding order-errors">
           <p ng-show="orderForm.amount.$error.required && !orderForm.amount.$pristine">* Bitte geben Sie einen Betrag ein.</p>
           <p ng-show="orderForm.reason.$error.required && !orderForm.reason.$pristine">* Bitte geben Sie einen Grund an. </p>
           <p ng-show="orderForm.amount.$invalid && !orderForm.amount.$pristine">* Im Feld Betrag sind nur Zahlen erlaubt. </p>
+          <p ng-show="orderForm.time.$invalid && !orderForm.time.$pristine">* Bitte geben Sie eine Uhrzeit an. </p>
         </div>
 
 

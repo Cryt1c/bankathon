@@ -120,8 +120,13 @@
   border: none;
   background-color: #fff;
   color: #444444;
+  font-size: 16px;
 }
 .order-errors {
   color: red;
   margin-top: 15px;
+}
+
+#timepicker {
+  text-align: right;
 }

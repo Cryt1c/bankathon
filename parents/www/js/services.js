@@ -178,6 +178,7 @@ angular.module('starter.services', [])
     var amount = 0;
     var text = "";
     var day = 0;
+    var time = new Date();
 
     return {
       setAmount: function(amountValue) {
@@ -200,6 +201,13 @@ angular.module('starter.services', [])
       },
       getDay: function() {
         return day;
+      },
+      setTime: function(timeValue) {
+        time = timeValue;
+        return true;
+      },
+      getTime: function() {
+        return time;
       }
     }
   })
