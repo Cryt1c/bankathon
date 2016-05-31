@@ -18,7 +18,7 @@
       <h2 class="label">Aktuelles Taschengeld: € {{punktZuKomma.parse(available)}}</h2>
 
     <ion-list class="transaction_list">
-      <ion-item class="transaction_elem" ng-repeat="trans in transactionsService.transactions()">
+      <ion-item class="transaction_elem" ng-repeat="trans in transactionsService.transactions() | orderBy:'-date':false" >
       <div>
         <div class="transaction_icons">
              <span class="transaction_cat" style="background-color: {{stats[trans.category].color}}">
@@ -27,7 +27,7 @@
         </div>
         <div class="transaction_name">
           {{trans.recipient}}<br>
-          &nbsp;05.05.16 14:15
+          &nbsp;{{trans.date | date: 'dd.MM.yy HH:mm'}}
             <span class="transaction_nw" ng-class="{isNeed: trans.isNeed == true, isWant: trans.isNeed == false}">
               {{(trans.isNeed ? "Gebraucht" : "Gewollt")}}
             </span>
