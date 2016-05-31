@@ -1,4 +1,4 @@
-angular.module('starter.controllers', ['ngCordova','chart.js'])
+angular.module('starter.controllers', ['ngCordova', 'chart.js'])
 
   .service('kidsService', function () {
     this.selectedKid;
@@ -136,10 +136,8 @@ angular.module('starter.controllers', ['ngCordova','chart.js'])
 
     // Line Chart
 
-    $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-    $scope.data = [
-      [65, 59, 80, 81, 56, 55, 40]
-    ];
+    $scope.labels = ["1.", "5.", "10.", "15.", "20.", "25.", "30."];
+    $scope.data = [[65, 59, 80, 81, 56, 55, 40]];
     $scope.onClick = function (points, evt) {
       console.log(points, evt);
     };
@@ -168,7 +166,7 @@ angular.module('starter.controllers', ['ngCordova','chart.js'])
   .controller('SendCtrl', function ($scope, $state, $ionicHistory, $cordovaToast, PunktZuKomma) {
     $scope.platform = ionic.Platform;
 
-    $scope.sendTransaction = function(form) {
+    $scope.sendTransaction = function (form) {
 
       var newTransaction = {};
       newTransaction.amount = form.amount.$modelValue;
@@ -195,7 +193,7 @@ angular.module('starter.controllers', ['ngCordova','chart.js'])
       $scope.data.intervall = Intervall.getDefault();
 
       //set dropdown either for montly or weekly
-      if($scope.data.intervall.id == 1) {
+      if ($scope.data.intervall.id == 1) {
         $scope.data.days = Days.getMonthdays();
         $scope.data.description = "Tag im Monat";
       }
@@ -205,7 +203,7 @@ angular.module('starter.controllers', ['ngCordova','chart.js'])
       }
 
       //Set values with either the default values or with the saved values
-      if(Order.getAmount()>0) {
+      if (Order.getAmount() > 0) {
         $scope.amount = Order.getAmount();
       }
       $scope.reason = Order.getText();
@@ -215,16 +213,16 @@ angular.module('starter.controllers', ['ngCordova','chart.js'])
 
     $scope.order = Order;
 
-    $scope.saveOrder = function(orderForm) {
+    $scope.saveOrder = function (orderForm) {
 
       var intervall = $scope.data.intervall.name;
       $scope.order.setAmount(orderForm.amount.$modelValue);
       $scope.order.setText(orderForm.reason.$modelValue);
-      $scope.order.setDay(orderForm.day.$modelValue.id-1); //-1 weil wir mit 1 zu zählen beginnen, nicht mit 0
+      $scope.order.setDay(orderForm.day.$modelValue.id - 1); //-1 weil wir mit 1 zu zählen beginnen, nicht mit 0
 
       var time_temp = orderForm.timeValue.$modelValue.split(':');
       var d = new Date();
-      d.setHours(time_temp[0],time_temp[1]);
+      d.setHours(time_temp[0], time_temp[1]);
       $scope.order.setTime(d);
 
 
@@ -243,7 +241,7 @@ angular.module('starter.controllers', ['ngCordova','chart.js'])
 
     $scope.list = Intervall.getList();
 
-    $scope.makeDefault = function(item) {
+    $scope.makeDefault = function (item) {
       removeDefault();
       var newDefaultIndex = $scope.list.indexOf(item);
       $scope.list[newDefaultIndex].useAsDefault = true;
@@ -255,8 +253,8 @@ angular.module('starter.controllers', ['ngCordova','chart.js'])
 
     function removeDefault() {
       //Remove existing default
-      for(var i = 0; i < $scope.list.length; i++) {
-        if($scope.list[i].useAsDefault == true) {
+      for (var i = 0; i < $scope.list.length; i++) {
+        if ($scope.list[i].useAsDefault == true) {
           $scope.list[i].useAsDefault = false;
         }
       }
