@@ -83,8 +83,33 @@ angular.module('starter.services', [])
         for (var i = 0; i < stats.length; i++) {
           stats[i].spent = 0;
         }
+      },
+      getNames: function () {
+        names = [];
+        for (var i = 0; i < stats.length; i++) {
+          names[i] = stats[i].name;
+        }
+        return names;
+      },
+      getSpent: function () {
+        spent = [];
+        for (var i = 0; i < stats.length; i++) {
+          spent[i] = stats[i].spent;
+        }
+        return spent;
       }
     };
+  })
+
+  .factory('NeedWant', function () {
+
+    var needwant = [20,80];
+
+    return {
+      all: function () {
+        return needwant;
+      }
+    }
   })
 
   .factory('Months', function () {

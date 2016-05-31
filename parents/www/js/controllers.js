@@ -124,25 +124,43 @@ angular.module('starter.controllers', ['ngCordova','chart.js'])
   })
 
 
-  .controller('StatCtrl', function ($scope, $state, Categories, Months) {
+  .controller('StatCtrl', function ($scope, $state, Categories, Months, NeedWant) {
     $scope.platform = ionic.Platform;
 
     $scope.data = {};
     $scope.data.showNeed = false;
     $scope.data.toggleLabel = 'Kategorien';
     $scope.data.months = Months.getAll();
-    $scope.categories = Categories.all();
+    $scope.data.spent = Categories.getSpent();
+    $scope.data.names = Categories.getNames();
 
-    $scope.data.toggleLabel = 'Gewollt/Gebraucht';
-    $scope.data.chartLabels = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
-    $scope.data.chartData = [300, 500, 100];
+    // Line Chart
+
+    $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
+    $scope.data = [
+      [65, 59, 80, 81, 56, 55, 40]
+    ];
+    $scope.onClick = function (points, evt) {
+      console.log(points, evt);
+    };
+
+    //Doughnut Chart
+
+    $scope.data.names = ["Download Sales", "In-Store Sales", "Mail-Order Sales", "test", "test", "asd", "awe"];
+    $scope.data.spent = [3, 5, 1, 1, 2, 3, 1];
 
     $scope.$watch('data.showNeed', function (value) {
       if (value) {
         //render need chart
+        $scope.data.toggleLabel = 'Gewollt/Gebraucht';
+        $scope.data.spent = NeedWant.all();
+        $scope.data.names = ["Gebraucht", "Gewollt"];
       }
       else {
         //render categories in chart
+        $scope.data.toggleLabel = 'Kategorien';
+        $scope.data.spent = Categories.getSpent();
+        $scope.data.names = Categories.getNames();
       }
     })
   })
