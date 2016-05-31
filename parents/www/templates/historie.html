@@ -2,9 +2,29 @@
 
 
   <ion-content>
-    Dropdown mit Monat
+    <label class="item item-input">
+      <span class="input-label">Monat</span>
+      <input type="month" ng-model="month">
+    </label>
 
-    Aktueller Stand:
+      <h2 class="label">Aktuelles Taschengeld: € {{punktZuKomma.parse(available)}}</h2>
+
+
+<!--
+    <ion-list class="transaction_list">
+      <ion-item class="transaction_elem" ng-repeat="trans in transactionsService.transactions()">
+        <div>
+          <div class="transaction_name">
+            {{trans.recipient}}<br>
+            &nbsp;05.05.16 14:15
+          </div>
+          <div class="transaction_amount">
+            € {{punktZuKomma.parse(trans.amount)}}
+          </div>
+        </div>
+      </ion-item>
+    </ion-list>
+-->
 
     <ion-list class="transaction_list">
       <ion-item class="transaction_elem">
@@ -14,7 +34,7 @@
             &nbsp;01.05.16 14:15
           </div>
           <div class="transaction_amount">
-            + 3,40 €
+            € 3,40
           </div>
         </div>
       </ion-item>
@@ -27,7 +47,7 @@
           </div>
 
           <div class="transaction_amount">
-            + 15,00 €
+            € 15,00
           </div>
         </div>
       </ion-item>

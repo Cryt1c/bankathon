@@ -3,114 +3,41 @@
   </div>
   <h1 ng-class="{'title-android':platform.isAndroid(), 'title-ios': !platform.isAndroid()}" class="title">Transaktionen</h1>
   <div class="buttons">
-    <p ng-class="{'greeting-android':platform.isAndroid(), 'greeting-ios': !platform.isAndroid()}" class="greeting">Michael</p>
+    <p ng-class="{'greeting-android':platform.isAndroid(), 'greeting-ios': !platform.isAndroid()}" class="greeting"></p>
   </div>
 </ion-header-bar>
 
-
-
 <ion-view view-title="Transaktionen">
 
-  <ion-content class="padding">
+  <ion-content>
+    <label class="item item-input">
+      <span class="input-label">Monat</span>
+      <input type="month" ng-model="month" value="{{monthValue | date: yyyy-MM}}">
+    </label>
 
-  <div>
-    <h2 class="title">
-      {{currDate}}
-      <i ng-class="{'ion-android-arrow-down': platform.isAndroid(), 'ion-ios-arrow-down': !platform.isAndroid()}" class="icon"></i>
-    </h2>
-  </div>
-
-    <div>
       <h2 class="label">Aktuelles Taschengeld: € {{punktZuKomma.parse(available)}}</h2>
-    </div>
 
     <ion-list class="transaction_list">
       <ion-item class="transaction_elem" ng-repeat="trans in transactionsService.transactions()">
-        <div>
-          <div class="transaction_icons">
-             <span class="transaction_cat" style="background: #38D42F;">
-                <i class="icon ion-ios-nutrition"></i>
+      <div>
+        <div class="transaction_icons">
+             <span class="transaction_cat" style="background-color: {{stats[trans.category].color}}">
+                <i class="icon {{stats[trans.category].icon_ios}}"></i>
             </span>
-            </div>
-          <div class="transaction_name">
-            {{trans.recipient}}<br>
-            &nbsp;05.05.16 14:15
-          </div>
-          <div class="transaction_nw">
-            {{(trans.isNeed ? "Gebraucht" : "Gewollt")}}
-          </div>
-          <div class="transaction_amount">
-            {{trans.amount.toFixed(2).replace(".", ",")}}
-          </div>
-          <br>
         </div>
+        <div class="transaction_name">
+          {{trans.recipient}}<br>
+          &nbsp;05.05.16 14:15
+            <span class="transaction_nw" ng-class="{isNeed: trans.isNeed == true, isWant: trans.isNeed == false}">
+              {{(trans.isNeed ? "Gebraucht" : "Gewollt")}}
+            </span>
+        </div>
+        <div class="transaction_amount">
+          € {{punktZuKomma.parse(trans.amount)}}
+        </div>
+      </div>
       </ion-item>
-
-
-     <!-- <ion-item class="transaction_elem">
-        <div>
-          <div class="transaction_icons">
-             <span class="transaction_cat" style="background: #0D7DBF;">
-                <i class="icon ion-happy-outline"></i>
-             </span>
-          </div>
-          <div class="transaction_name">
-            DM<br>
-            &nbsp;04.05.16 13:28
-          </div>
-          <div class="transaction_nw">
-            gewollt
-          </div>
-          <div class="transaction_amount">
-            - 2,14 €
-          </div>
-          <br>
-        </div>
-      </ion-item>
-
-
-      <ion-item class="transaction_elem">
-        <div>
-          <div class="transaction_icons">
-             <span class="transaction_cat">
-             </span>
-           </div>
-          <div class="transaction_name">
-            Taschengeld<br>
-            &nbsp;01.05.16 18:55
-          </div>
-          <div class="transaction_nw" style="border: none;">
-          </div>
-          <div class="transaction_amount" style="color:#28a54c";>
-            + 15,00 €
-          </div>
-          <br>
-        </div>
-      </ion-item>-->
-
-
-<!--
-      <ion-item class="transaction-elem" ng-repeat="trans in transactionsService.transactions()">
-          <div class="transaction_name">
-            {{trans.recipient}}<br>
-            &nbsp;{{trans.date}}
-          </div>
-          <div class="transaction_icons">
-             <span class="transaction_cat" style="{{stat.color}}">
-                 <i class="icon {{trans.cat}}"></i>
-          </span>
-          <span class="transaction_nw" style="border: none;">
-              {{trans.reason}}
-          </span>
-          </div>
-          <div class="transaction_amount">
-            {{trans.vorzeichen}} € {{trans.amount}}
-          </div>
-          <br>
-        </div>
-      </ion-item>
-      -->
-
     </ion-list>
+
   </ion-content>
 </ion-view>

@@ -3,19 +3,17 @@
   </div>
   <h1 ng-class="{'title-android':platform.isAndroid(), 'title-ios': !platform.isAndroid()}" class="title">Statistik</h1>
   <div class="buttons">
-    <p ng-class="{'greeting-android':platform.isAndroid(), 'greeting-ios': !platform.isAndroid()}" class="greeting">Michael</p>
+    <p ng-class="{'greeting-android':platform.isAndroid(), 'greeting-ios': !platform.isAndroid()}" class="greeting"></p>
   </div>
 </ion-header-bar>
 
-<ion-subheader-bar ng-class="{'subheader-android':platform.isAndroid(), 'subheader-ios': !platform.isAndroid()}" class="bar bar-subheader ">
-  <h2 class="title">
-    {{currDate}}
-    <i ng-class="{'ion-android-arrow-down': platform.isAndroid(), 'ion-ios-arrow-down': !platform.isAndroid()}" class="icon"></i>
-  </h2>
-</ion-subheader-bar>
-
 <ion-view view-title="Statistik">
   <ion-content>
+    <label class="item item-input">
+      <span class="input-label">Monat</span>
+      <input type="month" ng-model="filters.month" value="{{monthValue | date: yyyy-MM}}">
+    </label>
+
     <div class="border">
       <hr id="line"/>
     </div>
@@ -34,14 +32,13 @@
           <div class="child" style="height: {{stat.height}}px;">
             <a class="item-icon-left item-icon-right" href="#" style="height:{{stat.height}}px;">
               <i class="icon {{stat.icon_ios}}"></i>
-                  <span class="child__name">
-                    {{stat.name}}:
-                  </span>
-                    <span class="child__betrag">
-                      {{punktZuKomma.parse(stat.spent)}} €
-                  </span>
-              <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon"></i>
-            </a>
+              <span class="child__name">
+                {{stat.name}}:
+              </span>
+                <span class="child__betrag">
+                  {{punktZuKomma.parse(stat.spent)}} €
+              </span>
+              </a>
           </div>
       </ion-item>
       <ion-item class="item-elem" style="background-color:white; margin-bottom: 10px;" data-target="{{height_available}}">

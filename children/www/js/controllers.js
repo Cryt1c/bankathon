@@ -122,7 +122,7 @@ angular.module('starter.controllers', [])
         $scope.data.amount = 10;
         var myRequest = $ionicPopup.show({
           template: '<label for="amount">Betrag in €</label>' +
-          '<input type="number" id="amount" for="slider" ng-model="data.amount">' +
+          '<input type="number" step="0.01" min="0" max="1000" id="amount" for="slider" ng-model="data.amount" required="required">' +
           '<div class="spacer"></div>' +
           '<label for="message">Grund*</label>' +
           '<input type="text" id="message" ng-model="data.message" required="required" ng-change="changeButton()">',
@@ -324,23 +324,23 @@ angular.module('starter.controllers', [])
           $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
         });
       }
-    }
-  )
+    })
 
 
-  .controller('HistoryCtrl', function ($scope, $state, $ionicSlideBoxDelegate, Amount, Months, transactionsService, PunktZuKomma) {
+  .controller('HistoryCtrl', function ($scope, $state, $ionicSlideBoxDelegate, Amount, Months, transactionsService, Stats, PunktZuKomma) {
     $scope.platform = ionic.Platform;
     var date = new Date();
     $scope.currDate = Months.getMonth(date.getMonth()) + " " + date.getFullYear();
-    $scope.transactionsService = transactionsService;
+    $scope.stats = Stats.all();
+
     $scope.available = Amount.getAvailable();
 
 
     $scope.$on('$ionicView.beforeEnter', function () {
       $scope.punktZuKomma = PunktZuKomma;
       $scope.available = Amount.getAvailable();
+      $scope.transactionsService = transactionsService;
     });
-
   })
 
 
@@ -348,10 +348,6 @@ angular.module('starter.controllers', [])
 
     $scope.platform = ionic.Platform;
     $scope.Math = window.Math;
-
-    var date = new Date();
-    $scope.currDate = Months.getMonth(date.getMonth()) + " " + date.getFullYear();
-
 
     $scope.$on('$ionicView.enter', function () {
 
@@ -369,9 +365,7 @@ angular.module('starter.controllers', [])
 
         if (index == len - 1) {
           $('#line').css("bottom", bottom);
-        }
-        ;
-
+        };
 
         /* Animation; jede Animation wird verzoegert ausgeloest;
          *  um das linear auszufuehren, wird das mit dem jeweiligen Index multipliziert
@@ -404,8 +398,7 @@ angular.module('starter.controllers', [])
         if (index == len - 2) {
           height_ausgaben = bottom - 5;
           $(".ausgaben").css("bottom", height_ausgaben);
-        }
-        ;
+        };
       });
     });
 
@@ -417,8 +410,10 @@ angular.module('starter.controllers', [])
       $scope.available = Amount.getAvailable();
       $scope.spentTotal = Amount.getSpentTotal($scope.stats);
       $scope.stats = Stats.getHeights($scope.spentTotal, $scope.available);
+      var date = new Date();
+      $scope.monthValue = date;
 
-      var height_available = $scope.available / ($scope.available + $scope.spentTotal) * 480;
+      var height_available = $scope.available / ($scope.available + $scope.spentTotal) * 450;
 
       if (height_available < 25) {
         $scope.height_available = 25;

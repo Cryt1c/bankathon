@@ -89,6 +89,9 @@
   font-size: 16px;
   color: #444444;
 }
+ .platform-ios input[type="month"], .platform-android input[type="month"] {
+  padding-top: 0px;
+}
 
 .orderlist .item-elem p {
   font-size: 16px;
@@ -139,4 +142,38 @@
 
 #timepicker {
   text-align: right;
+}
+
+
+.label {
+  font-weight:normal;
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+
+/*
+ Transactions
+*/
+
+.transaction_list {}
+
+
+.transaction_elem {
+}
+
+
+.transaction_name {
+  width: 80%;
+  float: left;
+}
+
+
+.transaction_amount {
+  width: 20%;
+  float: left;
+  text-align: right;
+  padding-top: 8px;
+
 }

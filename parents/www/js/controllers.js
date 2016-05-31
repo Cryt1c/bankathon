@@ -256,7 +256,11 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
     }
   })
 
-  .controller('HistorieCtrl', function ($scope, $state) {
+  .controller('HistorieCtrl', function ($scope, $state, Amount, Months, PunktZuKomma) {
     $scope.platform = ionic.Platform;
+
+    $scope.available = Amount.getAvailable();
+    $scope.punktZuKomma = PunktZuKomma;
+    $scope.months = Months.getAll();
 
   });
