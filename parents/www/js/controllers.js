@@ -1,4 +1,4 @@
-angular.module('starter.controllers', ['ngCordova'])
+angular.module('starter.controllers', ['ngCordova','chart.js'])
 
   .service('kidsService', function () {
     this.selectedKid;
@@ -121,18 +121,16 @@ angular.module('starter.controllers', ['ngCordova'])
     $scope.data.months = Months.getAll();
     $scope.categories = Categories.all();
 
+    $scope.data.toggleLabel = 'Gewollt/Gebraucht';
+    $scope.data.chartLabels = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
+    $scope.data.chartData = [300, 500, 100];
+
     $scope.$watch('data.showNeed', function (value) {
       if (value) {
         //render need chart
-        $scope.data.toggleLabel = 'Gewollt/Gebraucht';
-        $scope.data.chartLabels = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
-        $scope.data.chartData = [300, 500, 100];
       }
       else {
         //render categories in chart
-        $scope.data.toggleLabel = 'Kategorien';
-        $scope.data.chartLabels = ["Download Sales", "In-Store Sales", "Mail-Order Sales"];
-        $scope.data.chartData = [300, 500, 100];
       }
     })
   })
