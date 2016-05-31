@@ -49,6 +49,7 @@ angular.module('starter.services', [])
         var thisT = existingTransactions[i];
         var trans = this.createAndAddTransaction(thisT.recipient, thisT.amount, thisT.category);
         trans.isNeed = thisT.is_need;
+        trans.date = new Date(thisT.timestamp);
         trans.writtenToServer = true; // flag this as already being written to the server
       }
 
