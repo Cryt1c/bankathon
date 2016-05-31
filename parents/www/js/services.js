@@ -1,6 +1,6 @@
 angular.module('starter.services', [])
 
-  .factory('Kids', function() {
+  .factory('Kids', function () {
 
     var kids = [{
       id: 0,
@@ -15,7 +15,7 @@ angular.module('starter.services', [])
       getAll: function () {
         return kids;
       },
-      getNum: function(kids) {
+      getNum: function (kids) {
         return kids.length;
       }
     };
@@ -43,37 +43,68 @@ angular.module('starter.services', [])
     };
   })
 
-  .factory('Categories', function () {
-
+  .factory('Stats', function () {
     var stats = [{
       id: 0,
       name: 'Essen',
-      spent: 15.00
+      spent: 0
     }, {
       id: 1,
       name: 'Spaß',
-      spent: 20.00
+      spent: 0
     }, {
       id: 2,
       name: 'Sport',
-      spent: 30.00
+      spent: 0
     }, {
       id: 3,
       name: 'Schulsachen',
-      spent: 5.00
+      spent: 0
     }, {
       id: 4,
       name: 'Kleidung',
-      spent: 15.00
+      spent: 0
     }, {
       id: 5,
       name: 'Telefon',
-      spent: 10.00
+      spent: 0
     }, {
       id: 6,
       name: 'Geschenke',
-      spent: 20.00
+      spent: 0
     }];
+
+    var needwant = [0, 0];
+    var line = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+    transactions = [{
+      id: 1,
+      amount: 10,
+      recipient: "Spar",
+      category: 1,
+      date: "2016-05-19T00:00:00.000Z",
+      is_need: true,
+      child_id: 1,
+      timestamp: "2016-05-19T12:31:54.624Z"
+    },
+      {
+        id: 2,
+        amount: 2.5,
+        recipient: "Billa",
+        category: 3,
+        date: "2016-05-04T00:00:00.000Z",
+        is_need: false,
+        child_id: 1,
+        timestamp: "2016-05-04T12:31:54.624Z"
+      }];
+
+
+    for (var i = 0; i < transactions.length; i++) {
+      stats[transactions[i].category].spent += transactions[i].amount;
+      if (transactions[i].is_need) needwant[0] += transactions[i].amount;
+      else needwant[1] += transactions[i].amount;
+    }
+
 
     return {
       all: function () {
@@ -97,19 +128,20 @@ angular.module('starter.services', [])
           spent[i] = stats[i].spent;
         }
         return spent;
+      },
+      getNeedWant: function () {
+        return needwant;
+      },
+      getMonth: function (month, year) {
+        for (var i = 0; i < transactions.length; i++) {
+          var date = new Date(transactions[i].timestamp);
+          if (date.getMonth() == month && date.getFullYear() == year) {
+            line[date.getDate()-1] += transactions[i].amount;
+          }
+        }
+        return [line];
       }
     };
-  })
-
-  .factory('NeedWant', function () {
-
-    var needwant = [20,80];
-
-    return {
-      all: function () {
-        return needwant;
-      }
-    }
   })
 
   .factory('Months', function () {
@@ -159,7 +191,7 @@ angular.module('starter.services', [])
     return {
       getMonthdays: function () {
         monthdays = [];
-        for(var i = 1; i <= 28; i++) {
+        for (var i = 1; i <= 28; i++) {
           var temp = {};
           temp.id = i;
           temp.label = ' ' + i + '. Tag im Monat';
@@ -167,14 +199,14 @@ angular.module('starter.services', [])
         }
         return monthdays;
       },
-      getWeekdays: function() {
+      getWeekdays: function () {
         return weekdays;
       }
     };
   })
 
 
-  .factory('Intervall', function() {
+  .factory('Intervall', function () {
     var list = [
       {id: 1, name: 'monatlich', useAsDefault: true},
       {id: 2, name: 'wöchentlich', useAsDefault: false}
@@ -185,12 +217,12 @@ angular.module('starter.services', [])
         list = newList;
         return true;
       },
-      getList: function() {
+      getList: function () {
         return list;
       },
       getDefault: function () {
-        for(var i = 0; i < list.length; i++) {
-          if(list[i].useAsDefault == true) {
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].useAsDefault == true) {
             return list[i];
           }
         }
@@ -198,7 +230,7 @@ angular.module('starter.services', [])
     }
   })
 
-  .factory('Order', function() {
+  .factory('Order', function () {
 
     var amount = 0;
     var text = "";
@@ -206,43 +238,43 @@ angular.module('starter.services', [])
     var time = new Date();
 
     return {
-      setAmount: function(amountValue) {
+      setAmount: function (amountValue) {
         amount = amountValue;
         return true;
       },
-      getAmount: function() {
+      getAmount: function () {
         return amount;
       },
-      setText: function(textValue) {
+      setText: function (textValue) {
         text = textValue;
         return true;
       },
-      getText: function() {
+      getText: function () {
         return text;
       },
-      setDay: function(dayValue) {
+      setDay: function (dayValue) {
         day = dayValue;
         return true;
       },
-      getDay: function() {
+      getDay: function () {
         return day;
       },
-      setTime: function(timeValue) {
+      setTime: function (timeValue) {
         time = timeValue;
         return true;
       },
-      getTime: function() {
+      getTime: function () {
         return time;
       }
     }
   })
 
   .factory('PunktZuKomma', function () {
-  return {
-    parse: function (value) {
-      var text = parseFloat(value).toFixed(2).toString().replace(".", ",");
-      return text;
-    },
-  };
+    return {
+      parse: function (value) {
+        var text = parseFloat(value).toFixed(2).toString().replace(".", ",");
+        return text;
+      },
+    };
   });
 

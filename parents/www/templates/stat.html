@@ -11,11 +11,11 @@
 
     <label class="item item-input">
       <span class="input-label">Month</span>
-      <input type="month">
+      <input type="month" ng-model="data.month">
     </label>
 
-    <canvas id="line" class="chart chart-line" chart-data="data"
-            chart-labels="labels" chart-legend="true" chart-series="series"
+    <canvas id="line" class="chart chart-line" chart-data="data.line"
+            chart-labels="data.labels" chart-legend="true" chart-series="series"
             chart-click="onClick" >
     </canvas>
 

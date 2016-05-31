@@ -111,7 +111,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
   })
 
 
-  .controller('DetailCtrl', function ($scope, $state, kidsService, Amount, Categories, PunktZuKomma) {
+  .controller('DetailCtrl', function ($scope, $state, kidsService, Amount, Stats, PunktZuKomma) {
     $scope.platform = ionic.Platform;
     $scope.kidsService = kidsService;
 
@@ -124,43 +124,50 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
   })
 
 
-  .controller('StatCtrl', function ($scope, $state, Categories, Months, NeedWant) {
+  .controller('StatCtrl', function ($scope, $state, Stats, Months) {
     $scope.platform = ionic.Platform;
 
     $scope.data = {};
     $scope.data.showNeed = false;
     $scope.data.toggleLabel = 'Kategorien';
     $scope.data.months = Months.getAll();
-    $scope.data.spent = Categories.getSpent();
-    $scope.data.names = Categories.getNames();
+    $scope.data.spent = Stats.getSpent();
+    $scope.data.names = Stats.getNames();
+
 
     // Line Chart
 
-    $scope.labels = ["1.", "5.", "10.", "15.", "20.", "25.", "30."];
-    $scope.data = [[65, 59, 80, 81, 56, 55, 40]];
-    $scope.onClick = function (points, evt) {
-      console.log(points, evt);
-    };
+    $scope.data.labels = ["1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16.", "17.", "18.", "19.", "20.", "21.", "22.", "23.", "24.", "25.", "26.", "27.", "28.", "29.", "30.", "31."];
+    //$scope.data.line = Stats.getMonth(4, 2016);
+    //$scope.data.line = [[10, 20, 30, 40, 50, 60, 70, 80]];
+    // $scope.onClick = function (points, evt) {
+    //   console.log(points, evt);
+    // };
+
+    $scope.$watch('data.month', function (value) {
+      if (value != undefined) {
+        var month = Stats.getMonth(value.getMonth(), value.getFullYear());
+        $scope.data.line = month;
+        console.log(value.getMonth() + " " + value.getFullYear());
+      }
+    });
 
     //Doughnut Chart
-
-    $scope.data.names = ["Download Sales", "In-Store Sales", "Mail-Order Sales", "test", "test", "asd", "awe"];
-    $scope.data.spent = [3, 5, 1, 1, 2, 3, 1];
 
     $scope.$watch('data.showNeed', function (value) {
       if (value) {
         //render need chart
         $scope.data.toggleLabel = 'Gewollt/Gebraucht';
-        $scope.data.spent = NeedWant.all();
+        $scope.data.spent = Stats.getNeedWant();
         $scope.data.names = ["Gebraucht", "Gewollt"];
       }
       else {
         //render categories in chart
         $scope.data.toggleLabel = 'Kategorien';
-        $scope.data.spent = Categories.getSpent();
-        $scope.data.names = Categories.getNames();
+        $scope.data.spent = Stats.getSpent();
+        $scope.data.names = Stats.getNames();
       }
-    })
+    });
   })
 
   .controller('SendCtrl', function ($scope, $state, $ionicHistory, $cordovaToast, PunktZuKomma) {
