@@ -1,4 +1,40 @@
 angular.module('starter.controllers', ['ngCordova', 'chart.js'])
+  .service('webService', function ($http, transactionsService, Amount) {
+    var url = "/api/"; // change this for production -- gets proxied on to heroku app location
+    var userId = 1;
+    this.getUser = function () {
+      return $http.get(url + "getChild?childId=" + userId);
+    };
+    this.getTransactions = function () {
+      return $http.get(url + "getTransactionsByChild?childId=" + userId);
+    };
+    this.getChildren = function() {
+      return $http.get(url + "getChildrenForParent?parentId=" + userId);
+    };
+    /** WEBSOCKETS
+        var wsEventHandler = function(wsData) {
+      // handle events incoming via WebSockets
+      // the *event* field gives information about the type of event
+      if (wsData.event = "NEW_TRANSACTION_REQUEST") {
+        // someone requests a payment -- show screen
+
+      }
+    };
+    this.initWebSockets = function(incomingEventHandler) {
+      var host = "ws://pommo-backend.herokuapp.com/" ;//"ws://localhost:5000"; // url.replace(/^http/, 'ws');
+      var ws = new WebSocket(host);
+      ws.onmessage = function(msgEvent) {
+        var msgData = JSON.parse(msgEvent.data);
+        if (msgData.targetType === "child" && msgData.targetId == userId)
+          incomingEventHandler(msgData);
+
+      };
+      ws.onclose = function() {
+        // websocket about to close -- reopen after time
+        setTimeout(this.initWebSockets, 1000);
+      };
+    };*/
+  })
 
   .service('kidsService', function () {
     this.selectedKid;

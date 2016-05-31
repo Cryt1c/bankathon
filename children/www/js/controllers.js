@@ -70,7 +70,11 @@ angular.module('starter.controllers', [])
         $scope.punktZuKomma = PunktZuKomma;
         $scope.webService = webService;
 
+        //TODO move to separate method
+        // set up user interface
 
+
+        // load user data
         var userCallback = function (user) {
           $scope.user = user;
           Amount.setAvailable($scope.user.balance);
@@ -116,6 +120,17 @@ angular.module('starter.controllers', [])
 
 
       angular.element(document).ready(function () {
+        // set up user interface
+        var contentView =   $("#available-moneystack").closest("ion-content");
+        if (contentView) {
+          var topArea = $("#top-area");
+          var payButton =   $("#pay");
+          // height of moneystack  = total available height - button height - lower edge of top area
+          var moneystackHeight = contentView.height() -
+          (topArea.height() + 60) - (payButton.height() +30) - topArea.offset().top - 15 /*padding*/;
+          $("#available-moneystack").css("height", moneystackHeight);
+        }
+
         $("#available-moneystack").moneystack({yShift: 10});
         $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
       });
@@ -284,6 +299,7 @@ angular.module('starter.controllers', [])
               text: 'Gebraucht',
               type: 'button-positive',
               onTap: function () {
+                $scope.pendingTransaction.isNeed = true;
                 $scope.transactionsService.addTransaction($scope.pendingTransaction);
                 $scope.pendingTransaction = null;
 
@@ -299,6 +315,7 @@ angular.module('starter.controllers', [])
               type: 'button-positive',
               onTap: function () {
                 //trans = $scope.transactionsService.createAndAddTransaction(randomName, payment, stat.id, false);
+                $scope.pendingTransaction.isNeed = false;
                 $scope.transactionsService.addTransaction($scope.pendingTransaction);
                 $scope.pendingTransaction = null;
 

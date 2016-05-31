@@ -11,8 +11,8 @@
   <ion-content class="padding">
 
     <div id="top-area">
-      <h2 class="label" id="headline">Dein aktuelles Taschengeld: </h2>
-      <p  class="value" id="available">{{punktZuKomma.parse(available)}}€</p>
+      <h2 class="label" id="headline">Dein aktuelles Taschengeld</h2>
+      <p  class="value" id="available">{{punktZuKomma.parse(available)}} €</p>
       <div class="button button-positive button-small" id="request" ng-click="showRequest()">Um mehr Geld bitten</div>
     </div>
 
@@ -24,7 +24,7 @@
     <div class="button button-positive" id="pay" ng-click="initPayment()">
       Bezahlen </div>
       <div id="spent" ng-click="go()">
-        <h2 class="label">Deine bisherigen Ausgaben: </h2>
+        <h2 class="label">Deine bisherigen Ausgaben </h2>
         <p class="value">{{punktZuKomma.parse(spentTotal)}} €</p>
       </div>
     </div>

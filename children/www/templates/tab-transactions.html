@@ -15,7 +15,7 @@
       <input type="month" ng-model="month" value="{{monthValue | date: yyyy-MM}}">
     </label>
 
-      <h2 class="label">Aktuelles Taschengeld: € {{punktZuKomma.parse(available)}}</h2>
+      <h2 class="label">Aktuelles Taschengeld: <strong>€ {{punktZuKomma.parse(available)}}</strong></h2>
 
     <ion-list class="transaction_list">
       <ion-item class="transaction_elem" ng-repeat="trans in transactionsService.transactions()">
@@ -26,11 +26,13 @@
             </span>
         </div>
         <div class="transaction_name">
-          {{trans.recipient}}<br>
-          &nbsp;05.05.16 14:15
-            <span class="transaction_nw" ng-class="{isNeed: trans.isNeed == true, isWant: trans.isNeed == false}">
+          <span class="transaction_recipient">{{trans.recipient}}</span><br>
+          <span class="transaction_date">05.05.16 14:15</span>
+            <div class="transaction_tagzone">
+              <span class="transaction_nw" ng-class="{isNeed: trans.isNeed == true, isWant: trans.isNeed == false}">
               {{(trans.isNeed ? "Gebraucht" : "Gewollt")}}
-            </span>
+              </span>
+            </div>
         </div>
         <div class="transaction_amount">
           € {{punktZuKomma.parse(trans.amount)}}

@@ -1,4 +1,5 @@
 {
   "name": "parents",
-  "app_id": ""
+  "app_id": "",
+  "proxyUrl": "http://pommo-backend.herokuapp.com/"
 }
