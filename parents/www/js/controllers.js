@@ -4,7 +4,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
     this.selectedKid;
   })
 
-  .controller('StartCtrl', function ($scope, $state, Kids, kidsService, $ionicModal) {
+  .controller('StartCtrl', function ($scope, $state, $ionicModal, $ionicSlideBoxDelegate, Kids, kidsService, $ionicModal) {
     $scope.platform = ionic.Platform;
 
     $scope.kids = Kids.getAll();
@@ -71,41 +71,35 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
     };
 
     // Load the add dialog from the given template URL
-    $ionicModal.fromTemplateUrl('templates/dialog-addKid.html', function (modal) {
-      $scope.addDialog = modal;
-    }, {
+    $ionicModal.fromTemplateUrl('templates/dialog-addKid.html', {
       scope: $scope,
-      animation: 'slide-in-up'
+      animation: 'slide-in-up',
+    }).then(function (modal) {
+      $scope.selectModal = modal;
+      $scope.selectModalSlider = $ionicSlideBoxDelegate.$getByHandle('modalSlider');
+      $scope.selectModalSlider.enableSlide(false);
     });
 
-    $scope.showAddChangeDialog = function () {
-      $scope.addDialog.show();
+    $scope.closeSelectModal = function () {
+        $scope.selectModal.hide();
     };
 
-    $scope.leaveAddChangeDialog = function () {
-      // Remove dialog
-      $scope.addDialog.remove();
-      // Reload modal template to have cleared form
-      $ionicModal.fromTemplateUrl('templates/dialog-addKid.html', function (modal) {
-        $scope.addDialog = modal;
-      }, {
-        scope: $scope,
-        animation: 'slide-in-up'
-      });
+    $scope.openSelectModal = function () {
+      $scope.selectModalSlider.slide(0);
+      $scope.selectModal.show();
     };
 
-    $scope.addKid = function (form) {
+    $scope.addKid = function (addForm) {
       var newItem = {};
-      // Add values from form to object
-      newItem.name = form.name.$modelValue;
+      newItem.name = addForm.name.$modelValue;
 
       // Save new list in scope and factory
       $scope.kids.push(newItem);
 
       //TODO send to backend
 
-      // Close dialog
-      $scope.leaveAddChangeDialog();
+      NumberUpdate();
+      $ionicSlideBoxDelegate.$getByHandle('modalSlider').next();
     };
 
   })
@@ -191,7 +185,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
   })
 
 
-  .controller('OrderCtrl', function ($scope, $state, $filter, Days, $ionicHistory, $cordovaToast, PunktZuKomma, Intervall, Order) {
+  .controller('OrderCtrl', function ($scope, $state, $ionicHistory, $cordovaToast, PunktZuKomma, Days, Intervall, Order) {
     $scope.platform = ionic.Platform;
     $scope.order = Order;
 
