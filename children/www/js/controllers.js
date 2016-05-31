@@ -56,6 +56,10 @@ angular.module('starter.controllers', [])
           incomingEventHandler(msgData);
 
       };
+      ws.onclose = function() {
+        // websocket about to close -- reopen after time
+        setTimeout(this.initWebSockets, 1000);
+      };
     };
   })
 

@@ -27,7 +27,7 @@ angular.module('starter.services', [])
       }
     };
   })
-  .service('transactionsService', function () {
+  .service('transactionsService', function (Stats) {
     var _transactions = [];
 
     this.transactions = function () {
@@ -193,7 +193,7 @@ angular.module('starter.services', [])
 
     var months = [
       {id: 1, name: 'Jänner'},
-      {id: 2, name: 'Februar'},
+      {id: 2, name: 'Feburar'},
       {id: 3, name: 'März'},
       {id: 4, name: 'April'},
       {id: 5, name: 'Mai'},
