@@ -186,6 +186,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
 
   .controller('OrderCtrl', function ($scope, $state, $filter, Days, $ionicHistory, $cordovaToast, PunktZuKomma, Intervall, Order) {
     $scope.platform = ionic.Platform;
+    $scope.order = Order;
 
     $scope.$on('$ionicView.beforeEnter', function () {
       $scope.data = {};
@@ -203,15 +204,13 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
       }
 
       //Set values with either the default values or with the saved values
-      if (Order.getAmount() > 0) {
-        $scope.amount = Order.getAmount();
+      if ($scope.order.getAmount() > 0) {
+        $scope.amount = $scope.order.getAmount();
       }
-      $scope.reason = Order.getText();
-      $scope.selectedDay = $scope.data.days[Order.getDay()];
-      $scope.timeValue = $filter("date")(Order.getTime(), 'HH:mm');
+      $scope.reason = $scope.order.getText();
+      $scope.selectedDay = $scope.data.days[$scope.order.getDay()];
+      $scope.timeValue = $scope.order.getTime();
     });
-
-    $scope.order = Order;
 
     $scope.saveOrder = function (orderForm) {
 
@@ -219,17 +218,12 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
       $scope.order.setAmount(orderForm.amount.$modelValue);
       $scope.order.setText(orderForm.reason.$modelValue);
       $scope.order.setDay(orderForm.day.$modelValue.id - 1); //-1 weil wir mit 1 zu zählen beginnen, nicht mit 0
-
-      var time_temp = orderForm.timeValue.$modelValue.split(':');
-      var d = new Date();
-      d.setHours(time_temp[0], time_temp[1]);
-      $scope.order.setTime(d);
-
+      $scope.order.setTime(orderForm.timeValue.$modelValue);
 
       //TODO: send Order to backend here; when successful, run the next lines of code, otherwise show some error
 
       //TODO: activate Toast before release (Toast not working in web browser); tested in emulator for ios + android
-      var msg = "Dauerauftrag über " + PunktZuKomma.parse($scope.amount) + " € " + intervall + " gespeichert";
+      var msg = "Dauerauftrag über " + PunktZuKomma.parse($scope.order.getAmount()) + " € " + intervall + " gespeichert";
       console.log(msg);
       //$cordovaToast.show(msg,'long','center');
       $ionicHistory.goBack();
