@@ -59,13 +59,15 @@ angular.module('starter.controllers', ['ngCordova','chart.js'])
 
     $scope.onKidDelete = function (kid) {
       $scope.kids.splice($scope.kids.indexOf(kid), 1);
-      console.log(Kids.getNum($scope.kids));
+      //console.log(Kids.getNum($scope.kids));
+      //TODO send info to backend
       NumberUpdate();
     };
 
     $scope.reorderKid = function (kid, fromIndex, toIndex) {
       $scope.kids.splice(fromIndex, 1);
       $scope.kids.splice(toIndex, 0, kid);
+      //TODO save order in backend?
     };
 
     // Load the add dialog from the given template URL
@@ -99,6 +101,9 @@ angular.module('starter.controllers', ['ngCordova','chart.js'])
 
       // Save new list in scope and factory
       $scope.kids.push(newItem);
+
+      //TODO send to backend
+
       // Close dialog
       $scope.leaveAddChangeDialog();
     };
@@ -106,9 +111,16 @@ angular.module('starter.controllers', ['ngCordova','chart.js'])
   })
 
 
-  .controller('DetailCtrl', function ($scope, $state, kidsService, Amount, Categories) {
+  .controller('DetailCtrl', function ($scope, $state, kidsService, Amount, Categories, PunktZuKomma) {
     $scope.platform = ionic.Platform;
     $scope.kidsService = kidsService;
+
+    $scope.punktZuKomma = PunktZuKomma;
+
+    $scope.available = Amount.getAvailable();
+
+    //TODO select kid and get data from backend - available + last transaction to the kid
+
   })
 
 
@@ -144,11 +156,11 @@ angular.module('starter.controllers', ['ngCordova','chart.js'])
       newTransaction.amount = form.amount.$modelValue;
       newTransaction.text = form.reason.$modelValue;
 
+      //TODO: send Transaction to backend here; when successful, run the next lines of code, otherwise show some error
 
-      //TODO: send Transaction to backend here; when successful, run the next line of code, otherwise show some error
-
-      //TODO: activate Toast before release (Toast not working in web browser); tested in emulator
+      //TODO: activate Toast before release (Toast not working in web browser); tested in emulator for ios + android
       var msg = PunktZuKomma.parse(newTransaction.amount) + " € gesendet";
+      console.log(msg);
       //$cordovaToast.show(msg,'long','center');
       $ionicHistory.goBack();
 
@@ -156,14 +168,81 @@ angular.module('starter.controllers', ['ngCordova','chart.js'])
   })
 
 
-  .controller('OrderCtrl', function ($scope, $state) {
+  .controller('OrderCtrl', function ($scope, $state, $filter, Days, $ionicHistory, $cordovaToast, PunktZuKomma, Intervall, Order) {
     $scope.platform = ionic.Platform;
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+      $scope.data = {};
+      $scope.list = Intervall.getList();
+      $scope.data.intervall = Intervall.getDefault();
+
+      //set dropdown either for montly or weekly
+      if($scope.data.intervall.id == 1) {
+        $scope.data.days = Days.getMonthdays();
+        $scope.data.description = "Tag im Monat";
+      }
+      else {
+        $scope.data.days = Days.getWeekdays();
+        $scope.data.description = "Wochentag";
+      }
+
+      //Set values with either the default values or with the saved values
+      if(Order.getAmount()>0) {
+        $scope.amount = Order.getAmount();
+      }
+      $scope.reason = Order.getText();
+      $scope.selectedDay = $scope.data.days[Order.getDay()];
+      $scope.timeValue = $filter("date")(Order.getTime(), 'HH:mm');
+    });
+
+    $scope.order = Order;
+
+    $scope.saveOrder = function(orderForm) {
+
+      var intervall = $scope.data.intervall.name;
+      $scope.order.setAmount(orderForm.amount.$modelValue);
+      $scope.order.setText(orderForm.reason.$modelValue);
+      $scope.order.setDay(orderForm.day.$modelValue.id-1); //-1 weil wir mit 1 zu zählen beginnen, nicht mit 0
+
+      var time_temp = orderForm.timeValue.$modelValue.split(':');
+      var d = new Date();
+      d.setHours(time_temp[0],time_temp[1]);
+      $scope.order.setTime(d);
+
+
+      //TODO: send Order to backend here; when successful, run the next lines of code, otherwise show some error
+
+      //TODO: activate Toast before release (Toast not working in web browser); tested in emulator for ios + android
+      var msg = "Dauerauftrag über " + PunktZuKomma.parse($scope.amount) + " € " + intervall + " gespeichert";
+      console.log(msg);
+      //$cordovaToast.show(msg,'long','center');
+      $ionicHistory.goBack();
+    };
   })
 
-  .controller('IntervallCtrl', function ($scope, $state) {
+  .controller('IntervallCtrl', function ($scope, $state, $ionicHistory, Intervall) {
     $scope.platform = ionic.Platform;
 
+    $scope.list = Intervall.getList();
+
+    $scope.makeDefault = function(item) {
+      removeDefault();
+      var newDefaultIndex = $scope.list.indexOf(item);
+      $scope.list[newDefaultIndex].useAsDefault = true;
+      Intervall.setList($scope.list);
+
+      //TODO send intervall to backend
+      $ionicHistory.goBack();
+    }
+
+    function removeDefault() {
+      //Remove existing default
+      for(var i = 0; i < $scope.list.length; i++) {
+        if($scope.list[i].useAsDefault == true) {
+          $scope.list[i].useAsDefault = false;
+        }
+      }
+    }
   })
 
   .controller('HistorieCtrl', function ($scope, $state) {

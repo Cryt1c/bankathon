@@ -115,12 +115,109 @@ angular.module('starter.services', [])
 
   })
 
-  .factory('PunktZuKomma', function () {
+
+  .factory('Days', function () {
+
+    var monthdays = [];
+
+
+    var weekdays = [
+      {id: 1, label: 'Montag'},
+      {id: 2, label: 'Dienstag'},
+      {id: 3, label: 'Mittwoch'},
+      {id: 4, label: 'Donnerstag'},
+      {id: 5, label: 'Freitag'},
+      {id: 6, label: 'Samstag'},
+      {id: 7, label: 'Sonntag'},
+    ];
+
     return {
-      parse: function (value) {
-        var text = parseFloat(value).toFixed(2).toString().replace(".", ",");
+      getMonthdays: function () {
+        monthdays = [];
+        for(var i = 1; i <= 28; i++) {
+          var temp = {};
+          temp.id = i;
+          temp.label = ' ' + i + '. Tag im Monat';
+          monthdays.push(temp);
+        }
+        return monthdays;
+      },
+      getWeekdays: function() {
+        return weekdays;
+      }
+    };
+  })
+
+
+  .factory('Intervall', function() {
+    var list = [
+      {id: 1, name: 'monatlich', useAsDefault: true},
+      {id: 2, name: 'wöchentlich', useAsDefault: false}
+    ];
+
+    return {
+      setList: function (newList) {
+        list = newList;
+        return true;
+      },
+      getList: function() {
+        return list;
+      },
+      getDefault: function () {
+        for(var i = 0; i < list.length; i++) {
+          if(list[i].useAsDefault == true) {
+            return list[i];
+          }
+        }
+      }
+    }
+  })
+
+  .factory('Order', function() {
+
+    var amount = 0;
+    var text = "";
+    var day = 0;
+    var time = new Date();
+
+    return {
+      setAmount: function(amountValue) {
+        amount = amountValue;
+        return true;
+      },
+      getAmount: function() {
+        return amount;
+      },
+      setText: function(textValue) {
+        text = textValue;
+        return true;
+      },
+      getText: function() {
         return text;
       },
-    };
+      setDay: function(dayValue) {
+        day = dayValue;
+        return true;
+      },
+      getDay: function() {
+        return day;
+      },
+      setTime: function(timeValue) {
+        time = timeValue;
+        return true;
+      },
+      getTime: function() {
+        return time;
+      }
+    }
+  })
+
+  .factory('PunktZuKomma', function () {
+  return {
+    parse: function (value) {
+      var text = parseFloat(value).toFixed(2).toString().replace(".", ",");
+      return text;
+    },
+  };
   });
 

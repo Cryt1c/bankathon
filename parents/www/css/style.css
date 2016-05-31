@@ -70,3 +70,63 @@
   font-size: 14px;
   color: #a49e9e;
 }
+
+#add_button {
+  margin-top: 50px;
+}
+
+.item-input .input-label {
+  font-size: 16px;
+  color: #444444;
+}
+
+.orderlist .item-elem p {
+  font-size: 16px;
+  color: #444444;
+}
+
+.orderList .item-elem div {
+  font-size: 16px;
+  width: 100%;
+}
+
+
+.item-input input,
+.item-input textarea{
+  font-size: 16px;
+  color: #444444;
+}
+
+.input-value-right {
+  float: right;
+}
+
+.input-value-left {
+  float: left;
+}
+
+.item.item-stable {
+  border: none;
+  background-color: #fff;
+  padding-left: 0px;
+  color: #444444;
+}
+
+.item-select.item-stable .input-label {
+  color: #444444;
+}
+
+.item-select.item-stable select {
+  border: none;
+  background-color: #fff;
+  color: #444444;
+  font-size: 16px;
+}
+.order-errors {
+  color: red;
+  margin-top: 15px;
+}
+
+#timepicker {
+  text-align: right;
+}

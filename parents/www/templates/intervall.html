@@ -3,8 +3,11 @@
 
   <ion-content>
     <ion-list>
-      <ion-item ui-sref="order"> CHECK monatlich</ion-item>
-      <ion-item ui-sref="order">wöchentlich</ion-item>
+      <ion-item ng-repeat="item in list" item="item" item-typ="item item-icon-left" ng-click="makeDefault(item)" ng-tap="makeDefault(item)">
+         <i ng-if="item.useAsDefault" class="icon ion-checkmark"></i>
+          {{item.name}}
+      </ion-item>
+
     </ion-list>
 
   </ion-content>
