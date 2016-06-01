@@ -1,7 +1,8 @@
 angular.module('starter.controllers', [])
 
   .service('webService', function ($http, transactionsService, Amount) {
-    var url = "/api/"; // change this for production -- gets proxied on to heroku app location
+    var runningOnMobile = ionic.Platform.isIOS() || ionic.Platform.isAndroid();
+    var url = (runningOnMobile ?  "http://pommo-backend.herokuapp.com/" : "/api/"); // change this for production -- gets proxied on to heroku app location
     var userId = 1;
     this.getUser = function () {
       return $http.get(url + "getChild?childId=" + userId);
