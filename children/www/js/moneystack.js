@@ -79,15 +79,26 @@
 
     		var zIndex = 1000;
     		//var firstIndex = allPieces.find(
+    		var largestHeight = 150; // the height of the biggest-denomination banknote
+    		var sizeCounter = 0;
     		for (var denominationI = 0; denominationI< allPieces.length; denominationI++) {
     			var denomination = allPieces[denominationI];
     			var $pieces = $(".moneystack-value-" + denomination).not(".moneystack-reserved");
+
+    			var height = largestHeight - (sizeCounter*3);
+    			if ($pieces.hasClass("moneystack-value-5")) height -= 20;// TODO ugly HACK!
+    			if ($pieces.hasClass("moneystack-banknote")) {
+    			  sizeCounter++; //we have banknotes of this denomination
+
+    			}
+
     			for (var pieceI = 0; pieceI < $pieces.length; pieceI++)
     			{
     				var thisPiece = $pieces.eq(pieceI);
     				if (thisPiece.data("moneystack-value") >= 5) {
     				// only sort banknotes here
     					thisPiece.css("z-index", zIndex);
+    					thisPiece.css("height", height + "px");
     					if (!shouldAnimate) {
     						// do not animate
     						thisPiece.css("top", y + "px");
@@ -379,15 +390,23 @@
     var loadMoneyPieces = function($this, denominationFilenameDict) {
     	// denominationFilenameDictionary: map of denominations (500, 200,100...) to image filenames)
     	var prefix = "img/money/";
+    	var allPieces = [500,200,100,50,20,10,5, 2, 1];
     	var data = $this.data("moneystack");
     	var moneyPrototypes = {}; // a dictionary that will hold the money element prototypes
-    	for (var key in denominationFilenameDict) {
-    		if (denominationFilenameDict.hasOwnProperty(key)) {
+    	var largestHeight = 150;
+    	var i=0;
+
+    	for (i = 0; i < allPieces.length; i++) {
+    		  var key = allPieces[i];
+
     			// load the prototypical element for this banknote
+    			//var height = largestHeight - (i *3); // scale down 3 pixels per banknote
     			var img = $("<img class='moneystack-piece " + (parseInt(key)>= 5 ? "moneystack-banknote" : "moneystack-coin" ) + "' src='" + (prefix + denominationFilenameDict[key])  + "'/>");
           img.data("moneystack-value", key);
           moneyPrototypes[key] = img;
-    		}
+
+
+
     	}
 
     	data.moneyPrototypes = moneyPrototypes;
