@@ -317,7 +317,9 @@ angular.module('starter.controllers', [])
               onTap: function () {
                 //trans = $scope.transactionsService.createAndAddTransaction(randomName, payment, stat.id, false);
                 $scope.pendingTransaction.isNeed = false;
+                $scope.pendingTransaction.writtenToServer = false;
                 $scope.transactionsService.addTransaction($scope.pendingTransaction);
+
                 $scope.pendingTransaction = null;
 
                 console.log("is_need false");
