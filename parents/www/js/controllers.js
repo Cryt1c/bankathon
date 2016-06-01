@@ -190,12 +190,14 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
         $scope.data.toggleLabel = 'Gewollt/Gebraucht';
         $scope.data.spent = Stats.getNeedWant();
         $scope.data.names = ["Gebraucht", "Gewollt"];
+        $scope.data.colors = ["#0D7DBF", "#38D42F"];
       }
       else {
         //render categories in chart
         $scope.data.toggleLabel = 'Kategorien';
         $scope.data.spent = Stats.getSpent();
         $scope.data.names = Stats.getNames();
+        $scope.data.colors = Stats.getColors();
       }
     });
   })
