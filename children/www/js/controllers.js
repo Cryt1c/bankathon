@@ -143,7 +143,7 @@ angular.module('starter.controllers', [])
       $scope.data = {};
       $scope.data.amount = 10;
       var myRequest = $ionicPopup.show({
-        template: '<label for="amount">Betrag in €</label>' +
+        template: '<label for="amount">Betrag in € *</label>' +
         '<input type="number" step="0.01" min="0" max="1000" id="amount" for="slider" ng-model="data.amount" required="required" ng-change="changeButton()>' +
         '<div class="spacer"></div>' +
         '<label for="message">Grund*</label>' +
