@@ -3,7 +3,7 @@
   "version": "1.1.1",
   "description": "PoMMo - Pocket Money Mobile",
   "scripts": {
-	  "start": "node children/server/app.js"
+    "start": "node children/server/app.js"
   },
   "dependencies": {
     "express": "^4.13.4",
