@@ -156,12 +156,16 @@ angular.module('starter.services', [])
           stats[i].spent = 0;
         }
       },
-      getHeights: function (spentTotal, available) {
+      getHeights: function (spentTotal, available, calc_height) {
         for (var i = 0; i < stats.length; i++) {
-          var temp = stats[i].spent / (spentTotal + available) * 450;
+          var temp = stats[i].spent / (spentTotal + available) * calc_height;
 
-          if (temp > 0 && temp < 25) {
-            stats[i].height = 25;
+          var check = 20;
+          if(calc_height > 350) {
+            check = 25;
+          }
+          if (temp > 0 && temp < check) {
+            stats[i].height = check;
           }
           else {
             stats[i].height = temp;

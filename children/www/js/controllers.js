@@ -368,16 +368,23 @@ angular.module('starter.controllers', [])
   })
 
 
-  .controller('StatsCtrl', function ($scope, $state, $ionicSlideBoxDelegate, Amount, Stats, Months, transactionsService, PunktZuKomma) {
+  .controller('StatsCtrl', function ($scope, $state, $window, $ionicSlideBoxDelegate, Amount, Stats, Months, transactionsService, PunktZuKomma) {
 
     $scope.platform = ionic.Platform;
     $scope.Math = window.Math;
+
+    //set width + height of statistics depending on device
+    var dev_width = $window.innerWidth;
+    var dev_height = $window.innerHeight;
+    var calc_height = 350;
+    $scope.dev_height = dev_height;
+    $scope.dev_width = dev_width;
+
 
     $scope.$on('$ionicView.enter', function () {
 
       var bottom = 0;
       var len = $("#list .item-elem").length;
-      var height_total = 0;
       var height_ausgaben = 0;
 
       $("#list .item-elem").each(function (index, element) {
@@ -389,8 +396,9 @@ angular.module('starter.controllers', [])
 
         if (index == len - 1) {
           $('#line').css("bottom", bottom);
-        }
-        ;
+          height_ausgaben = bottom-15;
+          $(".ausgaben").css("bottom", height_ausgaben);
+        };
 
         /* Animation; jede Animation wird verzoegert ausgeloest;
          *  um das linear auszufuehren, wird das mit dem jeweiligen Index multipliziert
@@ -408,41 +416,84 @@ angular.module('starter.controllers', [])
               if (index == len - 2) {
                 $('#line').show();
                 $(".ausgaben").show();
-              }
-              ;
-
+              };
               if (index == len - 1) {
                 $(".total").show();
-              }
-              ;
+              };
             },
           });
         //Startwert fuer das naechste Element erhoehen
         bottom += parseFloat(height);
-
-        if (index == len - 2) {
-          height_ausgaben = bottom - 5;
-          $(".ausgaben").css("bottom", height_ausgaben);
-        }
-        ;
       });
+
+      if(dev_height > 600) {
+        var elements = document.getElementsByClassName("child__icon");
+        for(var i = 0; i < elements.length; i++) {
+          elements[i].style.fontSize = "25px";
+          elements[i].style.paddingLeft = "10px";
+        };
+        var elements = document.getElementsByClassName("child__name");
+        for(var i = 0; i < elements.length; i++) {
+          elements[i].style.paddingLeft = "65px";
+        };
+        var elements = document.getElementsByClassName("child__betrag");
+        for(var i = 0; i < elements.length; i++) {
+          elements[i].style.paddingLeft = "165px";
+        };
+      }
     });
 
     $scope.$on('$ionicView.beforeEnter', function () {
 
       $scope.punktZuKomma = PunktZuKomma;
 
+      if(dev_height > 600 && dev_width  < 370) { //galaxy S4
+        $('.border').css('height', "470px");
+        $('.border').css('width', "260px");
+        $('.border').css('top', "65px");
+        $('#line').css('width', "330px");
+        $('.anzeige').css('height', "470px");
+        $('.anzeige').css('width', "80px");
+        $('.anzeige').css('top', "16px");
+        $('.anzeige .total').css('bottom', "440px");
+        $('#list .list').css('height', "450px");
+        $('#list .list').css('width', "240px");
+        $('#list .list').css('top', "25px");
+        calc_height = 450;
+      }
+
+      if(dev_height > 600 && dev_width > 360) { //iphone 6
+         $('.border').css('height', "470px");
+         $('.border').css('width', "280px");
+         $('.border').css('top', "65px");
+         $('#line').css('width', "350px");
+         $('.anzeige').css('height', "470px");
+         $('.anzeige').css('width', "80px");
+         $('.anzeige').css('top', "16px");
+         $('.anzeige .total').css('bottom', "440px");
+         $('#list .list').css('height', "450px");
+         $('#list .list').css('width', "260px");
+        $('#list .list').css('top', "25px");
+         calc_height = 450;
+      }
+
+
       $scope.stats = Stats.all();
       $scope.available = Amount.getAvailable();
       $scope.spentTotal = Amount.getSpentTotal($scope.stats);
-      $scope.stats = Stats.getHeights($scope.spentTotal, $scope.available);
+      $scope.stats = Stats.getHeights($scope.spentTotal, $scope.available, calc_height);
       var date = new Date();
       $scope.monthValue = date;
 
-      var height_available = $scope.available / ($scope.available + $scope.spentTotal) * 450;
+      var height_available = $scope.available / ($scope.available + $scope.spentTotal) * calc_height;
 
-      if (height_available < 25) {
-        $scope.height_available = 25;
+      console.log(height_available);
+      var check = 20;
+      if(calc_height > 350) {
+        check = 25;
+      }
+      if (height_available < check) {
+        $scope.height_available = check;
       }
       else {
         $scope.height_available = height_available;

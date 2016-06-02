@@ -137,8 +137,8 @@ h2, p {
 }
 
 .border {
-  height: 500px;
-  width: 280px;
+  height: 370px;
+  width: 230px;
   border-right: 15px solid #000000;
   border-left: 15px solid #000000;
   border-bottom: 15px solid #000000;
@@ -147,7 +147,7 @@ h2, p {
   margin-bottom: 8px;
   z-index: 100;
   margin-left: 15px;
-  top: 65px;
+  top: 80px;
   position: absolute;
 }
 
@@ -156,7 +156,7 @@ hr {
   position: absolute;
   height: 4px;
   color: red;
-  width: 285px;
+  width: 300px;
   bottom: 0px;
   z-index: 100;
   background-color: red;
@@ -170,15 +170,15 @@ hr {
 .anzeige {
   float: right;
   position: relative;
-  height: 500px;
+  height: 370px;
   width: 80px;
-  top: 44px;
+  top: 30px;
 }
 
 .anzeige .total {
   display: none;
   position: absolute;
-  bottom: 480px;
+  bottom: 340px;
   width: 100%;
   margin: auto;
 }
@@ -194,9 +194,9 @@ hr {
 
 #list .list {
   position: relative;
-  height: 480px;
-  width: 260px;
-  top: 25px;
+  height: 350px;
+  width: 210px;
+  top: 42px;
   left: 25px;
 }
 
@@ -219,11 +219,12 @@ hr {
   text-decoration: none;
   text-align: center;
   vertical-align: middle;
+  font-size: 14px;
 }
 
-.child .icon {
-  font-size: 25px;
-  padding-left: 10px;
+.child .child__icon {
+  font-size: 16px;
+  padding-left: 0px;
 }
 .child__name {
   display: -webkit-box;
@@ -239,7 +240,8 @@ hr {
   position: absolute;
   top: 0;
   height: 100%;
-  padding-left: 55px;
+  padding-left: 40px;
+  font-size: 14px;
 }
 
 .child__betrag {
@@ -256,23 +258,10 @@ hr {
   position: absolute;
   top: 0;
   height: 100%;
-  padding-left: 170px;
+  padding-left: 130px;
   text-align: right;
+  font-size: 14px;
 }
-
-
-/*
-ion-list ion-item:nth-child(1) .box {
-  margin-top: 50px;
-}
-
-
-ion-list ion-item:nth-last-child(1) .box {
-  border-bottom: 15px solid #000000;
-  border-bottom-right-radius: 60px;
-  border-bottom-left-radius: 60px;
-  margin-bottom: 8px;
-*/
 
 .cat-elem {
   float:left;
