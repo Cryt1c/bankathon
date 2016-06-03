@@ -9,45 +9,28 @@
           <input type="number" step="0.01" min="0" max="1000" placeholder="0,00" name="amount" ng-model="amount" required/>
         </ion-item>
 
-        <!--
         <ion-item class="item item-input item-stacked-label">
-          <p class="input-label">Grund *</p>
-          <textarea rows="4" cols="50" placeholder="z.B. Taschengeld" name="reason" ng-model="reason" style="width:95%;" required></textarea>
-        </ion-item> -->
-
-        <ion-item class="item-icon-right item-elem" ui-sref="intervall">
-          <div class="item-label">
-            <div class="input-value-left">Intervall</div>
-            <div class="input-value-right">{{data.intervall.name}}</div>
-          </div>
-          <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon icon_blue"></i>
+          <label class="item item-input item-select item-stable">
+            <div class="input-label">
+             Intervall
+            </div>
+            <select ng-change="setDays(selectedIntervall)" ng-options="intervall as intervall.name for intervall in intervalls track by intervall.id" name="intervall" ng-model="selectedIntervall"></select>
+          </label>
         </ion-item>
 
         <ion-item class="item item-input item-stacked-label">
           <label class="item item-input item-select item-stable">
             <div class="input-label">
-              {{data.description}}
+              {{description}}
             </div>
-            <select ng-options="day as day.label for day in data.days track by day.id" name="day" ng-model="selectedDay"></select>
+            <select ng-options="day as day.label for day in days track by day.id" name="day" ng-model="selectedDay"></select>
           </label>
         </ion-item>
 
-        <ion-item class="item item-input">
-         <label class="input-label">Uhrzeit</label>
-          <input type="time" ng-model="timeValue" name="timeValue" id="timepicker" value="{{timeValue | date: HH:mm}}" required>
-
-          <!--<p class="" ion-datetime-picker time ng-model="timeValue">
-            Uhrzeit: {{timeValue| date: "H:mm"}}
-          </p>-->
-
-         </ion-item>
-
         <div class="padding order-errors">
           <p ng-show="orderForm.amount.$error.required && !orderForm.amount.$pristine">* Bitte geben Sie einen Betrag ein.</p>
-          <p ng-show="orderForm.reason.$error.required && !orderForm.reason.$pristine">* Bitte geben Sie einen Grund an. </p>
           <p ng-show="orderForm.amount.$invalid && !orderForm.amount.$pristine">* Im Feld Betrag sind nur Zahlen erlaubt. </p>
-          <p ng-show="orderForm.time.$invalid && !orderForm.time.$pristine">* Bitte geben Sie eine Uhrzeit an. </p>
-        </div>
+         </div>
 
 
         <button id="add_button" class="button button-block button-positive" ng-disabled="orderForm.$invalid"  ng-click="saveOrder(orderForm)">

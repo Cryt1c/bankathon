@@ -40,7 +40,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
     this.selectedKid;
   })
 
-  .controller('StartCtrl', function ($scope, $state, $ionicModal, $ionicSlideBoxDelegate, Kids, kidsService, $ionicModal) {
+  .controller('StartCtrl', function ($scope, $state, $ionicModal, $ionicPopup, $ionicSlideBoxDelegate, Kids, kidsService) {
     $scope.platform = ionic.Platform;
 
     $scope.kids = Kids.getAll();
@@ -94,10 +94,25 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
     };
 
     $scope.onKidDelete = function (kid) {
-      $scope.kids.splice($scope.kids.indexOf(kid), 1);
-      //console.log(Kids.getNum($scope.kids));
-      //TODO send info to backend
-      NumberUpdate();
+
+      console.log(kid);
+        var confirmPopup = $ionicPopup.confirm({
+          title: kid.name + ' entfernen?',
+          template: 'Sind Sie sicher, dass Sie das Konto von ' + kid.name + ' löschen wollen? ' +
+                    kid.name + ' kann weiterhin über das Geld verfügen, Sie können allerdings kein Geld mehr senden.',
+          cancelText: 'Nein',
+          cancelType: 'button-default',
+          okText: 'Ja',
+          OkType: 'button-positive'
+        });
+
+        confirmPopup.then(function(res) {
+          if(res) {
+            $scope.kids.splice($scope.kids.indexOf(kid), 1);
+            //TODO send info to backend
+            NumberUpdate();
+          }
+        })
     };
 
     $scope.reorderKid = function (kid, fromIndex, toIndex) {
@@ -117,7 +132,16 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
     });
 
     $scope.closeSelectModal = function () {
-        $scope.selectModal.hide();
+      $scope.selectModal.hide();
+
+      $ionicModal.fromTemplateUrl('templates/dialog-addKid.html', {
+        scope: $scope,
+        animation: 'slide-in-up',
+      }).then(function (modal) {
+        $scope.selectModal = modal;
+        $scope.selectModalSlider = $ionicSlideBoxDelegate.$getByHandle('modalSlider');
+        $scope.selectModalSlider.enableSlide(false);
+      });
     };
 
     $scope.openSelectModal = function () {
@@ -128,6 +152,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
     $scope.addKid = function (addForm) {
       var newItem = {};
       newItem.name = addForm.name.$modelValue;
+      newItem.paired = false;
 
       // Save new list in scope and factory
       $scope.kids.push(newItem);
@@ -135,21 +160,30 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
       //TODO send to backend
 
       NumberUpdate();
-      $ionicSlideBoxDelegate.$getByHandle('modalSlider').next();
+      $scope.selectModalSlider.slide(1);
     };
 
   })
 
 
-  .controller('DetailCtrl', function ($scope, $state, kidsService, Amount, Stats, PunktZuKomma) {
+  .controller('DetailCtrl', function ($scope, $state, $ionicHistory, kidsService, Kids, Amount, Stats, PunktZuKomma) {
     $scope.platform = ionic.Platform;
     $scope.kidsService = kidsService;
+    $scope.paired = kidsService.selectedKid.paired;
 
     $scope.punktZuKomma = PunktZuKomma;
 
     $scope.available = Amount.getAvailable();
 
     //TODO select kid and get data from backend - available + last transaction to the kid
+
+    $scope.pairingDone = function(kid) {
+
+      //TODO: check ob pairing mit kind passt - wenn ja, nachfolgende Zeile ausführen
+      //Kids.setPaired(kid.id, true);
+
+      $ionicHistory.goBack();
+    }
 
   })
 
@@ -228,37 +262,38 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
     $scope.order = Order;
 
     $scope.$on('$ionicView.beforeEnter', function () {
-      $scope.data = {};
-      $scope.list = Intervall.getList();
-      $scope.data.intervall = Intervall.getDefault();
+      $scope.intervalls = Intervall.getList();
+      $scope.selectedIntervall = Intervall.getDefault();
 
-      //set dropdown either for montly or weekly
-      if ($scope.data.intervall.id == 1) {
-        $scope.data.days = Days.getMonthdays();
-        $scope.data.description = "Tag im Monat";
-      }
-      else {
-        $scope.data.days = Days.getWeekdays();
-        $scope.data.description = "Wochentag";
-      }
+      $scope.setDays($scope.selectedIntervall);
 
       //Set values with either the default values or with the saved values
       if ($scope.order.getAmount() > 0) {
         $scope.amount = $scope.order.getAmount();
       }
-      $scope.reason = $scope.order.getText();
-      $scope.selectedDay = $scope.data.days[$scope.order.getDay()];
-      $scope.timeValue = $scope.order.getTime();
+      $scope.reason = 'Dauerauftrag Taschengeld';
+      $scope.selectedDay = $scope.days[$scope.order.getDay()];
     });
 
+
+    $scope.setDays = function (selectedIntervall) {
+      //set dropdown either for montly or weekly
+      if (selectedIntervall.id == 1) {
+        $scope.days = Days.getMonthdays();
+        $scope.description = "Tag im Monat";
+      }
+      else {
+        $scope.days = Days.getWeekdays();
+        $scope.description = "Wochentag";
+      }
+    };
+
+
     $scope.saveOrder = function (orderForm) {
-
-      var intervall = $scope.data.intervall.name;
+      
+      var intervall = orderForm.intervall.$modelValue.name;
       $scope.order.setAmount(orderForm.amount.$modelValue);
-      $scope.order.setText(orderForm.reason.$modelValue);
       $scope.order.setDay(orderForm.day.$modelValue.id - 1); //-1 weil wir mit 1 zu zählen beginnen, nicht mit 0
-      $scope.order.setTime(orderForm.timeValue.$modelValue);
-
       //TODO: send Order to backend here; when successful, run the next lines of code, otherwise show some error
 
       //TODO: activate Toast before release (Toast not working in web browser); tested in emulator for ios + android
@@ -267,6 +302,10 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
       //$cordovaToast.show(msg,'long','center');
       $ionicHistory.goBack();
     };
+
+    $scope.cancelOrder = function() {
+      $ionicHistory.goBack();
+    }
   })
 
   .controller('IntervallCtrl', function ($scope, $state, $ionicHistory, Intervall) {

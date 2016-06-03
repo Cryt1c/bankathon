@@ -12,7 +12,7 @@
 
   <ion-content>
     <ion-list class="kids_list" ng-controller="StartCtrl" show-delete="shouldShowDelete" show-reorder="shouldShowReorder">
-      <ion-item class="item-icon-right item-elem" ui-sref="detail" ng-repeat="kid in kids" ng-controller="StartCtrl" ng-click="setKid(kid.name)">
+      <ion-item class="item-icon-right item-elem" ui-sref="detail" ng-repeat="kid in kids" ng-controller="StartCtrl" ng-click="setKid(kid)">
         <div class="name"> {{kid.name}} </div>
         <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon icon_blue"></i>
 

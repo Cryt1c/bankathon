@@ -4,10 +4,12 @@ angular.module('starter.services', [])
 
     var kids = [{
       id: 0,
-      name: 'Michael'
+      name: 'Michael',
+      paired: true
     }, {
       id: 1,
-      name: 'Sophie'
+      name: 'Sophie',
+      paired: false
     }];
     var kidsNum = kids.length;
 
@@ -17,6 +19,9 @@ angular.module('starter.services', [])
       },
       getNum: function (kids) {
         return kids.length;
+      },
+      setPaired: function(id, paired) {
+        kids[id].paired = paired;
       }
     };
   })
@@ -215,9 +220,16 @@ angular.module('starter.services', [])
 
   .factory('Days', function () {
 
-    var monthdays = [];
-
-
+    var monthdays = [{
+      id: 1, label: '1. im Monat'},
+      {id: 2, label: '5. im Monat'},
+      {id: 3, label: '10. im Monat'},
+      {id: 4, label: '15. im Monat'},
+      {id: 5, label: '20. im Monat'},
+      {id: 6, label: '25. im Monat'},
+      {id: 7, label: 'letzter im Monat'},
+    ];
+    
     var weekdays = [
       {id: 1, label: 'Montag'},
       {id: 2, label: 'Dienstag'},
@@ -230,13 +242,6 @@ angular.module('starter.services', [])
 
     return {
       getMonthdays: function () {
-        monthdays = [];
-        for (var i = 1; i <= 28; i++) {
-          var temp = {};
-          temp.id = i;
-          temp.label = ' ' + i + '. Tag im Monat';
-          monthdays.push(temp);
-        }
         return monthdays;
       },
       getWeekdays: function () {
@@ -275,7 +280,6 @@ angular.module('starter.services', [])
     var amount = 0;
     var text = "";
     var day = 0;
-    var time = new Date();
 
     return {
       setAmount: function (amountValue) {
@@ -299,13 +303,6 @@ angular.module('starter.services', [])
       getDay: function () {
         return day;
       },
-      setTime: function (timeValue) {
-        time = timeValue;
-        return true;
-      },
-      getTime: function () {
-        return time;
-      }
     }
   })
 

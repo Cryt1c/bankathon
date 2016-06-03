@@ -1,7 +1,7 @@
 <ion-modal-view>
 
 <ion-header-bar class="bar bar-header bar-positive">
-    <button class="button icon-left ion-chevron-left button-clear" ng-click="closeSelectModal()">Zurück</button>
+    <button class="button icon-left ion-chevron-left button-clear" ng-click="closeSelectModal()"> Zurück</button>
     <h1 class="title">Kind hinzufügen</h1>
 </ion-header-bar>
 
@@ -14,7 +14,7 @@
               <p class="description">Geben Sie hier bitte den Namen Ihres Kindes an, um ein neues Konto einzurichten.</p>
             <ion-item class="item item-input item-stacked-label" id="add_input">
               <p class="input-label">Name</p>
-              <input type="text" placeholder="" name="name" ng-model="name" required />
+              <input type="text" name="name" ng-model="name" required/>
             </ion-item>
             <div class="padding order-errors">
               <p ng-show="addForm.name.$error.required && !addForm.name.$pristine">* Bitte geben Sie einen Namen ein.</p>
@@ -33,7 +33,7 @@
         <p class="description"> Scannen Sie folgenden QR-Code mit der PoMMo-App Ihres Kindes.
           Damit wird das Konto Ihres Kindes angelegt und eingerichet und mit Ihrem verknüft.
         </p>
-          <img src="img/qrcode.png" alt="qrcode zum scannen fuer die kids app" class="qr_img">
+          <img src="/img/qrcode.png" alt="qrcode zum scannen fuer die kids app" class="qr_img">
           <button id="finish_button" class="button button-block button-positive"  ng-click="closeSelectModal()">
             Fertig
           </button>

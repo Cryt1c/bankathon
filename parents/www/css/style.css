@@ -1,7 +1,9 @@
 .bar-positive button {
   border: none;
 }
-
+button.button-header {
+  font-size: 17px;
+}
 
 .name {
   text-align: center;
@@ -72,7 +74,10 @@
 }
 
 .qr_img {
-  width: 100%;
+  width: 80%;
+}
+.scan {
+  text-align: center;
 }
 
 .item-text {
@@ -176,4 +181,12 @@
   text-align: right;
   padding-top: 8px;
 
+}
+
+.pairing {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.pairing h3 {
+  margin-top: 15px;
 }

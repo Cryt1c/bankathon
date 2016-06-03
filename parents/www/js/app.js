@@ -51,13 +51,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         templateUrl: 'templates/order.html',
         controller: 'OrderCtrl'
       })
-
-      .state('intervall', {
-        url: '/intervall',
-        templateUrl: 'templates/intervall.html',
-        controller: 'IntervallCtrl'
-      })
-
+      
       .state('historie', {
         url: '/historie',
         templateUrl: 'templates/historie.html',
