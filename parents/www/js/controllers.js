@@ -258,6 +258,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
 
 
   .controller('OrderCtrl', function ($scope, $state, $ionicHistory, $cordovaToast, PunktZuKomma, Days, Intervall, Order) {
+
     $scope.platform = ionic.Platform;
     $scope.order = Order;
 
@@ -278,19 +279,23 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
 
     $scope.setDays = function (selectedIntervall) {
       //set dropdown either for montly or weekly
-      if (selectedIntervall.id == 1) {
+      if (selectedIntervall.id == 0) {
         $scope.days = Days.getMonthdays();
         $scope.description = "Tag im Monat";
+        Intervall.setDefault(0,true);
+        Intervall.setDefault(1,false);
       }
       else {
         $scope.days = Days.getWeekdays();
         $scope.description = "Wochentag";
+        Intervall.setDefault(0,false);
+        Intervall.setDefault(1,true);
       }
     };
 
 
     $scope.saveOrder = function (orderForm) {
-      
+
       var intervall = orderForm.intervall.$modelValue.name;
       $scope.order.setAmount(orderForm.amount.$modelValue);
       $scope.order.setDay(orderForm.day.$modelValue.id - 1); //-1 weil wir mit 1 zu zählen beginnen, nicht mit 0
@@ -302,35 +307,6 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
       //$cordovaToast.show(msg,'long','center');
       $ionicHistory.goBack();
     };
-
-    $scope.cancelOrder = function() {
-      $ionicHistory.goBack();
-    }
-  })
-
-  .controller('IntervallCtrl', function ($scope, $state, $ionicHistory, Intervall) {
-    $scope.platform = ionic.Platform;
-
-    $scope.list = Intervall.getList();
-
-    $scope.makeDefault = function (item) {
-      removeDefault();
-      var newDefaultIndex = $scope.list.indexOf(item);
-      $scope.list[newDefaultIndex].useAsDefault = true;
-      Intervall.setList($scope.list);
-
-      //TODO send intervall to backend
-      $ionicHistory.goBack();
-    }
-
-    function removeDefault() {
-      //Remove existing default
-      for (var i = 0; i < $scope.list.length; i++) {
-        if ($scope.list[i].useAsDefault == true) {
-          $scope.list[i].useAsDefault = false;
-        }
-      }
-    }
   })
 
   .controller('HistorieCtrl', function ($scope, $state, Amount, Months, PunktZuKomma) {
