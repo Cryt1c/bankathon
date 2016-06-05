@@ -153,6 +153,20 @@ angular.module('starter.services', [])
       all: function () {
         return categories;
       },
+      getLegend: function () {
+        var legend = [];
+        for(var i = 0; i < transactions.length; i++) {
+          if(legend[transactions.category] == null) {
+            var category = {};
+            category.name = categories[transactions[i].category].name;
+            category.icon_android = categories[transactions[i].category].icon_android;
+            category.icon_ios = categories[transactions[i].category].icon_ios;
+            category.color = categories[transactions[i].category].color;
+            legend.push(category);
+          }
+        }
+        return legend;
+      },
       getNames: function () {
         var names = [];
         for (var i = 0; i < categories.length; i++) {

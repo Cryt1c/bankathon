@@ -198,6 +198,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     $scope.data.months = Months.getAll();
     $scope.data.spent = Stats.getSpent();
     $scope.data.names = Stats.getNames();
+    $scope.data.legend = Stats.getLegend();
     $scope.data.labels = ["1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16.", "17.", "18.", "19.", "20.", "21.", "22.", "23.", "24.", "25.", "26.", "27.", "28.", "29.", "30.", "31."];
     $scope.data.month = new Date();
 
@@ -218,6 +219,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
           $scope.data.names = Stats.getNames();
           $scope.data.colors = Stats.getColors();
           $scope.data.showStat = "doughnut";
+          $scope.data.legend = Stats.getLegend();
           break;
         case 2:
           $scope.data.toggleLabel = 'Gewollt/Gebraucht';
@@ -225,6 +227,8 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
           $scope.data.names = ["Gebraucht", "Gewollt"];
           $scope.data.colors = ["#0D7DBF", "#38D42F"];
           $scope.data.showStat = "doughnut";
+          $scope.data.legend = [{name: "Gebraucht", color: "#0D7DBF", icon_ios: "ion-ios-minus-empty"}, {name: "Gewollt", color: "#38D42F", icon_ios: "ion-ios-minus-empty"}];
+
           break;
       }
       ;

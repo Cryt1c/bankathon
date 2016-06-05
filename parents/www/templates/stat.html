@@ -1,6 +1,6 @@
 <ion-view title="Statistik">
   <ion-content scroll="false">
-    <ti-segmented-control on-select="buttonClicked($index)" style="width: 350px; margin: auto;">
+    <ti-segmented-control on-select="buttonClicked($index)">
       <ti-segmented-control-button class="button-positive" title="'lines'" selected>Linien</ti-segmented-control-button>
       <ti-segmented-control-button class="button-positive" title="'categories'">Kategorien</ti-segmented-control-button>
       <ti-segmented-control-button class="button-positive" title="'needWant'">B/W</ti-segmented-control-button>
@@ -22,6 +22,18 @@
         <canvas id="doughnut" class="chart chart-doughnut"
                 chart-data="data.spent" chart-labels="data.names" chart-colours="data.colors">
         </canvas>
+        <ion-list>
+          <ion-item ng-repeat="category in data.legend">
+            <div style="background-color: {{category.color}}"></div>
+            <div class="legend_icons">
+             <span class="legend_cat" style="background-color: {{category.color}}">
+                <i class="icon {{category.icon_ios}}"></i>
+            </span>
+            </div>
+            <div class="legend_name">{{category.name}}</div>
+
+          </ion-item>
+        </ion-list>
       </div>
     </div>
   </ion-content>
