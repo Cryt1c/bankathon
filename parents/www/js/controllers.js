@@ -163,6 +163,30 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       $scope.selectModalSlider.slide(1);
     };
 
+    var userCallback = function (user) {
+      // set up WebSockets
+      webService.initWebSockets(function (eventData) {
+        if (eventData.event == "NEW_MONEY_REQUEST") {
+          console.log(eventData);
+        }
+      });
+
+      // // get transactions from this user since we now know they exist
+      // var transactionsCallback = function (data) {
+      //   transactionsService.loadTransactionsJSON(data);
+      //   // $scope.$apply();
+      //   var transactions = transactionsService.transactions();
+      //
+      //   Stats.resetSpent();
+      //   Stats.setSpent(transactions);
+      //   $scope.spentTotal = Amount.getSpentTotal(Stats.all());
+      //
+      //
+      // };
+      // webService.getTransactions().success(transactionsCallback).error(transactionsCallback);
+    }
+    // webService.getUser().success(userCallback).error(userCallback);
+
   })
 
 
@@ -227,7 +251,11 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
           $scope.data.names = ["Gebraucht", "Gewollt"];
           $scope.data.colors = ["#0D7DBF", "#38D42F"];
           $scope.data.showStat = "doughnut";
-          $scope.data.legend = [{name: "Gebraucht", color: "#0D7DBF", icon_ios: "ion-ios-minus-empty"}, {name: "Gewollt", color: "#38D42F", icon_ios: "ion-ios-minus-empty"}];
+          $scope.data.legend = [{
+            name: "Gebraucht",
+            color: "#0D7DBF",
+            icon_ios: "ion-ios-minus-empty"
+          }, {name: "Gewollt", color: "#38D42F", icon_ios: "ion-ios-minus-empty"}];
 
           break;
       }
@@ -282,14 +310,14 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       if (selectedIntervall.id == 0) {
         $scope.days = Days.getMonthdays();
         $scope.description = "Tag im Monat";
-        Intervall.setDefault(0,true);
-        Intervall.setDefault(1,false);
+        Intervall.setDefault(0, true);
+        Intervall.setDefault(1, false);
       }
       else {
         $scope.days = Days.getWeekdays();
         $scope.description = "Wochentag";
-        Intervall.setDefault(0,false);
-        Intervall.setDefault(1,true);
+        Intervall.setDefault(0, false);
+        Intervall.setDefault(1, true);
       }
     };
 
