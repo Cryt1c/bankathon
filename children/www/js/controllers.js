@@ -245,7 +245,7 @@ angular.module('starter.controllers', [])
         Stats.get(trans.category).name +
         ' an der Kassa bezahlen.' +
         ' <div class="spacer"></div>' +
-        '<img src="../img/icon_nfc.png" class="icon icon_nfc"/>',
+        '<img src="img/icon_nfc.png" class="icon icon_nfc"/>',
         buttons: [
           {
             text: 'Zahlung abbrechen',
@@ -294,7 +294,7 @@ angular.module('starter.controllers', [])
         stat.name +
         ' ausgegeben.' +
         '<div class="spacer"></div>' +
-        '<img src="../img/icon_check.png" class="icon icon_check"/>' +
+        '<img src="img/icon_check.png" class="icon icon_check"/>' +
         '<div class="spacer"></div>' +
         'Hast du diesen Einkauf gebraucht oder gewollt?',
         buttons: [
@@ -359,13 +359,34 @@ angular.module('starter.controllers', [])
 
     $scope.available = Amount.getAvailable();
 
-
     $scope.$on('$ionicView.beforeEnter', function () {
       $scope.punktZuKomma = PunktZuKomma;
       $scope.available = Amount.getAvailable();
       $scope.transactionsService = transactionsService;
+      $scope.filterMonth = new Date();
+      $scope.noItems = false;
+      $scope.changeMonth($scope.filterMonth);
+
     });
+
+    $scope.changeMonth = function(filterMonth) {
+      var seletecedMonth = filterMonth.getMonth();
+      var selectedYear = filterMonth.getYear();
+      var trans = transactionsService.transactions();
+      $scope.transactions = [];
+
+      for(var i = 0; i < trans.length; i++) {
+       if(trans[i].date.getMonth() == seletecedMonth && trans[i].date.getYear() == selectedYear) {
+         $scope.transactions.push(trans[i]);
+       }
+      }
+      if($scope.transactions.length == 0) {
+        console.log($scope.noItems);
+        $scope.noItems = true;
+      }
+    }
   })
+
 
 
   .controller('StatsCtrl', function ($scope, $state, $window, $ionicSlideBoxDelegate, Amount, Stats, Months, transactionsService, PunktZuKomma) {

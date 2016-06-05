@@ -461,7 +461,7 @@ hr {
   border-radius:20px;
 }
 .transaction_tagzone {
-
+    padding-top: 15px;
     width: 200px;
     position: absolute;
     right: 0px;

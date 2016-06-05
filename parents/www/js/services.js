@@ -229,7 +229,7 @@ angular.module('starter.services', [])
       {id: 6, label: '25. im Monat'},
       {id: 7, label: 'letzter im Monat'},
     ];
-    
+
     var weekdays = [
       {id: 1, label: 'Montag'},
       {id: 2, label: 'Dienstag'},
@@ -253,8 +253,8 @@ angular.module('starter.services', [])
 
   .factory('Intervall', function () {
     var list = [
-      {id: 1, name: 'monatlich', useAsDefault: true},
-      {id: 2, name: 'wöchentlich', useAsDefault: false}
+      {id: 0, name: 'monatlich', useAsDefault: true},
+      {id: 1, name: 'wöchentlich', useAsDefault: false}
     ];
 
     return {
@@ -271,8 +271,12 @@ angular.module('starter.services', [])
             return list[i];
           }
         }
+      },
+      setDefault: function(id, value) {
+        list[id].useAsDefault = value;
+        return true;
       }
-    }
+    };
   })
 
   .factory('Order', function () {
