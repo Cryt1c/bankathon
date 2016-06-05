@@ -40,6 +40,34 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         controller: 'StatCtrl'
       })
 
+      .state('stat.lines', {
+        url: '/lines',
+        views: {
+          'stat-lines': {
+            templateUrl: 'templates/stat-lines.html',
+            controller: 'StatCtrl'
+          }
+        }
+      })
+      .state('stat.categories', {
+        url: '/categories',
+        views: {
+          'stat-categories': {
+            templateUrl: 'templates/stat-categories.html',
+            controller: 'StatCtrl'
+          }
+        }
+      })
+      .state('stat.needWant', {
+        url: '/needWant',
+        views: {
+          'stat-needWant': {
+            templateUrl: 'templates/stat-needwant.html',
+            controller: 'StatCtrl'
+          }
+        }
+      })
+
       .state('send', {
         url: '/send',
         templateUrl: 'templates/send.html',
@@ -51,7 +79,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         templateUrl: 'templates/order.html',
         controller: 'OrderCtrl'
       })
-      
+
       .state('historie', {
         url: '/historie',
         templateUrl: 'templates/historie.html',
