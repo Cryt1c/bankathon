@@ -153,6 +153,20 @@ angular.module('starter.services', [])
       all: function () {
         return categories;
       },
+      getLegend: function () {
+        var legend = [];
+        for(var i = 0; i < transactions.length; i++) {
+          if(legend[transactions.category] == null) {
+            var category = {};
+            category.name = categories[transactions[i].category].name;
+            category.icon_android = categories[transactions[i].category].icon_android;
+            category.icon_ios = categories[transactions[i].category].icon_ios;
+            category.color = categories[transactions[i].category].color;
+            legend.push(category);
+          }
+        }
+        return legend;
+      },
       getNames: function () {
         var names = [];
         for (var i = 0; i < categories.length; i++) {
@@ -229,7 +243,7 @@ angular.module('starter.services', [])
       {id: 6, label: '25. im Monat'},
       {id: 7, label: 'letzter im Monat'},
     ];
-    
+
     var weekdays = [
       {id: 1, label: 'Montag'},
       {id: 2, label: 'Dienstag'},
@@ -253,8 +267,8 @@ angular.module('starter.services', [])
 
   .factory('Intervall', function () {
     var list = [
-      {id: 1, name: 'monatlich', useAsDefault: true},
-      {id: 2, name: 'wöchentlich', useAsDefault: false}
+      {id: 0, name: 'monatlich', useAsDefault: true},
+      {id: 1, name: 'wöchentlich', useAsDefault: false}
     ];
 
     return {
@@ -271,8 +285,12 @@ angular.module('starter.services', [])
             return list[i];
           }
         }
+      },
+      setDefault: function(id, value) {
+        list[id].useAsDefault = value;
+        return true;
       }
-    }
+    };
   })
 
   .factory('Order', function () {

@@ -197,18 +197,18 @@ angular.module('starter.services', [])
   .factory('Months', function () {
 
     var months = [
-      {id: 1, name: 'Jänner'},
-      {id: 2, name: 'Feburar'},
-      {id: 3, name: 'März'},
-      {id: 4, name: 'April'},
-      {id: 5, name: 'Mai'},
-      {id: 6, name: 'Juni'},
-      {id: 7, name: 'Juli'},
-      {id: 8, name: 'August'},
-      {id: 9, name: 'September'},
-      {id: 10, name: 'Oktober'},
-      {id: 11, name: 'November'},
-      {id: 12, name: 'Dezember'},
+      {id: 0, name: 'Jänner'},
+      {id: 1, name: 'Feburar'},
+      {id: 2, name: 'März'},
+      {id: 3, name: 'April'},
+      {id: 4, name: 'Mai'},
+      {id: 5, name: 'Juni'},
+      {id: 6, name: 'Juli'},
+      {id: 7, name: 'August'},
+      {id: 8, name: 'September'},
+      {id: 9, name: 'Oktober'},
+      {id: 10, name: 'November'},
+      {id: 11, name: 'Dezember'},
     ];
 
     return {
@@ -230,4 +230,3 @@ angular.module('starter.services', [])
       },
     };
   });
-

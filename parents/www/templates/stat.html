@@ -1,31 +1,40 @@
 <ion-view title="Statistik">
-  <ion-content>
-    <!--<label class="item item-input item-select item-stable">-->
-      <!--<div class="input-label">-->
-        <!--Monat-->
-      <!--</div>-->
-      <!--<select ng-model='data.months'>-->
-        <!--<option ng-repeat='month in data.months track by month.id' ng-model='month.id'>{{month.name}}</option>-->
-      <!--</select>-->
-    <!--</label>-->
+  <ion-content scroll="false">
+    <ti-segmented-control on-select="buttonClicked($index)">
+      <ti-segmented-control-button class="button-positive" title="'lines'" selected>Linien</ti-segmented-control-button>
+      <ti-segmented-control-button class="button-positive" title="'categories'">Kategorien</ti-segmented-control-button>
+      <ti-segmented-control-button class="button-positive" title="'needWant'">B/W</ti-segmented-control-button>
+    </ti-segmented-control>
 
-    <label class="item item-input">
-      <span class="input-label">Monat</span>
-      <input type="month" ng-model="data.month">
-    </label>
+    <div ng-switch="data.showStat">
+      <div ng-switch-when="lines">
+        <label class="item item-input">
+          <span class="input-label">Monat</span>
+          <input type="month" id="monthPicker" ng-model="data.month">
+        </label>
+        <canvas id="line" class="chart chart-line" chart-data="data.line"
+                chart-labels="data.labels" chart-legend="true" chart-series="series"
+                chart-click="onClick">
+        </canvas>
+      </div>
 
-    <canvas id="line" class="chart chart-line" chart-data="data.line"
-            chart-labels="data.labels" chart-legend="true" chart-series="series"
-            chart-click="onClick" >
-    </canvas>
+      <div ng-switch-when="doughnut">
+        <canvas id="doughnut" class="chart chart-doughnut"
+                chart-data="data.spent" chart-labels="data.names" chart-colours="data.colors">
+        </canvas>
+        <ion-list>
+          <ion-item ng-repeat="category in data.legend">
+            <div style="background-color: {{category.color}}"></div>
+            <div class="legend_icons">
+             <span class="legend_cat" style="background-color: {{category.color}}">
+                <i class="icon {{category.icon_ios}}"></i>
+            </span>
+            </div>
+            <div class="legend_name">{{category.name}}</div>
 
-    <ion-toggle class='item-stable item-toggle' ng-model="data.showNeed">{{data.toggleLabel}}
-    </ion-toggle>
-
-    <canvas id="doughnut" class="chart chart-doughnut"
-            chart-data="data.spent" chart-labels="data.names" chart-colours="data.colors">
-    </canvas>
-
+          </ion-item>
+        </ion-list>
+      </div>
+    </div>
   </ion-content>
 </ion-view>
-

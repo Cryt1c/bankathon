@@ -12,13 +12,13 @@
   <ion-content>
     <label class="item item-input">
       <span class="input-label">Monat</span>
-      <input type="month" ng-model="month" value="{{monthValue | date: yyyy-MM}}">
+      <input type="month" ng-model="filterMonth" value="{{monthValue | date: yyyy-MM}}" ng-change="changeMonth(filterMonth)">
     </label>
 
       <h2 class="label">Aktuelles Taschengeld: <strong>€ {{punktZuKomma.parse(available)}}</strong></h2>
 
     <ion-list class="transaction_list">
-      <ion-item class="transaction_elem" ng-repeat="trans in transactionsService.transactions() | orderBy:'-date':false" >
+      <ion-item class="transaction_elem" ng-repeat="trans in transactions | orderBy:'-date':false" >
       <div>
         <div class="transaction_icons">
              <span class="transaction_cat" style="background-color: {{stats[trans.category].color}}">
@@ -37,9 +37,12 @@
             </div>
         </div>
         <div class="transaction_amount">
-          € {{punktZuKomma.parse(trans.amount)}}
+          {{punktZuKomma.parse(trans.amount)}} €
         </div>
       </div>
+      </ion-item>
+      <ion-item ng-show="noItems">
+        <p>Keine Ausgaben in diesem Monat</p>
       </ion-item>
     </ion-list>
 

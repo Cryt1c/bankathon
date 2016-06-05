@@ -1,4 +1,4 @@
-angular.module('starter.controllers', ['ngCordova', 'chart.js'])
+angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-control'])
   .service('webService', function ($http, transactionsService, Amount) {
     var url = "/api/"; // change this for production -- gets proxied on to heroku app location
     var userId = 1;
@@ -8,11 +8,11 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
     this.getTransactions = function () {
       return $http.get(url + "getTransactionsByChild?childId=" + userId);
     };
-    this.getChildren = function() {
+    this.getChildren = function () {
       return $http.get(url + "getChildrenForParent?parentId=" + userId);
     };
     /** WEBSOCKETS
-        var wsEventHandler = function(wsData) {
+     var wsEventHandler = function(wsData) {
       // handle events incoming via WebSockets
       // the *event* field gives information about the type of event
       if (wsData.event = "NEW_TRANSACTION_REQUEST") {
@@ -20,7 +20,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
 
       }
     };
-    this.initWebSockets = function(incomingEventHandler) {
+     this.initWebSockets = function(incomingEventHandler) {
       var host = "ws://pommo-backend.herokuapp.com/" ;//"ws://localhost:5000"; // url.replace(/^http/, 'ws');
       var ws = new WebSocket(host);
       ws.onmessage = function(msgEvent) {
@@ -96,23 +96,23 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
     $scope.onKidDelete = function (kid) {
 
       console.log(kid);
-        var confirmPopup = $ionicPopup.confirm({
-          title: kid.name + ' entfernen?',
-          template: 'Sind Sie sicher, dass Sie das Konto von ' + kid.name + ' löschen wollen? ' +
-                    kid.name + ' kann weiterhin über das Geld verfügen, Sie können allerdings kein Geld mehr senden.',
-          cancelText: 'Nein',
-          cancelType: 'button-default',
-          okText: 'Ja',
-          OkType: 'button-positive'
-        });
+      var confirmPopup = $ionicPopup.confirm({
+        title: kid.name + ' entfernen?',
+        template: 'Sind Sie sicher, dass Sie das Konto von ' + kid.name + ' löschen wollen? ' +
+        kid.name + ' kann weiterhin über das Geld verfügen, Sie können allerdings kein Geld mehr senden.',
+        cancelText: 'Nein',
+        cancelType: 'button-default',
+        okText: 'Ja',
+        OkType: 'button-positive'
+      });
 
-        confirmPopup.then(function(res) {
-          if(res) {
-            $scope.kids.splice($scope.kids.indexOf(kid), 1);
-            //TODO send info to backend
-            NumberUpdate();
-          }
-        })
+      confirmPopup.then(function (res) {
+        if (res) {
+          $scope.kids.splice($scope.kids.indexOf(kid), 1);
+          //TODO send info to backend
+          NumberUpdate();
+        }
+      })
     };
 
     $scope.reorderKid = function (kid, fromIndex, toIndex) {
@@ -177,7 +177,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
 
     //TODO select kid and get data from backend - available + last transaction to the kid
 
-    $scope.pairingDone = function(kid) {
+    $scope.pairingDone = function (kid) {
 
       //TODO: check ob pairing mit kind passt - wenn ja, nachfolgende Zeile ausführen
       //Kids.setPaired(kid.id, true);
@@ -188,52 +188,53 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
   })
 
 
-  .controller('StatCtrl', function ($scope, $state, Stats, Months) {
+  .controller('StatCtrl', function ($document, $scope, $state, Stats, Months) {
     $scope.platform = ionic.Platform;
 
     $scope.data = {};
+    $scope.data.showStat = "lines";
     $scope.data.showNeed = false;
     $scope.data.toggleLabel = 'Kategorien';
     $scope.data.months = Months.getAll();
     $scope.data.spent = Stats.getSpent();
     $scope.data.names = Stats.getNames();
-
-
-    // Line Chart
-
+    $scope.data.legend = Stats.getLegend();
     $scope.data.labels = ["1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16.", "17.", "18.", "19.", "20.", "21.", "22.", "23.", "24.", "25.", "26.", "27.", "28.", "29.", "30.", "31."];
-    //$scope.data.line = Stats.getMonth(4, 2016);
-    //$scope.data.line = [[10, 20, 30, 40, 50, 60, 70, 80]];
-    // $scope.onClick = function (points, evt) {
-    //   console.log(points, evt);
-    // };
+    $scope.data.month = new Date();
 
     $scope.$watch('data.month', function (value) {
       if (value != undefined) {
         var month = Stats.getMonth(value.getMonth(), value.getFullYear());
         $scope.data.line = month;
-        console.log(value.getMonth() + " " + value.getFullYear());
       }
     });
+    $scope.buttonClicked = function (index) {
+      switch (index) {
+        case 0:
+          $scope.data.showStat = "lines";
+          break;
+        case 1:
+          $scope.data.toggleLabel = 'Kategorien';
+          $scope.data.spent = Stats.getSpent();
+          $scope.data.names = Stats.getNames();
+          $scope.data.colors = Stats.getColors();
+          $scope.data.showStat = "doughnut";
+          $scope.data.legend = Stats.getLegend();
+          break;
+        case 2:
+          $scope.data.toggleLabel = 'Gewollt/Gebraucht';
+          $scope.data.spent = Stats.getNeedWant();
+          $scope.data.names = ["Gebraucht", "Gewollt"];
+          $scope.data.colors = ["#0D7DBF", "#38D42F"];
+          $scope.data.showStat = "doughnut";
+          $scope.data.legend = [{name: "Gebraucht", color: "#0D7DBF", icon_ios: "ion-ios-minus-empty"}, {name: "Gewollt", color: "#38D42F", icon_ios: "ion-ios-minus-empty"}];
 
-    //Doughnut Chart
+          break;
+      }
+      ;
+      $scope.$apply();
+    }
 
-    $scope.$watch('data.showNeed', function (value) {
-      if (value) {
-        //render need chart
-        $scope.data.toggleLabel = 'Gewollt/Gebraucht';
-        $scope.data.spent = Stats.getNeedWant();
-        $scope.data.names = ["Gebraucht", "Gewollt"];
-        $scope.data.colors = ["#0D7DBF", "#38D42F"];
-      }
-      else {
-        //render categories in chart
-        $scope.data.toggleLabel = 'Kategorien';
-        $scope.data.spent = Stats.getSpent();
-        $scope.data.names = Stats.getNames();
-        $scope.data.colors = Stats.getColors();
-      }
-    });
   })
 
   .controller('SendCtrl', function ($scope, $state, $ionicHistory, $cordovaToast, PunktZuKomma) {
@@ -278,19 +279,23 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
 
     $scope.setDays = function (selectedIntervall) {
       //set dropdown either for montly or weekly
-      if (selectedIntervall.id == 1) {
+      if (selectedIntervall.id == 0) {
         $scope.days = Days.getMonthdays();
         $scope.description = "Tag im Monat";
+        Intervall.setDefault(0,true);
+        Intervall.setDefault(1,false);
       }
       else {
         $scope.days = Days.getWeekdays();
         $scope.description = "Wochentag";
+        Intervall.setDefault(0,false);
+        Intervall.setDefault(1,true);
       }
     };
 
 
     $scope.saveOrder = function (orderForm) {
-      
+
       var intervall = orderForm.intervall.$modelValue.name;
       $scope.order.setAmount(orderForm.amount.$modelValue);
       $scope.order.setDay(orderForm.day.$modelValue.id - 1); //-1 weil wir mit 1 zu zählen beginnen, nicht mit 0
@@ -302,35 +307,6 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js'])
       //$cordovaToast.show(msg,'long','center');
       $ionicHistory.goBack();
     };
-
-    $scope.cancelOrder = function() {
-      $ionicHistory.goBack();
-    }
-  })
-
-  .controller('IntervallCtrl', function ($scope, $state, $ionicHistory, Intervall) {
-    $scope.platform = ionic.Platform;
-
-    $scope.list = Intervall.getList();
-
-    $scope.makeDefault = function (item) {
-      removeDefault();
-      var newDefaultIndex = $scope.list.indexOf(item);
-      $scope.list[newDefaultIndex].useAsDefault = true;
-      Intervall.setList($scope.list);
-
-      //TODO send intervall to backend
-      $ionicHistory.goBack();
-    }
-
-    function removeDefault() {
-      //Remove existing default
-      for (var i = 0; i < $scope.list.length; i++) {
-        if ($scope.list[i].useAsDefault == true) {
-          $scope.list[i].useAsDefault = false;
-        }
-      }
-    }
   })
 
   .controller('HistorieCtrl', function ($scope, $state, Amount, Months, PunktZuKomma) {
