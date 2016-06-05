@@ -353,9 +353,10 @@ angular.module('starter.controllers', [])
 
   .controller('HistoryCtrl', function ($scope, $state, $ionicSlideBoxDelegate, Amount, Months, transactionsService, Stats, PunktZuKomma) {
     $scope.platform = ionic.Platform;
-    var date = new Date();
-    $scope.currDate = Months.getMonth(date.getMonth()) + " " + date.getFullYear();
     $scope.stats = Stats.all();
+
+    var selectedCat = -1;
+    var selectedDate = $scope.filterMonth;
 
     $scope.available = Amount.getAvailable();
 
@@ -364,26 +365,113 @@ angular.module('starter.controllers', [])
       $scope.available = Amount.getAvailable();
       $scope.transactionsService = transactionsService;
       $scope.filterMonth = new Date();
-      $scope.noItems = false;
       $scope.changeMonth($scope.filterMonth);
-
+      $scope.filterOpened = false;
+      $scope.resetFilter = false;
+      selectedCat  = -1;
     });
 
     $scope.changeMonth = function(filterMonth) {
-      var seletecedMonth = filterMonth.getMonth();
+      $scope.noItems = false;
+      selectedDate = filterMonth;
+      var selectedMonth = filterMonth.getMonth();
       var selectedYear = filterMonth.getYear();
       var trans = transactionsService.transactions();
       $scope.transactions = [];
 
+      //loop through transaction and filter for date and category
       for(var i = 0; i < trans.length; i++) {
-       if(trans[i].date.getMonth() == seletecedMonth && trans[i].date.getYear() == selectedYear) {
-         $scope.transactions.push(trans[i]);
-       }
+        if(trans[i].date.getMonth() == selectedMonth && trans[i].date.getYear() == selectedYear) {
+          if(selectedCat >= 0 && trans[i].category == selectedCat) {
+            $scope.transactions.push(trans[i]);
+          }
+          else if(selectedCat == -1){
+            $scope.transactions.push(trans[i]);
+          }
+        }
       }
       if($scope.transactions.length == 0) {
-        console.log($scope.noItems);
         $scope.noItems = true;
       }
+
+    };
+
+
+    $scope.openFilter = function() {
+      $scope.filterOpened = !$scope.filterOpened;
+      if($scope.filterOpened) {
+        document.getElementById('icon_filter').classList.add('on');
+      }
+      else {
+        document.getElementById('icon_filter').classList.remove('on');
+      }
+
+    };
+
+
+    $scope.selectFilter = function(category) {
+      $scope.noItems = false;
+      $scope.resetFilter = true;
+      selectedCat = category.id;
+      var selectedMonth = selectedDate.getMonth();
+      var selectedYear = selectedDate.getYear();
+      var trans = transactionsService.transactions();
+      $scope.transactions = [];
+
+      //loop through transaction and filter for date and category
+      for(var i = 0; i < trans.length; i++) {
+        if(trans[i].date.getMonth() == selectedMonth && trans[i].date.getYear() == selectedYear) {
+          if(selectedCat >= 0 && trans[i].category == selectedCat) {
+            $scope.transactions.push(trans[i]);
+          }
+          else if(!selectedCat == -1){
+            $scope.transactions.push(trans[i]);
+          }
+        }
+      }
+      if($scope.transactions.length == 0) {
+        $scope.noItems = true;
+      }
+
+      //change background color of the active category
+      var elements = document.getElementsByClassName("category_elem item");
+      for(var i = 0; i < elements.length; i++) {
+
+        if(elements[i].className.indexOf("activated") != -1) {
+         console.log(elements[i]);
+         elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = category.color;
+       }
+       else {
+         elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = "transparent";
+       }
+      };
+    };
+
+    $scope.filterReset = function () {
+      $scope.resetFilter = false;
+      selectedCat = -1;
+      $scope.noItems = false;
+      var selectedMonth = selectedDate.getMonth();
+      var selectedYear = selectedDate.getYear();
+      var trans = transactionsService.transactions();
+      $scope.transactions = [];
+
+
+      //loop through transaction and filter for date without category
+      for(var i = 0; i < trans.length; i++) {
+        if(trans[i].date.getMonth() == selectedMonth && trans[i].date.getYear() == selectedYear) {
+            $scope.transactions.push(trans[i]);
+        }
+      }
+      if($scope.transactions.length == 0) {
+        $scope.noItems = true;
+      }
+
+      //change background color
+      var elements = document.getElementsByClassName("category_elem item");
+      for(var i = 0; i < elements.length; i++) {
+          elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = "transparent";
+      };
     }
   })
 
