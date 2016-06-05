@@ -1,16 +1,16 @@
 angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-control'])
-  .service('webService', function ($http, transactionsService, Amount) {
+  .service('webService', function ($http, Amount) {
     var url = "/api/"; // change this for production -- gets proxied on to heroku app location
-    var userId = 1;
-    this.getUser = function () {
-      return $http.get(url + "getChild?childId=" + userId);
-    };
-    this.getTransactions = function () {
-      return $http.get(url + "getTransactionsByChild?childId=" + userId);
-    };
-    this.getChildren = function () {
-      return $http.get(url + "getChildrenForParent?parentId=" + userId);
-    };
+    // var userId = 1;
+    // this.getUser = function () {
+    //   return $http.get(url + "getChild?childId=" + userId);
+    // };
+    // this.getTransactions = function () {
+    //   return $http.get(url + "getTransactionsByChild?childId=" + userId);
+    // };
+    // this.getChildren = function () {
+    //   return $http.get(url + "getChildrenForParent?parentId=" + userId);
+    // };
     /** WEBSOCKETS
      var wsEventHandler = function(wsData) {
       // handle events incoming via WebSockets
@@ -19,28 +19,27 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
         // someone requests a payment -- show screen
 
       }
-    };
-     this.initWebSockets = function(incomingEventHandler) {
-      var host = "ws://pommo-backend.herokuapp.com/" ;//"ws://localhost:5000"; // url.replace(/^http/, 'ws');
+    }; */
+    this.initWebSockets = function (incomingEventHandler) {
+      var host = "ws://pommo-backend.herokuapp.com/";//"ws://localhost:5000"; // url.replace(/^http/, 'ws');
       var ws = new WebSocket(host);
-      ws.onmessage = function(msgEvent) {
+      ws.onmessage = function (msgEvent) {
         var msgData = JSON.parse(msgEvent.data);
-        if (msgData.targetType === "child" && msgData.targetId == userId)
+        if (msgData.event == "NEW_MONEY_REQUEST")
           incomingEventHandler(msgData);
-
       };
-      ws.onclose = function() {
+      ws.onclose = function () {
         // websocket about to close -- reopen after time
         setTimeout(this.initWebSockets, 1000);
       };
-    };*/
+    };
   })
 
   .service('kidsService', function () {
     this.selectedKid;
   })
 
-  .controller('StartCtrl', function ($scope, $state, $ionicModal, $ionicPopup, $ionicSlideBoxDelegate, Kids, kidsService) {
+  .controller('StartCtrl', function ($scope, $state, $ionicModal, $ionicPopup, $ionicSlideBoxDelegate, Kids, kidsService, webService) {
     $scope.platform = ionic.Platform;
 
     $scope.kids = Kids.getAll();
@@ -163,29 +162,35 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       $scope.selectModalSlider.slide(1);
     };
 
-    var userCallback = function (user) {
-      // set up WebSockets
-      webService.initWebSockets(function (eventData) {
-        if (eventData.event == "NEW_MONEY_REQUEST") {
-          console.log(eventData);
+    // var userCallback = function (user) {
+    // set up WebSockets
+    webService.initWebSockets(function (eventData) {
+      if (eventData.event == "NEW_MONEY_REQUEST") {
+        console.log(eventData);
+        $scope.showConfirm = function () {
+          var requestPopup = new $ionicPopup.alert({
+            title: eventData.reason,
+            template: '' + eventData.amount
+          });
         }
-      });
+      }
+    });
 
-      // // get transactions from this user since we now know they exist
-      // var transactionsCallback = function (data) {
-      //   transactionsService.loadTransactionsJSON(data);
-      //   // $scope.$apply();
-      //   var transactions = transactionsService.transactions();
-      //
-      //   Stats.resetSpent();
-      //   Stats.setSpent(transactions);
-      //   $scope.spentTotal = Amount.getSpentTotal(Stats.all());
-      //
-      //
-      // };
-      // webService.getTransactions().success(transactionsCallback).error(transactionsCallback);
-    }
-    // webService.getUser().success(userCallback).error(userCallback);
+    // // get transactions from this user since we now know they exist
+    // var transactionsCallback = function (data) {
+    //   transactionsService.loadTransactionsJSON(data);
+    //   // $scope.$apply();
+    //   var transactions = transactionsService.transactions();
+    //
+    //   Stats.resetSpent();
+    //   Stats.setSpent(transactions);
+    //   $scope.spentTotal = Amount.getSpentTotal(Stats.all());
+    //
+    //
+    // };
+    // webService.getTransactions().success(transactionsCallback).error(transactionsCallback);
+    //}
+// webService.getUser().success(userCallback).error(userCallback);
 
   })
 

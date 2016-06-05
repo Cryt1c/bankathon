@@ -9,7 +9,7 @@ angular.module('ti-segmented-control', []
         },
         template: '<div class=\"buttons\"><div class=\"button-bar bar-light ti-segmented-control\" ng-transclude></div></div>',
 
-        controller: function($scope){
+        controller: ['$scope', function($scope){
             this.buttons = [];
             this.setSelectedButton = function (title) {
                 $scope.onSelect({$index: this.buttons.indexOf(title)});
@@ -21,18 +21,19 @@ angular.module('ti-segmented-control', []
             style.innerHTML += '.button.button-outline.ti-segmented-control:last-child { border-top-right-radius: 5px; border-bottom-right-radius: 5px; }';
             style.innerHTML += '.button.button-outline.ti-segmented-control.activated { color: #fafafa;box-shadow: none; }';
             window.document.getElementsByTagName('head')[0].appendChild(style);
-        },
-        link: function (scope) {
-        }
+        }],
+        link: ['$scope', function (scope) {
+        }]
     }
 }).directive('tiSegmentedControlButton', function () {
     return {
         replace: true,
+        transclude: true,
         require: '^tiSegmentedControl',
         scope: {
             title: '='
         },
-        template: '<a class=\"button button-outline ti-segmented-control\">{{title}}</a>',
+        template: '<a class=\"button button-outline ti-segmented-control\"><ng-transclude></ng-transclude></a>',
         link: function(scope, element, attr, segmentedControlCtrl){
             segmentedControlCtrl.buttons.push(scope.title);
             if(attr.selected != undefined) element.addClass('active');

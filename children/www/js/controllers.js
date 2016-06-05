@@ -285,7 +285,6 @@ angular.module('starter.controllers', [])
         return;
       }
 
-
       var resultPopup = $ionicPopup.alert({
         title: 'Bezahlt',
         template: 'Du hast ' +
