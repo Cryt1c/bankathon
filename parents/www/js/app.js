@@ -39,7 +39,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         templateUrl: 'templates/stat.html',
         controller: 'StatCtrl'
       })
-
+      
       .state('send', {
         url: '/send',
         templateUrl: 'templates/send.html',
@@ -51,7 +51,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         templateUrl: 'templates/order.html',
         controller: 'OrderCtrl'
       })
-      
+
       .state('historie', {
         url: '/historie',
         templateUrl: 'templates/historie.html',
@@ -59,7 +59,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
       });
 
     // if none of the above states are matched, use this as the fallback
-    $urlRouterProvider.otherwise('/');
+    $urlRouterProvider.otherwise('/stat');
 
     $ionicConfigProvider.backButton.previousTitleText(true);
     $ionicConfigProvider.navBar.alignTitle('center');
