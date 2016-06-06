@@ -229,4 +229,4 @@ angular.module('starter.services', [])
         return text;
       },
     };
-  });
+  })

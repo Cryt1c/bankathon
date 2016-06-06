@@ -1,7 +1,7 @@
 {
-  "name": "parents",
+  "name": "pommoparents",
   "version": "1.1.1",
-  "description": "parents: An Ionic project",
+  "description": "PoMMo Eltern - Pocket Money Mobile",
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-sass": "^2.0.4",

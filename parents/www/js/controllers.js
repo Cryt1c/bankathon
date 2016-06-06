@@ -1,16 +1,16 @@
 angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-control'])
-  .service('webService', function ($http, transactionsService, Amount) {
+  .service('webService', function ($http, Amount) {
     var url = "/api/"; // change this for production -- gets proxied on to heroku app location
-    var userId = 1;
-    this.getUser = function () {
-      return $http.get(url + "getChild?childId=" + userId);
-    };
-    this.getTransactions = function () {
-      return $http.get(url + "getTransactionsByChild?childId=" + userId);
-    };
-    this.getChildren = function () {
-      return $http.get(url + "getChildrenForParent?parentId=" + userId);
-    };
+    // var userId = 1;
+    // this.getUser = function () {
+    //   return $http.get(url + "getChild?childId=" + userId);
+    // };
+    // this.getTransactions = function () {
+    //   return $http.get(url + "getTransactionsByChild?childId=" + userId);
+    // };
+    // this.getChildren = function () {
+    //   return $http.get(url + "getChildrenForParent?parentId=" + userId);
+    // };
     /** WEBSOCKETS
      var wsEventHandler = function(wsData) {
       // handle events incoming via WebSockets
@@ -19,28 +19,27 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
         // someone requests a payment -- show screen
 
       }
-    };
-     this.initWebSockets = function(incomingEventHandler) {
-      var host = "ws://pommo-backend.herokuapp.com/" ;//"ws://localhost:5000"; // url.replace(/^http/, 'ws');
+    }; */
+    this.initWebSockets = function (incomingEventHandler) {
+      var host = "ws://pommo-backend.herokuapp.com/";//"ws://localhost:5000"; // url.replace(/^http/, 'ws');
       var ws = new WebSocket(host);
-      ws.onmessage = function(msgEvent) {
+      ws.onmessage = function (msgEvent) {
         var msgData = JSON.parse(msgEvent.data);
-        if (msgData.targetType === "child" && msgData.targetId == userId)
+        if (msgData.event == "NEW_MONEY_REQUEST")
           incomingEventHandler(msgData);
-
       };
-      ws.onclose = function() {
+      ws.onclose = function () {
         // websocket about to close -- reopen after time
         setTimeout(this.initWebSockets, 1000);
       };
-    };*/
+    };
   })
 
   .service('kidsService', function () {
     this.selectedKid;
   })
 
-  .controller('StartCtrl', function ($scope, $state, $ionicModal, $ionicPopup, $ionicSlideBoxDelegate, Kids, kidsService) {
+  .controller('StartCtrl', function ($scope, $state, $ionicModal, $ionicPopup, $ionicSlideBoxDelegate, Kids, kidsService, webService) {
     $scope.platform = ionic.Platform;
 
     $scope.kids = Kids.getAll();
@@ -163,6 +162,70 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       $scope.selectModalSlider.slide(1);
     };
 
+    // var userCallback = function (user) {
+    // set up WebSockets
+    webService.initWebSockets(function (eventData) {
+      if (eventData.event == "NEW_MONEY_REQUEST") {
+        console.log(eventData);
+        $scope.showConfirm(eventData);
+      }
+    });
+
+    $scope.showConfirm = function (eventData) {
+      var requestPopup = new $ionicPopup.show({
+        title: "Geld Anfrage von " + eventData.name,
+        template: eventData.name + ' hätte gerne ' + eventData.amount + ' €, weil: "' + eventData.reason + '"',
+        buttons: [
+          {
+            text: 'Zustimmen',
+            type: 'button-positive',
+            onTap: function (e) {
+              var responsePopup = new $ionicPopup.show({
+                title: 'Zustimmen',
+                template: '<label for="message">Nachricht</label>' +
+                '<input type="text" id="message">',
+                buttons: [{
+                  text: "Geld und Nachricht abschicken",
+                  type: 'button-positive'
+                }]
+              })
+            }
+          },
+          {
+            text: 'Ablehnen',
+            type: 'button-positive',
+            onTap: function (e) {
+              var responsePopup = new $ionicPopup.show({
+                title: 'Ablehnen',
+                template: '<label for="message">Begründung</label>' +
+                '<input type="text" id="message">',
+                buttons: [{
+                  text: "Nachricht abschicken",
+                  type: 'button-positive'
+                }]
+              })
+            }
+          }
+        ]
+      });
+    }
+
+    // // get transactions from this user since we now know they exist
+    // var transactionsCallback = function (data) {
+    //   transactionsService.loadTransactionsJSON(data);
+    //   // $scope.$apply();
+    //   var transactions = transactionsService.transactions();
+    //
+    //   Stats.resetSpent();
+    //   Stats.setSpent(transactions);
+    //   $scope.spentTotal = Amount.getSpentTotal(Stats.all());
+    //
+    //
+    // };
+    // webService.getTransactions().success(transactionsCallback).error(transactionsCallback);
+    //}
+// webService.getUser().success(userCallback).error(userCallback);
+
   })
 
 
@@ -227,7 +290,11 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
           $scope.data.names = ["Gebraucht", "Gewollt"];
           $scope.data.colors = ["#0D7DBF", "#38D42F"];
           $scope.data.showStat = "doughnut";
-          $scope.data.legend = [{name: "Gebraucht", color: "#0D7DBF", icon_ios: "ion-ios-minus-empty"}, {name: "Gewollt", color: "#38D42F", icon_ios: "ion-ios-minus-empty"}];
+          $scope.data.legend = [{
+            name: "Gebraucht",
+            color: "#0D7DBF",
+            icon_ios: "ion-ios-minus-empty"
+          }, {name: "Gewollt", color: "#38D42F", icon_ios: "ion-ios-minus-empty"}];
 
           break;
       }
@@ -282,14 +349,14 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       if (selectedIntervall.id == 0) {
         $scope.days = Days.getMonthdays();
         $scope.description = "Tag im Monat";
-        Intervall.setDefault(0,true);
-        Intervall.setDefault(1,false);
+        Intervall.setDefault(0, true);
+        Intervall.setDefault(1, false);
       }
       else {
         $scope.days = Days.getWeekdays();
         $scope.description = "Wochentag";
-        Intervall.setDefault(0,false);
-        Intervall.setDefault(1,true);
+        Intervall.setDefault(0, false);
+        Intervall.setDefault(1, true);
       }
     };
 

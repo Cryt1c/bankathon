@@ -1,21 +1,34 @@
 <ion-header-bar class="bar-positive" align-title="middle">
   <div class="buttons">
   </div>
-  <h1 ng-class="{'title-android':platform.isAndroid(), 'title-ios': !platform.isAndroid()}" class="title">Transaktionen</h1>
+  <h1 ng-class="{'title-android':platform.isAndroid(), 'title-ios': !platform.isAndroid()}" class="title">Details</h1>
   <div class="buttons">
-    <p ng-class="{'greeting-android':platform.isAndroid(), 'greeting-ios': !platform.isAndroid()}" class="greeting"></p>
+    <button class="button button-icon icon icon-filter" id="icon_filter" ng-click="openFilter()"></button>
   </div>
 </ion-header-bar>
 
 <ion-view view-title="Details">
 
   <ion-content>
-    <label class="item item-input">
-      <span class="input-label">Monat</span>
+    <ion-list class="category_list" ng-show="filterOpened">
+      <ion-item class="category_elem" ng-repeat="cat in stats" ng-click="selectFilter(cat)">
+        <span class="category_span" style="border: 1px solid {{cat.color}};">
+          <i class="icon {{cat.icon_ios}}"></i>
+        </span>
+      </ion-item>
+      <ion-item class="category_elem" ng-show="resetFilter" ng-click="filterReset()">
+        <span class="category_span" style="border: 1px solid #444;">
+          <i class="icon ion-close"></i>
+        </span>
+      </ion-item>
+    </ion-list>
+
+    <label class="item item-input item-month">
+      <span class="input-label">Monat:</span>
       <input type="month" ng-model="filterMonth" value="{{monthValue | date: yyyy-MM}}" ng-change="changeMonth(filterMonth)">
     </label>
 
-      <h2 class="label">Aktuelles Taschengeld: <strong>€ {{punktZuKomma.parse(available)}}</strong></h2>
+      <h2 class="label">Aktuelles Taschengeld: <strong>{{punktZuKomma.parse(available)}} €</strong></h2>
 
     <ion-list class="transaction_list">
       <ion-item class="transaction_elem" ng-repeat="trans in transactions | orderBy:'-date':false" >
