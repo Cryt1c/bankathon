@@ -302,6 +302,7 @@ angular.module('starter.controllers', [])
             type: 'button-positive',
             onTap: function () {
               $scope.pendingTransaction.isNeed = true;
+               $scope.pendingTransaction.writtenToServer = false;
               $scope.transactionsService.addTransaction($scope.pendingTransaction);
               $scope.pendingTransaction = null;
 
@@ -309,6 +310,7 @@ angular.module('starter.controllers', [])
               // write to server immediately
               $scope.webService.writeTransactions();
               // also write new balance -- TODO you'd actually want to postpone this and relegate to a regular sync function
+
 
             }
           },
@@ -318,6 +320,7 @@ angular.module('starter.controllers', [])
             onTap: function () {
               //trans = $scope.transactionsService.createAndAddTransaction(randomName, payment, stat.id, false);
               $scope.pendingTransaction.isNeed = false;
+              $scope.pendingTransaction.writtenToServer = false;
               $scope.transactionsService.addTransaction($scope.pendingTransaction);
               $scope.pendingTransaction = null;
 
@@ -435,15 +438,14 @@ angular.module('starter.controllers', [])
       //change background color of the active category
       var elements = document.getElementsByClassName("category_elem item");
       for(var i = 0; i < elements.length; i++) {
-
-        if(elements[i].className.indexOf("activated") != -1) {
-         console.log(elements[i]);
-         elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = category.color;
-       }
-       else {
          elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = "transparent";
-       }
       };
+
+      var temp = "cat-elem-" + selectedCat;
+      var active = document.getElementById(temp);
+      active.getElementsByClassName('category_span')[0].style.backgroundColor = category.color;
+
+
     };
 
     $scope.filterReset = function () {
@@ -472,6 +474,7 @@ angular.module('starter.controllers', [])
           elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = "transparent";
       };
     }
+
   })
 
 
