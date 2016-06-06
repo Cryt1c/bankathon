@@ -166,7 +166,6 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     // set up WebSockets
     webService.initWebSockets(function (eventData) {
       if (eventData.event == "NEW_MONEY_REQUEST") {
-        console.log(eventData);
         $scope.showConfirm(eventData);
       }
     });
@@ -251,7 +250,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
   })
 
 
-  .controller('StatCtrl', function ($document, $scope, $state, Stats, Months) {
+  .controller('StatCtrl', function ($document, $scope, $state, Stats, Months, ChartJsFactory) {
     $scope.platform = ionic.Platform;
 
     $scope.data = {};
@@ -262,8 +261,11 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     $scope.data.spent = Stats.getSpent();
     $scope.data.names = Stats.getNames();
     $scope.data.legend = Stats.getLegend();
-    $scope.data.labels = ["1.", "2.", "3.", "4.", "5.", "6.", "7.", "8.", "9.", "10.", "11.", "12.", "13.", "14.", "15.", "16.", "17.", "18.", "19.", "20.", "21.", "22.", "23.", "24.", "25.", "26.", "27.", "28.", "29.", "30.", "31."];
+    $scope.data.labels = ["1.", "", "", "", "5.", "", "", "", "", "10.", "", "", "", "", "15.", "", "", "", "", "20.", "", "", "", "", "25.", "", "", "", "", "", "31."];
     $scope.data.month = new Date();
+    $scope.ctx = angular.element("#lineChart");
+
+    $scope.data.options = {pointDot: false, scaleShowHorizontalLines: true, pointHitDetectionRadius: 1};
 
     $scope.$watch('data.month', function (value) {
       if (value != undefined) {
