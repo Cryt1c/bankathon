@@ -263,9 +263,8 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     $scope.data.legend = Stats.getLegend();
     $scope.data.labels = ["1.", "", "", "", "5.", "", "", "", "", "10.", "", "", "", "", "15.", "", "", "", "", "20.", "", "", "", "", "25.", "", "", "", "", "", "31."];
     $scope.data.month = new Date();
-    $scope.ctx = angular.element("#lineChart");
 
-    $scope.data.options = {pointDot: false, scaleShowHorizontalLines: true, pointHitDetectionRadius: 1};
+    $scope.data.options = {pointDot: false, scaleShowHorizontalLines: true, pointHitDetectionRadius: 1, scaleFontSize: 20};
 
     $scope.$watch('data.month', function (value) {
       if (value != undefined) {

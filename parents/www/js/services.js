@@ -117,7 +117,6 @@ angular.module('starter.services', [])
     }];
 
     var needwant = [0, 0];
-    var line = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     var spent = [0, 0, 0, 0, 0, 0, 0];
 
     transactions = [{
@@ -192,13 +191,17 @@ angular.module('starter.services', [])
         return needwant;
       },
       getMonth: function (month, year) {
+        var line = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        var hasData = false;
         for (var i = 0; i < transactions.length; i++) {
           var date = new Date(transactions[i].timestamp);
           if (date.getMonth() == month && date.getFullYear() == year) {
             line[date.getDate() - 1] += transactions[i].amount;
+            hasData = true;
           }
         }
-        return [line];
+        if(hasData) {return [line];}
+        return hasData;
       }
     };
   })
