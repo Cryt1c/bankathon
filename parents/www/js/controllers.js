@@ -167,14 +167,48 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     webService.initWebSockets(function (eventData) {
       if (eventData.event == "NEW_MONEY_REQUEST") {
         console.log(eventData);
-        $scope.showConfirm = function () {
-          var requestPopup = new $ionicPopup.alert({
-            title: eventData.reason,
-            template: '' + eventData.amount
-          });
-        }
+        $scope.showConfirm(eventData);
       }
     });
+
+    $scope.showConfirm = function (eventData) {
+      var requestPopup = new $ionicPopup.show({
+        title: "Geld Anfrage von " + eventData.name,
+        template: eventData.name + ' hätte gerne ' + eventData.amount + ' €, weil: "' + eventData.reason + '"',
+        buttons: [
+          {
+            text: 'Zustimmen',
+            type: 'button-positive',
+            onTap: function (e) {
+              var responsePopup = new $ionicPopup.show({
+                title: 'Zustimmen',
+                template: '<label for="message">Nachricht</label>' +
+                '<input type="text" id="message">',
+                buttons: [{
+                  text: "Geld und Nachricht abschicken",
+                  type: 'button-positive'
+                }]
+              })
+            }
+          },
+          {
+            text: 'Ablehnen',
+            type: 'button-positive',
+            onTap: function (e) {
+              var responsePopup = new $ionicPopup.show({
+                title: 'Ablehnen',
+                template: '<label for="message">Begründung</label>' +
+                '<input type="text" id="message">',
+                buttons: [{
+                  text: "Nachricht abschicken",
+                  type: 'button-positive'
+                }]
+              })
+            }
+          }
+        ]
+      });
+    }
 
     // // get transactions from this user since we now know they exist
     // var transactionsCallback = function (data) {
