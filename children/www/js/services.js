@@ -40,7 +40,7 @@ angular.module('starter.services', [])
 
     this.addTransaction = function (transaction) {
       //trans.writtenToServer = false;
-      if (!trans.date) trans.date = new Date();
+      if (!transaction.date) transaction.date = new Date();
       _transactions.push(transaction);
     };
 
