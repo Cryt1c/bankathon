@@ -11,7 +11,7 @@
 
   <ion-content>
     <ion-list class="category_list" ng-show="filterOpened">
-      <ion-item class="category_elem" ng-repeat="cat in stats" ng-click="selectFilter(cat)">
+      <ion-item class="category_elem" id="cat-elem-{{cat.id}}" ng-repeat="cat in stats" ng-click="selectFilter(cat)">
         <span class="category_span" style="border: 1px solid {{cat.color}};">
           <i class="icon {{cat.icon_ios}}"></i>
         </span>

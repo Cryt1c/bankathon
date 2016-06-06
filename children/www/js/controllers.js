@@ -435,15 +435,14 @@ angular.module('starter.controllers', [])
       //change background color of the active category
       var elements = document.getElementsByClassName("category_elem item");
       for(var i = 0; i < elements.length; i++) {
-
-        if(elements[i].className.indexOf("activated") != -1) {
-         console.log(elements[i]);
-         elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = category.color;
-       }
-       else {
          elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = "transparent";
-       }
       };
+
+      var temp = "cat-elem-" + selectedCat;
+      var active = document.getElementById(temp);
+      active.getElementsByClassName('category_span')[0].style.backgroundColor = category.color;
+
+
     };
 
     $scope.filterReset = function () {
@@ -472,6 +471,7 @@ angular.module('starter.controllers', [])
           elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = "transparent";
       };
     }
+
   })
 
 
