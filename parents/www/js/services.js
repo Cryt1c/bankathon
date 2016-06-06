@@ -4,10 +4,12 @@ angular.module('starter.services', [])
 
     var kids = [{
       id: 0,
-      name: 'Michael'
+      name: 'Michael',
+      paired: true
     }, {
       id: 1,
-      name: 'Sophie'
+      name: 'Sophie',
+      paired: false
     }];
     var kidsNum = kids.length;
 
@@ -17,6 +19,9 @@ angular.module('starter.services', [])
       },
       getNum: function (kids) {
         return kids.length;
+      },
+      setPaired: function(id, paired) {
+        kids[id].paired = paired;
       }
     };
   })
@@ -44,38 +49,76 @@ angular.module('starter.services', [])
   })
 
   .factory('Stats', function () {
-    var stats = [{
+
+    var categories = [{
       id: 0,
       name: 'Essen',
-      spent: 0
+      spent: 0.00,
+      file: 'food.png',
+      color: '#38D42F',
+      height: '25',
+      icon_android: 'ion-icecream',
+      icon_ios: 'ion-ios-nutrition'
     }, {
       id: 1,
       name: 'Spaß',
-      spent: 0
+      spent: 0.00,
+      file: 'spass.png',
+      color: '#0D7DBF',
+      height: '25',
+      icon_android: 'ion-android-happy',
+      icon_ios: 'ion-happy-outline'
+
     }, {
       id: 2,
       name: 'Sport',
-      spent: 0
+      spent: 0.00,
+      file: 'sport.png',
+      color: '#FFE910',
+      height: '25',
+      icon_android: 'ion-android-bicycle',
+      icon_ios: 'ion-ios-tennisball'
     }, {
       id: 3,
       name: 'Schulsachen',
-      spent: 0
+      spent: 0.00,
+      file: 'schule.png',
+      color: '#FFA212',
+      height: '25',
+      icon_android: 'ion-university',
+      icon_ios: 'ion-university'
     }, {
       id: 4,
       name: 'Kleidung',
-      spent: 0
+      spent: 0.00,
+      file: 'kleidung.png',
+      color: '#ED3338',
+      height: '25',
+      icon_android: 'ion-tshirt',
+      icon_ios: 'ion-tshirt'
     }, {
       id: 5,
       name: 'Telefon',
-      spent: 0
+      spent: 0.00,
+      file: 'telefon.png',
+      color: '#AA6ADF',
+      height: '25',
+      icon_android: 'ion-android-call',
+      icon_ios: 'ion-ios-telephone'
     }, {
       id: 6,
       name: 'Geschenke',
-      spent: 0
+      spent: 0.00,
+      file: 'geschenk.png',
+      color: '#05DEE0',
+      height: '25',
+      icon_android: 'ion-heart',
+      icon_ios: 'ion-heart'
     }];
 
     var needwant = [0, 0];
     var line = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    var spent = [0, 0, 0, 0, 0, 0, 0];
 
     transactions = [{
       id: 1,
@@ -100,7 +143,7 @@ angular.module('starter.services', [])
 
 
     for (var i = 0; i < transactions.length; i++) {
-      stats[transactions[i].category].spent += transactions[i].amount;
+      categories[transactions[i].category].spent += transactions[i].amount;
       if (transactions[i].is_need) needwant[0] += transactions[i].amount;
       else needwant[1] += transactions[i].amount;
     }
@@ -108,26 +151,42 @@ angular.module('starter.services', [])
 
     return {
       all: function () {
-        return stats;
+        return categories;
       },
-      resetSpent: function () {
-        for (var i = 0; i < stats.length; i++) {
-          stats[i].spent = 0;
+      getLegend: function () {
+        var legend = [];
+        for(var i = 0; i < transactions.length; i++) {
+          if(legend[transactions.category] == null) {
+            var category = {};
+            category.name = categories[transactions[i].category].name;
+            category.icon_android = categories[transactions[i].category].icon_android;
+            category.icon_ios = categories[transactions[i].category].icon_ios;
+            category.color = categories[transactions[i].category].color;
+            legend.push(category);
+          }
         }
+        return legend;
       },
       getNames: function () {
-        names = [];
-        for (var i = 0; i < stats.length; i++) {
-          names[i] = stats[i].name;
+        var names = [];
+        for (var i = 0; i < categories.length; i++) {
+          names[i] = categories[i].name;
         }
         return names;
       },
       getSpent: function () {
-        spent = [];
-        for (var i = 0; i < stats.length; i++) {
-          spent[i] = stats[i].spent;
+        var spent = [0, 0, 0, 0, 0, 0, 0];
+        for (var i = 0; i < transactions.length; i++) {
+          spent[transactions[i].category] += transactions[i].amount;
         }
         return spent;
+      },
+      getColors: function () {
+        var colors = [];
+        for (var i = 0; i < categories.length; i++) {
+          colors[i] = categories[i].color;
+        }
+        return colors;
       },
       getNeedWant: function () {
         return needwant;
@@ -136,7 +195,7 @@ angular.module('starter.services', [])
         for (var i = 0; i < transactions.length; i++) {
           var date = new Date(transactions[i].timestamp);
           if (date.getMonth() == month && date.getFullYear() == year) {
-            line[date.getDate()-1] += transactions[i].amount;
+            line[date.getDate() - 1] += transactions[i].amount;
           }
         }
         return [line];
@@ -175,8 +234,15 @@ angular.module('starter.services', [])
 
   .factory('Days', function () {
 
-    var monthdays = [];
-
+    var monthdays = [{
+      id: 1, label: '1. im Monat'},
+      {id: 2, label: '5. im Monat'},
+      {id: 3, label: '10. im Monat'},
+      {id: 4, label: '15. im Monat'},
+      {id: 5, label: '20. im Monat'},
+      {id: 6, label: '25. im Monat'},
+      {id: 7, label: 'letzter im Monat'},
+    ];
 
     var weekdays = [
       {id: 1, label: 'Montag'},
@@ -190,13 +256,6 @@ angular.module('starter.services', [])
 
     return {
       getMonthdays: function () {
-        monthdays = [];
-        for (var i = 1; i <= 28; i++) {
-          var temp = {};
-          temp.id = i;
-          temp.label = ' ' + i + '. Tag im Monat';
-          monthdays.push(temp);
-        }
         return monthdays;
       },
       getWeekdays: function () {
@@ -208,8 +267,8 @@ angular.module('starter.services', [])
 
   .factory('Intervall', function () {
     var list = [
-      {id: 1, name: 'monatlich', useAsDefault: true},
-      {id: 2, name: 'wöchentlich', useAsDefault: false}
+      {id: 0, name: 'monatlich', useAsDefault: true},
+      {id: 1, name: 'wöchentlich', useAsDefault: false}
     ];
 
     return {
@@ -226,8 +285,12 @@ angular.module('starter.services', [])
             return list[i];
           }
         }
+      },
+      setDefault: function(id, value) {
+        list[id].useAsDefault = value;
+        return true;
       }
-    }
+    };
   })
 
   .factory('Order', function () {
@@ -235,7 +298,6 @@ angular.module('starter.services', [])
     var amount = 0;
     var text = "";
     var day = 0;
-    var time = new Date();
 
     return {
       setAmount: function (amountValue) {
@@ -259,13 +321,6 @@ angular.module('starter.services', [])
       getDay: function () {
         return day;
       },
-      setTime: function (timeValue) {
-        time = timeValue;
-        return true;
-      },
-      getTime: function () {
-        return time;
-      }
     }
   })
 

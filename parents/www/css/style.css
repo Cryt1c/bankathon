@@ -1,7 +1,9 @@
 .bar-positive button {
   border: none;
 }
-
+button.button-header {
+  font-size: 17px;
+}
 
 .name {
   text-align: center;
@@ -72,7 +74,10 @@
 }
 
 .qr_img {
-  width: 100%;
+  width: 80%;
+}
+.scan {
+  text-align: center;
 }
 
 .item-text {
@@ -176,4 +181,42 @@
   text-align: right;
   padding-top: 8px;
 
+}
+
+.pairing {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.pairing h3 {
+  margin-top: 15px;
+}
+
+/*
+  Statistik
+*/
+
+.ti-segmented-control {
+  margin: 5px auto;
+  width: 350px;
+}
+
+canvas.chart {
+  padding: 7px;
+}
+
+
+.legend_cat {
+  width: 8%;
+  text-align: center;
+  float: left;
+  font-size: 20px;
+  padding: 5px;
+  margin: 5px;
+  color: #000;
+  margin-right: 10px;
+}
+
+.legend_name {
+  padding-top: 10px;
+  font-size: 20px;
 }

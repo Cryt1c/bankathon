@@ -1,4 +1,32 @@
 /* Empty. Add your own CSS if you like */
+
+.tabs .tab-item .icon.icon-overview-on {
+  background-repeat: no-repeat;
+  background-position: 50%;
+  height: 32px;
+  background-image: url('../img/icon_overview_on.png');
+  background-size: contain;
+}
+.tabs .tab-item .icon.icon-overview-off {
+  background-repeat: no-repeat;
+  background-position: 50%;
+  height: 32px;
+  background-image: url('../img/icon_overview_off.png');
+  background-size: contain;
+}
+
+.bar-positive button.button-icon.icon-filter {
+  background-repeat: no-repeat;
+  background-position: 50%;
+  height: 32px;
+  background-image: url('../img/icon_filter_off.png');
+  background-size: contain;
+  margin-right: 15px;
+}
+.bar-positive button.button-icon.icon-filter.on {
+  background-image: url('../img/icon_filter_on.png');
+}
+
 .logo {
   height: 30px;
   width: 200px;
@@ -24,6 +52,9 @@
 
 .title.title-android {
   display: none;
+}
+.bar .title {
+  font-size: 20px;
 }
 
 .greeting.greeting-android {
@@ -127,6 +158,31 @@ h2, p {
   height: 0px;
 }
 
+.item-month {
+  text-align: center;
+  margin: auto;
+  vertical-align: middle;
+}
+
+.item-month .input-label {
+  text-align: right;
+  font-size: 18px;
+  max-width: 700px;
+  padding: 7px 10px 7px 0px;
+  width: 45%;
+  color: #000;
+
+}
+
+.item-month input {
+  font-size: 18px;
+  padding: 7px 10px 7px 0px;
+  line-height: 18px;
+  color: #000;
+}
+
+
+
 .item-elem p {
   color: #000;
   font-size: 16px;
@@ -137,8 +193,8 @@ h2, p {
 }
 
 .border {
-  height: 500px;
-  width: 280px;
+  height: 370px;
+  width: 230px;
   border-right: 15px solid #000000;
   border-left: 15px solid #000000;
   border-bottom: 15px solid #000000;
@@ -147,7 +203,7 @@ h2, p {
   margin-bottom: 8px;
   z-index: 100;
   margin-left: 15px;
-  top: 65px;
+  top: 80px;
   position: absolute;
 }
 
@@ -156,7 +212,7 @@ hr {
   position: absolute;
   height: 4px;
   color: red;
-  width: 285px;
+  width: 300px;
   bottom: 0px;
   z-index: 100;
   background-color: red;
@@ -170,15 +226,15 @@ hr {
 .anzeige {
   float: right;
   position: relative;
-  height: 500px;
+  height: 370px;
   width: 80px;
-  top: 44px;
+  top: 30px;
 }
 
 .anzeige .total {
   display: none;
   position: absolute;
-  bottom: 480px;
+  bottom: 340px;
   width: 100%;
   margin: auto;
 }
@@ -194,9 +250,9 @@ hr {
 
 #list .list {
   position: relative;
-  height: 480px;
-  width: 260px;
-  top: 25px;
+  height: 350px;
+  width: 210px;
+  top: 42px;
   left: 25px;
 }
 
@@ -219,11 +275,12 @@ hr {
   text-decoration: none;
   text-align: center;
   vertical-align: middle;
+  font-size: 14px;
 }
 
-.child .icon {
-  font-size: 25px;
-  padding-left: 10px;
+.child .child__icon {
+  font-size: 16px;
+  padding-left: 0px;
 }
 .child__name {
   display: -webkit-box;
@@ -239,7 +296,8 @@ hr {
   position: absolute;
   top: 0;
   height: 100%;
-  padding-left: 55px;
+  padding-left: 40px;
+  font-size: 14px;
 }
 
 .child__betrag {
@@ -256,23 +314,10 @@ hr {
   position: absolute;
   top: 0;
   height: 100%;
-  padding-left: 170px;
+  padding-left: 130px;
   text-align: right;
+  font-size: 14px;
 }
-
-
-/*
-ion-list ion-item:nth-child(1) .box {
-  margin-top: 50px;
-}
-
-
-ion-list ion-item:nth-last-child(1) .box {
-  border-bottom: 15px solid #000000;
-  border-bottom-right-radius: 60px;
-  border-bottom-left-radius: 60px;
-  margin-bottom: 8px;
-*/
 
 .cat-elem {
   float:left;
@@ -472,7 +517,7 @@ ion-list ion-item:nth-last-child(1) .box {
   border-radius:20px;
 }
 .transaction_tagzone {
-
+    padding-top: 15px;
     width: 200px;
     position: absolute;
     right: 0px;
@@ -484,4 +529,27 @@ ion-list ion-item:nth-last-child(1) .box {
 }
 strong {
   font-weight:500;
+}
+
+.category_list {
+   border: none;
+   text-align: center;
+ }
+
+
+
+.category_elem {
+  display: inline-block;
+  border: none;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.category_span {
+  border-radius:20px;
+  margin: auto;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }

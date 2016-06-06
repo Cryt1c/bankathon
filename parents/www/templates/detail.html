@@ -1,5 +1,6 @@
-<ion-view view-title="{{kidsService.selectedKid}}">
+<ion-view view-title="{{kidsService.selectedKid.name}}">
   <ion-content>
+    <ng-show ng-show="paired">
     <ion-list>
       <ion-item class="item-icon-right" ui-sref="stat">Statistik <br>
       Liniengraph
@@ -12,6 +13,10 @@
           Letzte Überweisung war am 01.05.16: 15,00 €
         </div>
       </ion-item>
+      <ion-item class="item-icon-right" ui-sref="historie">
+        <div class="item-text">Überweisungshistorie</div>
+        <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon icon_blue"></i>
+      </ion-item>
       <ion-item class="item-icon-right" ui-sref="send">
         <div class="item-text">Jetzt Geld senden</div>
         <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon icon_blue"></i>
@@ -20,11 +25,23 @@
         <div class="item-text">Dauerauftrag</div>
         <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon icon_blue"></i>
       </ion-item>
-      <ion-item class="item-icon-right" ui-sref="historie">
-        <div class="item-text">Überweisungshistorie</div>
-        <i ng-class="{'ion-android-arrow-forward': platform.isAndroid(), 'ion-ios-arrow-forward': !platform.isAndroid()}" class="icon icon_blue"></i>
-      </ion-item>
     </ion-list>
+    </ng-show>
+
+    <div ng-hide="paired" class="pairing">
+
+      <h3 class="qr_dialog">QR-Code scannen</h3>
+      <div class="scan">
+        <p class="description"> Scannen Sie folgenden QR-Code mit der PoMMo-App Ihres Kindes.
+          Damit wird das Konto Ihres Kindes angelegt und eingerichet und mit Ihrem verknüft.
+        </p>
+        <img src="img/qrcode.png" alt="qrcode zum scannen fuer die kids app" class="qr_img">
+        <button id="finish_button" class="button button-block button-positive"  ng-click="pairingDone(kidsService.selectedKid)">
+          Fertig
+        </button>
+      </div>
+
+    </div>
 
   </ion-content>
 </ion-view>

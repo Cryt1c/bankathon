@@ -12,17 +12,17 @@
     <form name="sendForm" id="sendForm" ng-model="sendForm" novalidate>
       <ion-list>
         <ion-item class="item item-input item-stacked-label">
-          <p class="input-label">Betrag* in EUR</p>
-          <input type="number" step="0.01" min="0" max="1000" placeholder="0,00" name="amount" ng-model="amount" required />
+          <p class="input-label">Betrag in EUR * </p>
+          <input type="number" step="any" min="0" max="1000" placeholder="0,00" name="amount" ng-model="amount" required />
         </ion-item>
         <ion-item class="item item-input item-stacked-label">
-          <p class="input-label">Grund *</p>
+          <p class="input-label">Nachricht *</p>
           <textarea rows="4" cols="50" placeholder="" name="reason" ng-model="reason" required style="width:95%;"></textarea>
         </ion-item>
 
         <div class="padding order-errors">
           <p ng-show="sendForm.amount.$error.required && !sendForm.amount.$pristine">* Bitte geben Sie einen Betrag ein.</p>
-          <p ng-show="sendForm.reason.$error.required && !sendForm.reason.$pristine">* Bitte geben Sie einen Grund an. </p>
+          <p ng-show="sendForm.reason.$error.required && !sendForm.reason.$pristine">* Bitte geben Sie eine Nachricht ein. </p>
           <p ng-show="sendForm.amount.$invalid && !sendForm.amount.$pristine">* Im Feld Betrag sind nur Zahlen erlaubt. </p>
         </div>
 

@@ -158,12 +158,16 @@ angular.module('starter.services', [])
           stats[i].spent = 0;
         }
       },
-      getHeights: function (spentTotal, available) {
+      getHeights: function (spentTotal, available, calc_height) {
         for (var i = 0; i < stats.length; i++) {
-          var temp = stats[i].spent / (spentTotal + available) * 450;
+          var temp = stats[i].spent / (spentTotal + available) * calc_height;
 
-          if (temp > 0 && temp < 25) {
-            stats[i].height = 25;
+          var check = 20;
+          if(calc_height > 350) {
+            check = 25;
+          }
+          if (temp > 0 && temp < check) {
+            stats[i].height = check;
           }
           else {
             stats[i].height = temp;
@@ -195,18 +199,18 @@ angular.module('starter.services', [])
   .factory('Months', function () {
 
     var months = [
-      {id: 1, name: 'Jänner'},
-      {id: 2, name: 'Feburar'},
-      {id: 3, name: 'März'},
-      {id: 4, name: 'April'},
-      {id: 5, name: 'Mai'},
-      {id: 6, name: 'Juni'},
-      {id: 7, name: 'Juli'},
-      {id: 8, name: 'August'},
-      {id: 9, name: 'September'},
-      {id: 10, name: 'Oktober'},
-      {id: 11, name: 'November'},
-      {id: 12, name: 'Dezember'},
+      {id: 0, name: 'Jänner'},
+      {id: 1, name: 'Feburar'},
+      {id: 2, name: 'März'},
+      {id: 3, name: 'April'},
+      {id: 4, name: 'Mai'},
+      {id: 5, name: 'Juni'},
+      {id: 6, name: 'Juli'},
+      {id: 7, name: 'August'},
+      {id: 8, name: 'September'},
+      {id: 9, name: 'Oktober'},
+      {id: 10, name: 'November'},
+      {id: 11, name: 'Dezember'},
     ];
 
     return {
@@ -227,5 +231,4 @@ angular.module('starter.services', [])
         return text;
       },
     };
-  });
-
+  })
