@@ -449,24 +449,37 @@ angular.module('starter.controllers', [])
 
     $scope.$on('$ionicView.beforeEnter', function () {
 
+      console.log('beforeEnter');
       selectedCat = -1;
+      $scope.filterMonth = new Date();
 
       $scope.punktZuKomma = PunktZuKomma;
       $scope.available = Amount.getAvailable();
       $scope.transactionsService = transactionsService;
-
-      $scope.filterMonth = new Date();
-      $scope.changeMonth($scope.filterMonth);
+      $scope.changeMonth(new Date());
       $scope.currentMonth = true;
       $scope.filterOpened = false;
       $scope.resetFilter = false;
 
       $scope.stats = Stats.all();
       $scope.stats[7].color = "#006B08";
-
+     // $scope.filterMonth = new Date();
+      //console.log($scope.filterMonth);
     });
 
+
+    $scope.$on('$ionicView.enter', function () {
+      console.log('enter, vorher: ');
+      console.log($scope.filterMonth);
+      $scope.filterMonth = new Date();
+      console.log($scope.filterMonth);
+
+    })
+
     $scope.changeMonth = function(filterMonth) {
+      console.log('change');
+      console.log("param: " + filterMonth);
+
       $scope.noItems = false;
       selectedDate = filterMonth;
       var selectedMonth = filterMonth.getMonth();
@@ -580,7 +593,6 @@ angular.module('starter.controllers', [])
     var dev_width, dev_height, calc_height, height_available;
 
     $scope.$on('$ionicView.loaded', function () {
-      console.log('loaded');
       $scope.platform = ionic.Platform;
       $scope.Math = window.Math;
 
@@ -640,13 +652,11 @@ angular.module('starter.controllers', [])
     })
 
     $scope.$on('$ionicView.beforeEnter', function () {
-      console.log('beforeEnter');
       resetPot();
       setup(new Date());
     });
 
     $scope.$on('$ionicView.enter', function () {
-      console.log('enter');
       animate();
     })
 
@@ -691,7 +701,7 @@ angular.module('starter.controllers', [])
       if($scope.total == 0) {
         $scope.noItems = true;
       }
-      
+
 
       var current = new Date();
       if(current.getMonth() == selectedMonth && current.getYear() == selectedYear) {
@@ -712,7 +722,6 @@ angular.module('starter.controllers', [])
       $("#list .item-elem").each(function (index, element) {
         //Hoehe holen
         var height = Stats.getHeight(index);
-        console.log('height' + index + " = "  + height);
 
         //Bottom ist der Startwert fuer das Element
         $(this).css("bottom", bottom);

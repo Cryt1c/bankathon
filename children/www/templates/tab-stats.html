@@ -7,11 +7,11 @@
   </div>
 </ion-header-bar>
 
-<ion-view view-title="Übersicht">
+<ion-view view-title="Übersicht" cache-view="false">
   <ion-content scroll="false">
     <label class="item item-input item-month">
       <span class="input-label">Monat:</span>
-      <input type="month" ng-model="filterMonth" value="{{monthValue | date: yyyy-MM}}" ng-change="changeMonth(filterMonth)">
+      <input type="month" ng-model="filterMonth" value="{{filterMonth | date: yyyy-MM}}" ng-change="changeMonth(filterMonth)">
       <i class="icon ion-android-arrow-dropdown"></i>
     </label>
 

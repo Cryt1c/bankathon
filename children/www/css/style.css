@@ -446,9 +446,12 @@ hr {
   float: left;
   text-align: right;
   padding-top: 8px;
-  padding-right: 10px;
-
 }
+
+.amount-green {
+  color: #006B08;
+}
+
 #top-area {
   padding: 15px;
   border-radius: 4px;

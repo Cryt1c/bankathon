@@ -7,7 +7,7 @@
   </div>
 </ion-header-bar>
 
-<ion-view view-title="Details">
+<ion-view view-title="Details" cache-view="false">
 
   <ion-content>
     <ion-list class="category_list" ng-show="filterOpened">
@@ -25,7 +25,7 @@
 
     <label class="item item-input item-month">
       <span class="input-label">Monat:</span>
-      <input type="month" ng-model="filterMonth" value="{{monthValue | date: yyyy-MM}}" ng-change="changeMonth(filterMonth)">
+      <input type="month" ng-model="filterMonth" value="{{filterMonth | date: yyyy-MM}}"  ng-change="changeMonth(filterMonth)">
       <i class="icon ion-android-arrow-dropdown"></i>
     </label>
 
@@ -50,8 +50,8 @@
               </span>
             </div>
         </div>
-        <div class="transaction_amount">
-          {{(trans.type == 1 ? "" : "-")}}{{punktZuKomma.parse(trans.amount)}} €
+        <div class="transaction_amount" ng-class="{'amount-green':trans.type == 1 }">
+          {{(trans.type == 1 ? "+ " : "- ")}}{{punktZuKomma.parse(trans.amount)}} €
         </div>
       </div>
       </ion-item>
