@@ -674,6 +674,7 @@ angular.module('starter.controllers', [])
       Stats.resetSpent();
       $scope.stats = Stats.all();
       $scope.total = 0;
+      $scope.noItems = false;
 
       var transactions = transactionsService.transactions();
 
@@ -687,6 +688,10 @@ angular.module('starter.controllers', [])
           }
         }
       }
+      if($scope.total == 0) {
+        $scope.noItems = true;
+      }
+      
 
       var current = new Date();
       if(current.getMonth() == selectedMonth && current.getYear() == selectedYear) {

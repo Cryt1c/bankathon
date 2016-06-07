@@ -86,7 +86,7 @@ angular.module('starter.services', [])
       spent: 0.00,
       file: 'food.png',
       color: '#ED3338',
-      height: '25',
+      height: 0,
       icon_android: 'ion-icecream',
       icon_ios: 'ion-ios-nutrition'
     }, {
@@ -95,7 +95,7 @@ angular.module('starter.services', [])
       spent: 0.00,
       file: 'spass.png',
       color: '#FFA212',
-      height: '25',
+      height: 0,
       icon_android: 'ion-android-happy',
       icon_ios: 'ion-happy-outline'
 
@@ -105,7 +105,7 @@ angular.module('starter.services', [])
       spent: 0.00,
       file: 'sport.png',
       color: '#FFE910',
-      height: '25',
+      height: 0,
       icon_android: 'ion-android-bicycle',
       icon_ios: 'ion-ios-tennisball'
     }, {
@@ -114,7 +114,7 @@ angular.module('starter.services', [])
       spent: 0.00,
       file: 'schule.png',
       color: '#38D42F',
-      height: '25',
+      height: 0,
       icon_android: 'ion-university',
       icon_ios: 'ion-university'
     }, {
@@ -123,7 +123,7 @@ angular.module('starter.services', [])
       spent: 0.00,
       file: 'kleidung.png',
       color: '#05DEE0',
-      height: '25',
+      height: 0,
       icon_android: 'ion-tshirt',
       icon_ios: 'ion-tshirt'
     }, {
@@ -132,7 +132,7 @@ angular.module('starter.services', [])
       spent: 0.00,
       file: 'telefon.png',
       color: '#0D7DBF',
-      height: '25',
+      height: 0,
       icon_android: 'ion-android-call',
       icon_ios: 'ion-ios-telephone'
     }, {
@@ -141,7 +141,7 @@ angular.module('starter.services', [])
       spent: 0.00,
       file: 'geschenk.png',
       color: '#AA6ADF',
-      height: '25',
+      height: 0,
       icon_android: 'ion-heart',
       icon_ios: 'ion-heart'
     }, {
@@ -150,7 +150,7 @@ angular.module('starter.services', [])
       spent: 0.00,
       file: 'geschenk.png',
       color: '#006B08',
-      height: '25',
+      height: 0,
       icon_android: 'ion-plus',
       icon_ios: 'ion-plus'
     },];
@@ -173,7 +173,7 @@ angular.module('starter.services', [])
       },
       resetHeights: function () {
         for (var i = 0; i < stats.length; i++) {
-          stats[i].height = 25;
+          stats[i].height = 0;
         }
         return stats;
       },
