@@ -10,10 +10,13 @@ angular.module('starter.controllers', [])
     this.getTransactions = function () {
       return $http.get(url + "getTransactionsByChild?childId=" + userId);
     };
+    this.getMoneyRequests = function () {
+      return $http.get(url + "getRequestsByChild?childId=" + userId);
+    };
     this.writeTransactions = function () {
       for (var i = 0; i < transactionsService.transactions().length; i++) {
         var tTrans = transactionsService.transactions()[i];
-        if (!tTrans.writtenToServer) {
+        if (!tTrans.writtenToServer && !(tTrans.ephemeral)) {
           // not yet written to server
           $http.post(url + "addTransaction",
             {
@@ -21,7 +24,9 @@ angular.module('starter.controllers', [])
               "amount": tTrans.amount,
               "category": tTrans.category,
               "child_id": userId,
-              "is_need": tTrans.isNeed
+              "is_need": tTrans.isNeed,
+              "type": (tTrans["type"] || 0),
+              "request_id": (tTrans["requestId"] || 0)
             });
           //flag as already written
           tTrans.writtenToServer = true;
@@ -39,6 +44,18 @@ angular.module('starter.controllers', [])
       console.log(json);
       $http.post(url + "setBalance", json);
 
+    };
+    this.sendMoneyRequest = function(amount, message, parentId) {
+      var json = {
+        "amount": amount,
+        "reason": message,
+        "childId": userId,
+        "parentId": parentId,
+        "name": "Michael" //TODO remove
+
+      };
+      console.log(json);
+      $http.post(url + "initRequest", json);
     };
     var wsEventHandler = function (wsData) {
       // handle events incoming via WebSockets
@@ -82,6 +99,7 @@ angular.module('starter.controllers', [])
         Amount.setAvailable($scope.user.balance);
         $scope.available = Amount.getAvailable();
         $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
+        $scope.transactionsService = transactionsService;
 
         // set up WebSockets
         webService.initWebSockets(function (eventData) {
@@ -111,12 +129,34 @@ angular.module('starter.controllers', [])
 
 
         };
-        webService.getTransactions().success(transactionsCallback).error(transactionsCallback);
+         webService.getTransactions().success(transactionsCallback).error(transactionsCallback);
+
+        // also get requests and add them (for now only as ephemeral transactions)
+        var moneyRequestCallback = function (data) {
+          // data is in json format -- an array
+
+            for (var i = 0; i < data.length; i++) {
+              var thisRequest = data[i];
+              // if this request was granted, create an ephemeral transaction representation to represent it
+              var newT= transactionsService.createTransaction("Geldeingang", thisRequest.amount, 1);
+              newT.writtenToServer = true;
+              newT.ephemeral = true;
+              newT.type = 1; // asset
+              newT.date = new Date(thisRequest.timestamp);
+              $scope.transactionsService.addTransaction(newT);
+
+            }
+            Stats.resetSpent();
+              Stats.setSpent($scope.transactionsService.transactions());
+        };
+        webService.getMoneyRequests().success(moneyRequestCallback).error(moneyRequestCallback);
+
+
       }
       webService.getUser().success(userCallback).error(userCallback);
     });
 
-    $scope.transactionsService = transactionsService;
+
     $scope.stats = Stats.all();
     $scope.spentTotal = Amount.getSpentTotal($scope.stats);
 
@@ -141,10 +181,10 @@ angular.module('starter.controllers', [])
 
     $scope.showRequest = function () {
       $scope.data = {};
-      $scope.data.amount = 10;
+      $scope.data.amount;
       var myRequest = $ionicPopup.show({
         template: '<label for="amount">Betrag in € *</label>' +
-        '<input type="number" step="0.01" min="0" max="1000" id="amount" for="slider" ng-model="data.amount" required="required" ng-change="changeButton()>' +
+        '<input type="number" step="0.01" min="0" max="1000" id="amount" for="slider" ng-model="data.amount" required="required" ng-change="changeButton()">' +
         '<div class="spacer"></div>' +
         '<label for="message">Grund*</label>' +
         '<input type="text" id="message" ng-model="data.message" required="required" ng-change="changeButton()">',
@@ -153,14 +193,60 @@ angular.module('starter.controllers', [])
         buttons: [
           {
             text: 'Abbrechen',
-            type: 'button-stable'
+            type: 'button-stable',
+            onTap: function() {myRequest.close();}
           },
           {
             text: '<b>OK</b>',
             type: 'button-ok button-hidden button-positive',
             onTap: function (e) {
+              //$scope.webService.sendMoneyRequest(parseInt($scope.data.amount), $scope.data.message, $scope.user.parent_id);
+               var handleRequestStatusUpdate = function(eventData) {
+                  var requestId = eventData.requestId;
+                  var newStatus = eventData.newStatus;
+                  var response = eventData.response;
+                  var amount = eventData.amount;
+                  switch (newStatus) {
+                    case 0:
+                      // pending
+                      // do nothing
+                      break;
+                    case 1:
+                      // granted
+                      // show and create associated transaction
+                      var alertPopup = $ionicPopup.alert(  {title: "Deine Anfrage über " + amount + " € wurde angenommen. <strong>Nachricht:<strong><br><br>" + response, template: '<h2 style="color: green"> + ' + amount + '€ </h2>'});
+                      alertPopup.then(function() {
+                        Amount.request(amount);
+                        $scope.available = Amount.getAvailable();
+                        $scope.webService.writeBalance();
+                        // TODO create a transaction
+                        var newT = $scope.transactionsService.createTransaction("Geldeingang", amount, 1);
+                        newT.type = 1; // asset
+                        newT.writtenToServer = true; // do not write to server
+                        newT.ephemeral = true; // will only exist within this app -- never written to server
+                        //TODO assign request id
+                        $scope.transactionsService.addTransaction(newT);
+                      });
+                      break;
+                    case 2:
+                      // denied
+                      // show alert
+                      var alertPopup = $ionicPopup.alert(
+                        {title: "Deine Anfrage über " + amount + " € wurde abgelehnt. <strong>Begründung:<strong><br><br>" +
+                      response, template: ""});
+                      alertPopup.then(function() {});
+                      break;
+                  }
+                };
+
               setTimeout(function () {
-                var answer;
+                handleRequestStatusUpdate({
+                  requestId: 0,
+                  newStatus: ( parseInt($scope.data.amount) <= 200 ? 1 : 2),
+                  response: ( parseInt($scope.data.amount) <= 200 ? "Kein Problem, du warst sehr brav." : "Das ist jetzt wirklich zu teuer."),
+                  amount: parseInt($scope.data.amount)
+                });
+                /*var answer;
                 var reason;
                 var amount = parseInt($scope.data.amount);
                 if (amount <= 200) {
@@ -180,7 +266,7 @@ angular.module('starter.controllers', [])
                 });
                 alertPopup.then(function () {
                   $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
-                });
+                });*/
               }, 1000);
             }
           }
@@ -206,7 +292,7 @@ angular.module('starter.controllers', [])
       // An elaborate, custom popup
       $scope.myPopup = $ionicPopup.show({
         template: '<ion-list>' +
-        '<ion-item ng-repeat="stat in stats" ng-click="chooseCategory(stat)" style="background-color:{{stat.color}};" class="item-icon-left">' +
+        '<ion-item ng-repeat="stat in stats" ng-if="$index < 7" ng-click="chooseCategory(stat)" style="background-color:{{stat.color}};" class="item-icon-left">' +
         '{{stat.name}}' +
         '</ion-item>' +
         '</ion-list>',
@@ -302,6 +388,7 @@ angular.module('starter.controllers', [])
             type: 'button-positive',
             onTap: function () {
               $scope.pendingTransaction.isNeed = true;
+               $scope.pendingTransaction.writtenToServer = false;
               $scope.transactionsService.addTransaction($scope.pendingTransaction);
               $scope.pendingTransaction = null;
 
@@ -309,6 +396,7 @@ angular.module('starter.controllers', [])
               // write to server immediately
               $scope.webService.writeTransactions();
               // also write new balance -- TODO you'd actually want to postpone this and relegate to a regular sync function
+
 
             }
           },
@@ -318,6 +406,7 @@ angular.module('starter.controllers', [])
             onTap: function () {
               //trans = $scope.transactionsService.createAndAddTransaction(randomName, payment, stat.id, false);
               $scope.pendingTransaction.isNeed = false;
+              $scope.pendingTransaction.writtenToServer = false;
               $scope.transactionsService.addTransaction($scope.pendingTransaction);
               $scope.pendingTransaction = null;
 
@@ -350,24 +439,31 @@ angular.module('starter.controllers', [])
   })
 
 
-  .controller('HistoryCtrl', function ($scope, $state, $ionicSlideBoxDelegate, Amount, Months, transactionsService, Stats, PunktZuKomma) {
-    $scope.platform = ionic.Platform;
-    $scope.stats = Stats.all();
+  .controller('HistoryCtrl', function ($scope, $state, $ionicSlideBoxDelegate, Amount, transactionsService, Stats, PunktZuKomma) {
+    var selectedCat, selectedDate;
 
-    var selectedCat = -1;
-    var selectedDate = $scope.filterMonth;
+    $scope.$on('$ionicView.loaded', function() {
+      $scope.platform = ionic.Platform;
+    })
 
-    $scope.available = Amount.getAvailable();
 
     $scope.$on('$ionicView.beforeEnter', function () {
+
+      selectedCat = -1;
+
       $scope.punktZuKomma = PunktZuKomma;
       $scope.available = Amount.getAvailable();
       $scope.transactionsService = transactionsService;
+
       $scope.filterMonth = new Date();
       $scope.changeMonth($scope.filterMonth);
+      $scope.currentMonth = true;
       $scope.filterOpened = false;
       $scope.resetFilter = false;
-      selectedCat  = -1;
+
+      $scope.stats = Stats.all();
+      $scope.stats[7].color = "#006B08";
+
     });
 
     $scope.changeMonth = function(filterMonth) {
@@ -375,6 +471,15 @@ angular.module('starter.controllers', [])
       selectedDate = filterMonth;
       var selectedMonth = filterMonth.getMonth();
       var selectedYear = filterMonth.getYear();
+
+      var current = new Date();
+      if(selectedMonth == current.getMonth() && selectedYear == current.getYear()) {
+        $scope.currentMonth = true;
+      }
+      else {
+        $scope.currentMonth = false;
+      }
+
       var trans = transactionsService.transactions();
       $scope.transactions = [];
 
@@ -392,9 +497,7 @@ angular.module('starter.controllers', [])
       if($scope.transactions.length == 0) {
         $scope.noItems = true;
       }
-
     };
-
 
     $scope.openFilter = function() {
       $scope.filterOpened = !$scope.filterOpened;
@@ -406,7 +509,6 @@ angular.module('starter.controllers', [])
       }
 
     };
-
 
     $scope.selectFilter = function(category) {
       $scope.noItems = false;
@@ -435,15 +537,13 @@ angular.module('starter.controllers', [])
       //change background color of the active category
       var elements = document.getElementsByClassName("category_elem item");
       for(var i = 0; i < elements.length; i++) {
-
-        if(elements[i].className.indexOf("activated") != -1) {
-         console.log(elements[i]);
-         elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = category.color;
-       }
-       else {
          elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = "transparent";
-       }
       };
+
+      var active = document.getElementById("cat-elem-" + selectedCat);
+      active.getElementsByClassName('category_span')[0].style.backgroundColor = category.color;
+
+
     };
 
     $scope.filterReset = function () {
@@ -472,39 +572,154 @@ angular.module('starter.controllers', [])
           elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = "transparent";
       };
     }
+
   })
 
 
+  .controller('StatsCtrl', function ($scope, $state, $window, Amount, Stats, transactionsService, PunktZuKomma) {
+    var dev_width, dev_height, calc_height, height_available;
 
-  .controller('StatsCtrl', function ($scope, $state, $window, $ionicSlideBoxDelegate, Amount, Stats, Months, transactionsService, PunktZuKomma) {
+    $scope.$on('$ionicView.loaded', function () {
+      console.log('loaded');
+      $scope.platform = ionic.Platform;
+      $scope.Math = window.Math;
 
-    $scope.platform = ionic.Platform;
-    $scope.Math = window.Math;
+      //set width + height of statistics depending on device
+      dev_width = $window.innerWidth;
+      dev_height = $window.innerHeight;
+      calc_height = 350;
+      $scope.dev_height = dev_height;
+      $scope.dev_width = dev_width;
 
-    //set width + height of statistics depending on device
-    var dev_width = $window.innerWidth;
-    var dev_height = $window.innerHeight;
-    var calc_height = 350;
-    $scope.dev_height = dev_height;
-    $scope.dev_width = dev_width;
+      if (dev_height > 600 && dev_width < 370) { //galaxy S4
+        $('.border').css('height', "470px");
+        $('.border').css('width', "260px");
+        $('.border').css('top', "65px");
+        $('#line').css('width', "330px");
+        $('.anzeige').css('height', "470px");
+        $('.anzeige').css('width', "80px");
+        $('.anzeige').css('top', "16px");
+        $('.anzeige .total').css('bottom', "440px");
+        $('#list .list').css('height', "450px");
+        $('#list .list').css('width', "240px");
+        $('#list .list').css('top', "20px");
+        calc_height = 450;
+      }
+      if (dev_height > 600 && dev_width > 360) { //iphone 6
+        $('.border').css('height', "470px");
+        $('.border').css('width', "280px");
+        $('.border').css('top', "65px");
+        $('#line').css('width', "350px");
+        $('.anzeige').css('height', "470px");
+        $('.anzeige').css('width', "80px");
+        $('.anzeige').css('top', "16px");
+        $('.anzeige .total').css('bottom', "440px");
+        $('#list .list').css('height', "450px");
+        $('#list .list').css('width', "260px");
+        $('#list .list').css('top', "20px");
+        calc_height = 450;
+      }
+      if (dev_height > 600) {
+        var elements = document.getElementsByClassName("child__icon");
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].style.fontSize = "25px";
+          elements[i].style.paddingLeft = "10px";
+        }
+        ;
+        var elements = document.getElementsByClassName("child__name");
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].style.paddingLeft = "65px";
+        }
+        ;
+        var elements = document.getElementsByClassName("child__betrag");
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].style.paddingLeft = "165px";
+        }
+        ;
+      }
+    })
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+      console.log('beforeEnter');
+      resetPot();
+      setup(new Date());
+    });
 
     $scope.$on('$ionicView.enter', function () {
+      console.log('enter');
+      animate();
+    })
 
+    resetPot = function() {
+      $("#list .item-elem").each(function (key, bar) {
+        /* Hoehe und Startwert (=bottom) muessen jedes Mal zurueck gesetzt werden,
+         *  damit die Animation wieder von vorne beginnt, wenn der Tab wieder geoeffnet wird
+         */
+        $('#line').hide();
+        $(".ausgaben").hide();
+        $(".total").hide();
+        $(this).css("height", "0px");
+        $(this).css("bottom", "0px");
+      });
+    }
+
+    setup = function(filterMonth) {
+      $scope.punktZuKomma = PunktZuKomma;
+      $scope.filterMonth = filterMonth;
+      var selectedMonth = $scope.filterMonth.getMonth();
+      var selectedYear = $scope.filterMonth.getYear();
+
+
+      Stats.resetHeights();
+      Stats.resetSpent();
+      $scope.stats = Stats.all();
+      $scope.total = 0;
+      $scope.noItems = false;
+
+      var transactions = transactionsService.transactions();
+
+      for(var i = 0; i < transactions.length; i++) {
+        if(transactions[i].date.getMonth() == selectedMonth && transactions[i].date.getYear() == selectedYear) {
+
+          $scope.stats[transactions[i].category].spent += transactions[i].amount;
+
+          if(transactions[i].category != 7) { //keine einnahme
+            $scope.total += transactions[i].amount;
+          }
+        }
+      }
+      if($scope.total == 0) {
+        $scope.noItems = true;
+      }
+      
+
+      var current = new Date();
+      if(current.getMonth() == selectedMonth && current.getYear() == selectedYear) {
+        $scope.stats[7].spent = Amount.getAvailable();
+        $scope.stats[7].name = "Taschengeld";
+      }
+
+      $scope.stats[7].color = "#FFFFFF";
+      $scope.available = $scope.stats[7].spent;
+      $scope.stats = Stats.setHeights($scope.total, $scope.available, calc_height);
+    }
+
+    animate = function() {
       var bottom = 0;
       var len = $("#list .item-elem").length;
       var height_ausgaben = 0;
 
       $("#list .item-elem").each(function (index, element) {
         //Hoehe holen
-        var height = $(this).data('target');
+        var height = Stats.getHeight(index);
+        console.log('height' + index + " = "  + height);
 
         //Bottom ist der Startwert fuer das Element
         $(this).css("bottom", bottom);
 
         if (index == len - 1) {
           $('#line').css("bottom", bottom);
-          height_ausgaben = bottom-15;
+          height_ausgaben = bottom - 10;
           $(".ausgaben").css("bottom", height_ausgaben);
         };
 
@@ -524,100 +739,25 @@ angular.module('starter.controllers', [])
               if (index == len - 2) {
                 $('#line').show();
                 $(".ausgaben").show();
-              };
+              }
+              ;
               if (index == len - 1) {
                 $(".total").show();
-              };
+              }
+              ;
             },
           });
         //Startwert fuer das naechste Element erhoehen
         bottom += parseFloat(height);
       });
 
-      if(dev_height > 600) {
-        var elements = document.getElementsByClassName("child__icon");
-        for(var i = 0; i < elements.length; i++) {
-          elements[i].style.fontSize = "25px";
-          elements[i].style.paddingLeft = "10px";
-        };
-        var elements = document.getElementsByClassName("child__name");
-        for(var i = 0; i < elements.length; i++) {
-          elements[i].style.paddingLeft = "65px";
-        };
-        var elements = document.getElementsByClassName("child__betrag");
-        for(var i = 0; i < elements.length; i++) {
-          elements[i].style.paddingLeft = "165px";
-        };
-      }
-    });
+    }
 
-    $scope.$on('$ionicView.beforeEnter', function () {
+    $scope.changeMonth = function(filterMonth) {
+      resetPot();
+      setup(filterMonth);
+      animate();
+    }
 
-      $scope.punktZuKomma = PunktZuKomma;
-
-      if(dev_height > 600 && dev_width  < 370) { //galaxy S4
-        $('.border').css('height', "470px");
-        $('.border').css('width', "260px");
-        $('.border').css('top', "65px");
-        $('#line').css('width', "330px");
-        $('.anzeige').css('height', "470px");
-        $('.anzeige').css('width', "80px");
-        $('.anzeige').css('top', "16px");
-        $('.anzeige .total').css('bottom', "440px");
-        $('#list .list').css('height', "450px");
-        $('#list .list').css('width', "240px");
-        $('#list .list').css('top', "25px");
-        calc_height = 450;
-      }
-
-      if(dev_height > 600 && dev_width > 360) { //iphone 6
-         $('.border').css('height', "470px");
-         $('.border').css('width', "280px");
-         $('.border').css('top', "65px");
-         $('#line').css('width', "350px");
-         $('.anzeige').css('height', "470px");
-         $('.anzeige').css('width', "80px");
-         $('.anzeige').css('top', "16px");
-         $('.anzeige .total').css('bottom', "440px");
-         $('#list .list').css('height', "450px");
-         $('#list .list').css('width', "260px");
-        $('#list .list').css('top', "25px");
-         calc_height = 450;
-      }
-
-
-      $scope.stats = Stats.all();
-      $scope.available = Amount.getAvailable();
-      $scope.spentTotal = Amount.getSpentTotal($scope.stats);
-      $scope.stats = Stats.getHeights($scope.spentTotal, $scope.available, calc_height);
-      var date = new Date();
-      $scope.monthValue = date;
-
-      var height_available = $scope.available / ($scope.available + $scope.spentTotal) * calc_height;
-
-      console.log(height_available);
-      var check = 20;
-      if(calc_height > 350) {
-        check = 25;
-      }
-      if (height_available < check) {
-        $scope.height_available = check;
-      }
-      else {
-        $scope.height_available = height_available;
-      }
-
-
-      $("#list .item-elem").each(function (key, bar) {
-        /* Hoehe und Startwert (=bottom) muessen jedes Mal zurueck gesetzt werden,
-         *  damit die Animation wieder von vorne beginnt, wenn der Tab wieder geoeffnet wird
-         */
-        $('#line').hide();
-        $(".ausgaben").hide();
-        $(".total").hide();
-        $(this).css("height", "0px");
-        $(this).css("bottom", "0px");
-      });
-    });
 
   });

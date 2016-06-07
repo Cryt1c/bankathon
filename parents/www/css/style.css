@@ -201,9 +201,16 @@ button.button-header {
 }
 
 canvas.chart {
-  padding: 7px;
+  margin-top: 20px;
+  padding: 10px;
 }
 
+#noData {
+  text-align: center;
+  margin-top: 50%;
+  font-size: 15px;
+  font-family: "Helvetica Neue", "Roboto", sans-serif;
+}
 
 .legend_cat {
   width: 8%;

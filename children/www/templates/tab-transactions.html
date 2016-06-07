@@ -11,7 +11,7 @@
 
   <ion-content>
     <ion-list class="category_list" ng-show="filterOpened">
-      <ion-item class="category_elem" ng-repeat="cat in stats" ng-click="selectFilter(cat)">
+      <ion-item class="category_elem" id="cat-elem-{{cat.id}}" ng-repeat="cat in stats" ng-click="selectFilter(cat)">
         <span class="category_span" style="border: 1px solid {{cat.color}};">
           <i class="icon {{cat.icon_ios}}"></i>
         </span>
@@ -26,9 +26,10 @@
     <label class="item item-input item-month">
       <span class="input-label">Monat:</span>
       <input type="month" ng-model="filterMonth" value="{{monthValue | date: yyyy-MM}}" ng-change="changeMonth(filterMonth)">
+      <i class="icon ion-android-arrow-dropdown"></i>
     </label>
 
-      <h2 class="label">Aktuelles Taschengeld: <strong>{{punktZuKomma.parse(available)}} €</strong></h2>
+      <h2 ng-show="currentMonth" class="label">Aktuelles Taschengeld: <strong>{{punktZuKomma.parse(available)}} €</strong></h2>
 
     <ion-list class="transaction_list">
       <ion-item class="transaction_elem" ng-repeat="trans in transactions | orderBy:'-date':false" >
@@ -50,7 +51,7 @@
             </div>
         </div>
         <div class="transaction_amount">
-          {{punktZuKomma.parse(trans.amount)}} €
+          {{(trans.type == 1 ? "" : "-")}}{{punktZuKomma.parse(trans.amount)}} €
         </div>
       </div>
       </ion-item>

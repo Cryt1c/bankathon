@@ -9,43 +9,40 @@
 
 <ion-view view-title="Übersicht">
   <ion-content scroll="false">
-    <label class="item item-input">
-      <span class="input-label">Monat</span>
-      <input type="month" ng-model="filters.month" value="{{monthValue | date: yyyy-MM}}">
+    <label class="item item-input item-month">
+      <span class="input-label">Monat:</span>
+      <input type="month" ng-model="filterMonth" value="{{monthValue | date: yyyy-MM}}" ng-change="changeMonth(filterMonth)">
+      <i class="icon ion-android-arrow-dropdown"></i>
     </label>
-    <!--<div>{{dev_height}} {{dev_width}}</div> -->
 
     <div class="border">
-      <hr id="line"/>
+      <hr id="line" ng-hide="noItems"/>
     </div>
-    <div class="anzeige">
+    <div class="anzeige" ng-hide="noItems">
       <p class="total">
-        {{punktZuKomma.parse(Math.round(spentTotal+available))}} €
+        {{punktZuKomma.parse(Math.round(total+available))}} €
       </p>
-      <p class="ausgaben">
-        {{punktZuKomma.parse(Math.round(spentTotal))}} €
+      <p class="ausgaben" ng-hide="noItems">
+        {{punktZuKomma.parse(Math.round(total))}} €
       </p>
     </div>
 
     <ion-list class="list" id="list">
-      <ion-item class="item-elem" ng-repeat="stat in stats | orderBy:'-spent':false" style="background-color:{{stat.color}};" data-target="{{stat.height}}">
-          <div class="child" style="height: {{stat.height}}px;">
-            <a class="item-icon-left item-icon-right" href="#" style="height:{{stat.height}}px;">
-              <i class="icon {{stat.icon_ios}} child__icon"></i>
+      <ion-item class="item-elem" ng-repeat="stat in stats" style="background-color:{{stat.color}};" >
+        <div class="child" style="height: {{stat.height}}px;">
+          <a class="item-icon-left item-icon-right" href="#" style="height:{{stat.height}}px;">
+            <i class="icon {{stat.icon_ios}} child__icon"></i>
               <span class="child__name">
                 {{stat.name}}:
               </span>
                 <span class="child__betrag">
                   {{punktZuKomma.parse(stat.spent)}} €
               </span>
-              </a>
-          </div>
-      </ion-item>
-      <ion-item class="item-elem" style="background-color:white; margin-bottom: 10px;" data-target="{{height_available}}">
-        <div class="child">
-          <span class="child__name">Taschengeld: </span>
-          <span class="child__betrag">{{punktZuKomma.parse(available)}} €</span>
+          </a>
         </div>
+      </ion-item>
+      <ion-item ng-show="noItems" style="border: none;">
+        <p>Keine Ausgaben in diesem Monat</p>
       </ion-item>
     </ion-list>
   </ion-content>

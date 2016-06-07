@@ -188,13 +188,16 @@ angular.module('starter.services', [])
       },
       getMonth: function (month, year) {
         var line = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        var hasData = false;
         for (var i = 0; i < transactions.length; i++) {
           var date = new Date(transactions[i].timestamp);
           if (date.getMonth() == month && date.getFullYear() == year) {
             line[date.getDate() - 1] += transactions[i].amount;
+            hasData = true;
           }
         }
-        return [line];
+        if(hasData) {return [line];}
+        return hasData;
       }
     };
   })

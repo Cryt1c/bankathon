@@ -13,7 +13,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         StatusBar.hide();
       }
 
-      $cordovaPlugin.toast().then(sucess, error);
+      //if ( $cordovaPlugin) $cordovaPlugin.toast().then(sucess, error);
     });
   })
 

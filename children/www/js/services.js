@@ -27,6 +27,7 @@ angular.module('starter.services', [])
       }
     };
   })
+
   .service('transactionsService', function (Stats) {
     var _transactions = [];
 
@@ -39,12 +40,16 @@ angular.module('starter.services', [])
     };
 
     this.addTransaction = function (transaction) {
+      //trans.writtenToServer = false;
+      if (!transaction.date) transaction.date = new Date();
       _transactions.push(transaction);
     };
 
     this.loadTransactionsJSON = function (existingTransactions) {
       //_transactions = existingTransactions;
-      _transactions = [];
+      _transactions = _transactions.filter(function(value) {
+        return (value.type == 1);
+      });
       for (var i = 0; i < existingTransactions.length; i++) {
         var thisT = existingTransactions[i];
         var trans = this.createAndAddTransaction(thisT.recipient, thisT.amount, thisT.category);
@@ -80,8 +85,8 @@ angular.module('starter.services', [])
       name: 'Essen',
       spent: 0.00,
       file: 'food.png',
-      color: '#38D42F',
-      height: '25',
+      color: '#ED3338',
+      height: 0,
       icon_android: 'ion-icecream',
       icon_ios: 'ion-ios-nutrition'
     }, {
@@ -89,8 +94,8 @@ angular.module('starter.services', [])
       name: 'Spaß',
       spent: 0.00,
       file: 'spass.png',
-      color: '#0D7DBF',
-      height: '25',
+      color: '#FFA212',
+      height: 0,
       icon_android: 'ion-android-happy',
       icon_ios: 'ion-happy-outline'
 
@@ -100,7 +105,7 @@ angular.module('starter.services', [])
       spent: 0.00,
       file: 'sport.png',
       color: '#FFE910',
-      height: '25',
+      height: 0,
       icon_android: 'ion-android-bicycle',
       icon_ios: 'ion-ios-tennisball'
     }, {
@@ -108,8 +113,8 @@ angular.module('starter.services', [])
       name: 'Schulsachen',
       spent: 0.00,
       file: 'schule.png',
-      color: '#FFA212',
-      height: '25',
+      color: '#38D42F',
+      height: 0,
       icon_android: 'ion-university',
       icon_ios: 'ion-university'
     }, {
@@ -117,8 +122,8 @@ angular.module('starter.services', [])
       name: 'Kleidung',
       spent: 0.00,
       file: 'kleidung.png',
-      color: '#ED3338',
-      height: '25',
+      color: '#05DEE0',
+      height: 0,
       icon_android: 'ion-tshirt',
       icon_ios: 'ion-tshirt'
     }, {
@@ -126,8 +131,8 @@ angular.module('starter.services', [])
       name: 'Telefon',
       spent: 0.00,
       file: 'telefon.png',
-      color: '#AA6ADF',
-      height: '25',
+      color: '#0D7DBF',
+      height: 0,
       icon_android: 'ion-android-call',
       icon_ios: 'ion-ios-telephone'
     }, {
@@ -135,11 +140,20 @@ angular.module('starter.services', [])
       name: 'Geschenke',
       spent: 0.00,
       file: 'geschenk.png',
-      color: '#05DEE0',
-      height: '25',
+      color: '#AA6ADF',
+      height: 0,
       icon_android: 'ion-heart',
       icon_ios: 'ion-heart'
-    }];
+    }, {
+      id: 7,
+      name: 'Einnahmen',
+      spent: 0.00,
+      file: 'geschenk.png',
+      color: '#006B08',
+      height: 0,
+      icon_android: 'ion-plus',
+      icon_ios: 'ion-plus'
+    },];
 
     return {
       all: function () {
@@ -155,11 +169,17 @@ angular.module('starter.services', [])
         for (var i = 0; i < stats.length; i++) {
           stats[i].spent = 0;
         }
+        return stats;
       },
-      getHeights: function (spentTotal, available, calc_height) {
+      resetHeights: function () {
+        for (var i = 0; i < stats.length; i++) {
+          stats[i].height = 0;
+        }
+        return stats;
+      },
+      setHeights: function (spentTotal, available, calc_height) {
         for (var i = 0; i < stats.length; i++) {
           var temp = stats[i].spent / (spentTotal + available) * calc_height;
-
           var check = 20;
           if(calc_height > 350) {
             check = 25;
@@ -190,36 +210,12 @@ angular.module('starter.services', [])
           }
         }
         return null;
-      }
-    };
-  })
-
-  .factory('Months', function () {
-
-    var months = [
-      {id: 0, name: 'Jänner'},
-      {id: 1, name: 'Feburar'},
-      {id: 2, name: 'März'},
-      {id: 3, name: 'April'},
-      {id: 4, name: 'Mai'},
-      {id: 5, name: 'Juni'},
-      {id: 6, name: 'Juli'},
-      {id: 7, name: 'August'},
-      {id: 8, name: 'September'},
-      {id: 9, name: 'Oktober'},
-      {id: 10, name: 'November'},
-      {id: 11, name: 'Dezember'},
-    ];
-
-    return {
-      getMonth: function (id) {
-        return months[id].name;
       },
-      getAll: function () {
-        return months;
+      getHeight: function(statId) {
+        return stats[statId].height;
       }
-    };
 
+    };
   })
 
   .factory('PunktZuKomma', function () {
