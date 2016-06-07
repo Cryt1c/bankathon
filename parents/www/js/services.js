@@ -20,7 +20,7 @@ angular.module('starter.services', [])
       getNum: function (kids) {
         return kids.length;
       },
-      setPaired: function(id, paired) {
+      setPaired: function (id, paired) {
         kids[id].paired = paired;
       }
     };
@@ -116,10 +116,6 @@ angular.module('starter.services', [])
       icon_ios: 'ion-heart'
     }];
 
-    var needwant = [0, 0];
-    var line = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    var spent = [0, 0, 0, 0, 0, 0, 0];
-
     transactions = [{
       id: 1,
       amount: 10,
@@ -148,8 +144,8 @@ angular.module('starter.services', [])
       },
       getLegend: function () {
         var legend = [];
-        for(var i = 0; i < transactions.length; i++) {
-          if(legend[transactions.category] == null) {
+        for (var i = 0; i < transactions.length; i++) {
+          if (legend[transactions.category] == null) {
             var category = {};
             category.name = categories[transactions[i].category].name;
             category.icon_android = categories[transactions[i].category].icon_android;
@@ -182,6 +178,7 @@ angular.module('starter.services', [])
         return colors;
       },
       getNeedWant: function () {
+        var needwant = [0, 0];
         for (var i = 0; i < transactions.length; i++) {
           categories[transactions[i].category].spent += transactions[i].amount;
           if (transactions[i].is_need) needwant[0] += transactions[i].amount;
@@ -190,6 +187,7 @@ angular.module('starter.services', [])
         return needwant;
       },
       getMonth: function (month, year) {
+        var line = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         for (var i = 0; i < transactions.length; i++) {
           var date = new Date(transactions[i].timestamp);
           if (date.getMonth() == month && date.getFullYear() == year) {
@@ -233,7 +231,8 @@ angular.module('starter.services', [])
   .factory('Days', function () {
 
     var monthdays = [{
-      id: 1, label: '1. im Monat'},
+      id: 1, label: '1. im Monat'
+    },
       {id: 2, label: '5. im Monat'},
       {id: 3, label: '10. im Monat'},
       {id: 4, label: '15. im Monat'},
@@ -284,7 +283,7 @@ angular.module('starter.services', [])
           }
         }
       },
-      setDefault: function(id, value) {
+      setDefault: function (id, value) {
         list[id].useAsDefault = value;
         return true;
       }
