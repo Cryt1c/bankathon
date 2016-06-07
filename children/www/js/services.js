@@ -46,7 +46,9 @@ angular.module('starter.services', [])
 
     this.loadTransactionsJSON = function (existingTransactions) {
       //_transactions = existingTransactions;
-      _transactions = [];
+      _transactions = _transactions.filter(function(value) {
+        return (value.type == 1);
+      });
       for (var i = 0; i < existingTransactions.length; i++) {
         var thisT = existingTransactions[i];
         var trans = this.createAndAddTransaction(thisT.recipient, thisT.amount, thisT.category);

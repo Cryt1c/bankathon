@@ -50,7 +50,7 @@
             </div>
         </div>
         <div class="transaction_amount">
-          {{punktZuKomma.parse(trans.amount)}} €
+          {{(trans.type == 1 ? "" : "-")}}{{punktZuKomma.parse(trans.amount)}} €
         </div>
       </div>
       </ion-item>

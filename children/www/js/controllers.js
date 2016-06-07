@@ -10,10 +10,13 @@ angular.module('starter.controllers', [])
     this.getTransactions = function () {
       return $http.get(url + "getTransactionsByChild?childId=" + userId);
     };
+    this.getMoneyRequests = function () {
+      return $http.get(url + "getRequestsByChild?childId=" + userId);
+    };
     this.writeTransactions = function () {
       for (var i = 0; i < transactionsService.transactions().length; i++) {
         var tTrans = transactionsService.transactions()[i];
-        if (!tTrans.writtenToServer) {
+        if (!tTrans.writtenToServer && !(tTrans.ephemeral)) {
           // not yet written to server
           $http.post(url + "addTransaction",
             {
@@ -21,7 +24,9 @@ angular.module('starter.controllers', [])
               "amount": tTrans.amount,
               "category": tTrans.category,
               "child_id": userId,
-              "is_need": tTrans.isNeed
+              "is_need": tTrans.isNeed,
+              "type": (tTrans["type"] || 0),
+              "request_id": (tTrans["requestId"] || 0)
             });
           //flag as already written
           tTrans.writtenToServer = true;
@@ -39,6 +44,18 @@ angular.module('starter.controllers', [])
       console.log(json);
       $http.post(url + "setBalance", json);
 
+    };
+    this.sendMoneyRequest = function(amount, message, parentId) {
+      var json = {
+        "amount": amount,
+        "reason": message,
+        "childId": userId,
+        "parentId": parentId,
+        "name": "Michael" //TODO remove
+
+      };
+      console.log(json);
+      $http.post(url + "initRequest", json);
     };
     var wsEventHandler = function (wsData) {
       // handle events incoming via WebSockets
@@ -82,6 +99,7 @@ angular.module('starter.controllers', [])
         Amount.setAvailable($scope.user.balance);
         $scope.available = Amount.getAvailable();
         $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
+        $scope.transactionsService = transactionsService;
 
         // set up WebSockets
         webService.initWebSockets(function (eventData) {
@@ -111,12 +129,34 @@ angular.module('starter.controllers', [])
 
 
         };
-        webService.getTransactions().success(transactionsCallback).error(transactionsCallback);
+         webService.getTransactions().success(transactionsCallback).error(transactionsCallback);
+
+        // also get requests and add them (for now only as ephemeral transactions)
+        var moneyRequestCallback = function (data) {
+          // data is in json format -- an array
+
+            for (var i = 0; i < data.length; i++) {
+              var thisRequest = data[i];
+              // if this request was granted, create an ephemeral transaction representation to represent it
+              var newT= transactionsService.createTransaction("Geldeingang", thisRequest.amount, 1);
+              newT.writtenToServer = true;
+              newT.ephemeral = true;
+              newT.type = 1; // asset
+              newT.date = new Date(thisRequest.timestamp);
+              $scope.transactionsService.addTransaction(newT);
+
+            }
+            Stats.resetSpent();
+              Stats.setSpent($scope.transactionsService.transactions());
+        };
+        webService.getMoneyRequests().success(moneyRequestCallback).error(moneyRequestCallback);
+
+
       }
       webService.getUser().success(userCallback).error(userCallback);
     });
 
-    $scope.transactionsService = transactionsService;
+
     $scope.stats = Stats.all();
     $scope.spentTotal = Amount.getSpentTotal($scope.stats);
 
@@ -153,14 +193,60 @@ angular.module('starter.controllers', [])
         buttons: [
           {
             text: 'Abbrechen',
-            type: 'button-stable'
+            type: 'button-stable',
+            onTap: function() {myRequest.close();}
           },
           {
             text: '<b>OK</b>',
             type: 'button-ok button-hidden button-positive',
             onTap: function (e) {
+              //$scope.webService.sendMoneyRequest(parseInt($scope.data.amount), $scope.data.message, $scope.user.parent_id);
+               var handleRequestStatusUpdate = function(eventData) {
+                  var requestId = eventData.requestId;
+                  var newStatus = eventData.newStatus;
+                  var response = eventData.response;
+                  var amount = eventData.amount;
+                  switch (newStatus) {
+                    case 0:
+                      // pending
+                      // do nothing
+                      break;
+                    case 1:
+                      // granted
+                      // show and create associated transaction
+                      var alertPopup = $ionicPopup.alert(  {title: "Deine Anfrage über " + amount + " € wurde angenommen. <strong>Nachricht:<strong><br><br>" + response, template: '<h2 style="color: green"> + ' + amount + '€ </h2>'});
+                      alertPopup.then(function() {
+                        Amount.request(amount);
+                        $scope.available = Amount.getAvailable();
+                        $scope.webService.writeBalance();
+                        // TODO create a transaction
+                        var newT = $scope.transactionsService.createTransaction("Geldeingang", amount, 1);
+                        newT.type = 1; // asset
+                        newT.writtenToServer = true; // do not write to server
+                        newT.ephemeral = true; // will only exist within this app -- never written to server
+                        //TODO assign request id
+                        $scope.transactionsService.addTransaction(newT);
+                      });
+                      break;
+                    case 2:
+                      // denied
+                      // show alert
+                      var alertPopup = $ionicPopup.alert(
+                        {title: "Deine Anfrage über " + amount + " € wurde abgelehnt. <strong>Begründung:<strong><br><br>" +
+                      response, template: ""});
+                      alertPopup.then(function() {});
+                      break;
+                  }
+                };
+
               setTimeout(function () {
-                var answer;
+                handleRequestStatusUpdate({
+                  requestId: 0,
+                  newStatus: ( parseInt($scope.data.amount) <= 200 ? 1 : 2),
+                  response: ( parseInt($scope.data.amount) <= 200 ? "Kein Problem, du warst sehr brav." : "Das ist jetzt wirklich zu teuer."),
+                  amount: parseInt($scope.data.amount)
+                });
+                /*var answer;
                 var reason;
                 var amount = parseInt($scope.data.amount);
                 if (amount <= 200) {
@@ -180,7 +266,7 @@ angular.module('starter.controllers', [])
                 });
                 alertPopup.then(function () {
                   $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
-                });
+                });*/
               }, 1000);
             }
           }
