@@ -142,13 +142,6 @@ angular.module('starter.services', [])
       }];
 
 
-    for (var i = 0; i < transactions.length; i++) {
-      categories[transactions[i].category].spent += transactions[i].amount;
-      if (transactions[i].is_need) needwant[0] += transactions[i].amount;
-      else needwant[1] += transactions[i].amount;
-    }
-
-
     return {
       all: function () {
         return categories;
@@ -167,21 +160,21 @@ angular.module('starter.services', [])
         }
         return legend;
       },
-      getNames: function () {
+      getNames: function (month, year) {
         var names = [];
         for (var i = 0; i < categories.length; i++) {
           names[i] = categories[i].name;
         }
         return names;
       },
-      getSpent: function () {
+      getSpent: function (month, year) {
         var spent = [0, 0, 0, 0, 0, 0, 0];
         for (var i = 0; i < transactions.length; i++) {
           spent[transactions[i].category] += transactions[i].amount;
         }
         return spent;
       },
-      getColors: function () {
+      getColors: function (month, year) {
         var colors = [];
         for (var i = 0; i < categories.length; i++) {
           colors[i] = categories[i].color;
@@ -189,6 +182,11 @@ angular.module('starter.services', [])
         return colors;
       },
       getNeedWant: function () {
+        for (var i = 0; i < transactions.length; i++) {
+          categories[transactions[i].category].spent += transactions[i].amount;
+          if (transactions[i].is_need) needwant[0] += transactions[i].amount;
+          else needwant[1] += transactions[i].amount;
+        }
         return needwant;
       },
       getMonth: function (month, year) {
