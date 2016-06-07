@@ -27,6 +27,7 @@ angular.module('starter.services', [])
       }
     };
   })
+
   .service('transactionsService', function (Stats) {
     var _transactions = [];
 
@@ -143,7 +144,16 @@ angular.module('starter.services', [])
       height: '25',
       icon_android: 'ion-heart',
       icon_ios: 'ion-heart'
-    }];
+    }, {
+      id: 7,
+      name: 'Einnahmen',
+      spent: 0.00,
+      file: 'geschenk.png',
+      color: '#006B08',
+      height: '25',
+      icon_android: 'ion-plus',
+      icon_ios: 'ion-plus'
+    },];
 
     return {
       all: function () {
@@ -159,11 +169,17 @@ angular.module('starter.services', [])
         for (var i = 0; i < stats.length; i++) {
           stats[i].spent = 0;
         }
+        return stats;
       },
-      getHeights: function (spentTotal, available, calc_height) {
+      resetHeights: function () {
+        for (var i = 0; i < stats.length; i++) {
+          stats[i].height = 25;
+        }
+        return stats;
+      },
+      setHeights: function (spentTotal, available, calc_height) {
         for (var i = 0; i < stats.length; i++) {
           var temp = stats[i].spent / (spentTotal + available) * calc_height;
-
           var check = 20;
           if(calc_height > 350) {
             check = 25;
@@ -194,36 +210,12 @@ angular.module('starter.services', [])
           }
         }
         return null;
-      }
-    };
-  })
-
-  .factory('Months', function () {
-
-    var months = [
-      {id: 0, name: 'Jänner'},
-      {id: 1, name: 'Feburar'},
-      {id: 2, name: 'März'},
-      {id: 3, name: 'April'},
-      {id: 4, name: 'Mai'},
-      {id: 5, name: 'Juni'},
-      {id: 6, name: 'Juli'},
-      {id: 7, name: 'August'},
-      {id: 8, name: 'September'},
-      {id: 9, name: 'Oktober'},
-      {id: 10, name: 'November'},
-      {id: 11, name: 'Dezember'},
-    ];
-
-    return {
-      getMonth: function (id) {
-        return months[id].name;
       },
-      getAll: function () {
-        return months;
+      getHeight: function(statId) {
+        return stats[statId].height;
       }
-    };
 
+    };
   })
 
   .factory('PunktZuKomma', function () {

@@ -181,10 +181,10 @@ angular.module('starter.controllers', [])
 
     $scope.showRequest = function () {
       $scope.data = {};
-      $scope.data.amount = 10;
+      $scope.data.amount;
       var myRequest = $ionicPopup.show({
         template: '<label for="amount">Betrag in € *</label>' +
-        '<input type="number" step="0.01" min="0" max="1000" id="amount" for="slider" ng-model="data.amount" required="required" ng-change="changeButton()>' +
+        '<input type="number" step="0.01" min="0" max="1000" id="amount" for="slider" ng-model="data.amount" required="required" ng-change="changeButton()">' +
         '<div class="spacer"></div>' +
         '<label for="message">Grund*</label>' +
         '<input type="text" id="message" ng-model="data.message" required="required" ng-change="changeButton()">',
@@ -292,7 +292,7 @@ angular.module('starter.controllers', [])
       // An elaborate, custom popup
       $scope.myPopup = $ionicPopup.show({
         template: '<ion-list>' +
-        '<ion-item ng-repeat="stat in stats" ng-click="chooseCategory(stat)" style="background-color:{{stat.color}};" class="item-icon-left">' +
+        '<ion-item ng-repeat="stat in stats" ng-if="$index < 7" ng-click="chooseCategory(stat)" style="background-color:{{stat.color}};" class="item-icon-left">' +
         '{{stat.name}}' +
         '</ion-item>' +
         '</ion-list>',
@@ -439,24 +439,31 @@ angular.module('starter.controllers', [])
   })
 
 
-  .controller('HistoryCtrl', function ($scope, $state, $ionicSlideBoxDelegate, Amount, Months, transactionsService, Stats, PunktZuKomma) {
-    $scope.platform = ionic.Platform;
-    $scope.stats = Stats.all();
+  .controller('HistoryCtrl', function ($scope, $state, $ionicSlideBoxDelegate, Amount, transactionsService, Stats, PunktZuKomma) {
+    var selectedCat, selectedDate;
 
-    var selectedCat = -1;
-    var selectedDate = $scope.filterMonth;
+    $scope.$on('$ionicView.loaded', function() {
+      $scope.platform = ionic.Platform;
+    })
 
-    $scope.available = Amount.getAvailable();
 
     $scope.$on('$ionicView.beforeEnter', function () {
+
+      selectedCat = -1;
+
       $scope.punktZuKomma = PunktZuKomma;
       $scope.available = Amount.getAvailable();
       $scope.transactionsService = transactionsService;
+
       $scope.filterMonth = new Date();
       $scope.changeMonth($scope.filterMonth);
+      $scope.currentMonth = true;
       $scope.filterOpened = false;
       $scope.resetFilter = false;
-      selectedCat  = -1;
+
+      $scope.stats = Stats.all();
+      $scope.stats[7].color = "#006B08";
+
     });
 
     $scope.changeMonth = function(filterMonth) {
@@ -464,6 +471,15 @@ angular.module('starter.controllers', [])
       selectedDate = filterMonth;
       var selectedMonth = filterMonth.getMonth();
       var selectedYear = filterMonth.getYear();
+
+      var current = new Date();
+      if(selectedMonth == current.getMonth() && selectedYear == current.getYear()) {
+        $scope.currentMonth = true;
+      }
+      else {
+        $scope.currentMonth = false;
+      }
+
       var trans = transactionsService.transactions();
       $scope.transactions = [];
 
@@ -481,9 +497,7 @@ angular.module('starter.controllers', [])
       if($scope.transactions.length == 0) {
         $scope.noItems = true;
       }
-
     };
-
 
     $scope.openFilter = function() {
       $scope.filterOpened = !$scope.filterOpened;
@@ -495,7 +509,6 @@ angular.module('starter.controllers', [])
       }
 
     };
-
 
     $scope.selectFilter = function(category) {
       $scope.noItems = false;
@@ -527,8 +540,7 @@ angular.module('starter.controllers', [])
          elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = "transparent";
       };
 
-      var temp = "cat-elem-" + selectedCat;
-      var active = document.getElementById(temp);
+      var active = document.getElementById("cat-elem-" + selectedCat);
       active.getElementsByClassName('category_span')[0].style.backgroundColor = category.color;
 
 
@@ -564,36 +576,145 @@ angular.module('starter.controllers', [])
   })
 
 
+  .controller('StatsCtrl', function ($scope, $state, $window, Amount, Stats, transactionsService, PunktZuKomma) {
+    var dev_width, dev_height, calc_height, height_available;
 
-  .controller('StatsCtrl', function ($scope, $state, $window, $ionicSlideBoxDelegate, Amount, Stats, Months, transactionsService, PunktZuKomma) {
+    $scope.$on('$ionicView.loaded', function () {
+      console.log('loaded');
+      $scope.platform = ionic.Platform;
+      $scope.Math = window.Math;
 
-    $scope.platform = ionic.Platform;
-    $scope.Math = window.Math;
+      //set width + height of statistics depending on device
+      dev_width = $window.innerWidth;
+      dev_height = $window.innerHeight;
+      calc_height = 350;
+      $scope.dev_height = dev_height;
+      $scope.dev_width = dev_width;
 
-    //set width + height of statistics depending on device
-    var dev_width = $window.innerWidth;
-    var dev_height = $window.innerHeight;
-    var calc_height = 350;
-    $scope.dev_height = dev_height;
-    $scope.dev_width = dev_width;
+      if (dev_height > 600 && dev_width < 370) { //galaxy S4
+        $('.border').css('height', "470px");
+        $('.border').css('width', "260px");
+        $('.border').css('top', "65px");
+        $('#line').css('width', "330px");
+        $('.anzeige').css('height', "470px");
+        $('.anzeige').css('width', "80px");
+        $('.anzeige').css('top', "16px");
+        $('.anzeige .total').css('bottom', "440px");
+        $('#list .list').css('height', "450px");
+        $('#list .list').css('width', "240px");
+        $('#list .list').css('top', "20px");
+        calc_height = 450;
+      }
+      if (dev_height > 600 && dev_width > 360) { //iphone 6
+        $('.border').css('height', "470px");
+        $('.border').css('width', "280px");
+        $('.border').css('top', "65px");
+        $('#line').css('width', "350px");
+        $('.anzeige').css('height', "470px");
+        $('.anzeige').css('width', "80px");
+        $('.anzeige').css('top', "16px");
+        $('.anzeige .total').css('bottom', "440px");
+        $('#list .list').css('height', "450px");
+        $('#list .list').css('width', "260px");
+        $('#list .list').css('top', "20px");
+        calc_height = 450;
+      }
+      if (dev_height > 600) {
+        var elements = document.getElementsByClassName("child__icon");
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].style.fontSize = "25px";
+          elements[i].style.paddingLeft = "10px";
+        }
+        ;
+        var elements = document.getElementsByClassName("child__name");
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].style.paddingLeft = "65px";
+        }
+        ;
+        var elements = document.getElementsByClassName("child__betrag");
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].style.paddingLeft = "165px";
+        }
+        ;
+      }
+    })
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+      console.log('beforeEnter');
+      resetPot();
+      setup(new Date());
+    });
 
     $scope.$on('$ionicView.enter', function () {
+      console.log('enter');
+      animate();
+    })
 
+    resetPot = function() {
+      $("#list .item-elem").each(function (key, bar) {
+        /* Hoehe und Startwert (=bottom) muessen jedes Mal zurueck gesetzt werden,
+         *  damit die Animation wieder von vorne beginnt, wenn der Tab wieder geoeffnet wird
+         */
+        $('#line').hide();
+        $(".ausgaben").hide();
+        $(".total").hide();
+        $(this).css("height", "0px");
+        $(this).css("bottom", "0px");
+      });
+    }
+
+    setup = function(filterMonth) {
+      $scope.punktZuKomma = PunktZuKomma;
+      $scope.filterMonth = filterMonth;
+      var selectedMonth = $scope.filterMonth.getMonth();
+      var selectedYear = $scope.filterMonth.getYear();
+
+
+      Stats.resetHeights();
+      Stats.resetSpent();
+      $scope.stats = Stats.all();
+      $scope.total = 0;
+
+      var transactions = transactionsService.transactions();
+
+      for(var i = 0; i < transactions.length; i++) {
+        if(transactions[i].date.getMonth() == selectedMonth && transactions[i].date.getYear() == selectedYear) {
+
+          $scope.stats[transactions[i].category].spent += transactions[i].amount;
+
+          if(transactions[i].category != 7) { //keine einnahme
+            $scope.total += transactions[i].amount;
+          }
+        }
+      }
+
+      var current = new Date();
+      if(current.getMonth() == selectedMonth && current.getYear() == selectedYear) {
+        $scope.stats[7].spent = Amount.getAvailable();
+        $scope.stats[7].name = "Taschengeld";
+      }
+
+      $scope.stats[7].color = "#FFFFFF";
+      $scope.available = $scope.stats[7].spent;
+      $scope.stats = Stats.setHeights($scope.total, $scope.available, calc_height);
+    }
+
+    animate = function() {
       var bottom = 0;
       var len = $("#list .item-elem").length;
       var height_ausgaben = 0;
 
       $("#list .item-elem").each(function (index, element) {
         //Hoehe holen
-        var height = $(this).data('target');
+        var height = Stats.getHeight(index);
+        console.log('height' + index + " = "  + height);
 
         //Bottom ist der Startwert fuer das Element
         $(this).css("bottom", bottom);
 
         if (index == len - 1) {
           $('#line').css("bottom", bottom);
-          height_ausgaben = bottom-15;
+          height_ausgaben = bottom - 10;
           $(".ausgaben").css("bottom", height_ausgaben);
         };
 
@@ -613,100 +734,25 @@ angular.module('starter.controllers', [])
               if (index == len - 2) {
                 $('#line').show();
                 $(".ausgaben").show();
-              };
+              }
+              ;
               if (index == len - 1) {
                 $(".total").show();
-              };
+              }
+              ;
             },
           });
         //Startwert fuer das naechste Element erhoehen
         bottom += parseFloat(height);
       });
 
-      if(dev_height > 600) {
-        var elements = document.getElementsByClassName("child__icon");
-        for(var i = 0; i < elements.length; i++) {
-          elements[i].style.fontSize = "25px";
-          elements[i].style.paddingLeft = "10px";
-        };
-        var elements = document.getElementsByClassName("child__name");
-        for(var i = 0; i < elements.length; i++) {
-          elements[i].style.paddingLeft = "65px";
-        };
-        var elements = document.getElementsByClassName("child__betrag");
-        for(var i = 0; i < elements.length; i++) {
-          elements[i].style.paddingLeft = "165px";
-        };
-      }
-    });
+    }
 
-    $scope.$on('$ionicView.beforeEnter', function () {
+    $scope.changeMonth = function(filterMonth) {
+      resetPot();
+      setup(filterMonth);
+      animate();
+    }
 
-      $scope.punktZuKomma = PunktZuKomma;
-
-      if(dev_height > 600 && dev_width  < 370) { //galaxy S4
-        $('.border').css('height', "470px");
-        $('.border').css('width', "260px");
-        $('.border').css('top', "65px");
-        $('#line').css('width', "330px");
-        $('.anzeige').css('height', "470px");
-        $('.anzeige').css('width', "80px");
-        $('.anzeige').css('top', "16px");
-        $('.anzeige .total').css('bottom', "440px");
-        $('#list .list').css('height', "450px");
-        $('#list .list').css('width', "240px");
-        $('#list .list').css('top', "25px");
-        calc_height = 450;
-      }
-
-      if(dev_height > 600 && dev_width > 360) { //iphone 6
-         $('.border').css('height', "470px");
-         $('.border').css('width', "280px");
-         $('.border').css('top', "65px");
-         $('#line').css('width', "350px");
-         $('.anzeige').css('height', "470px");
-         $('.anzeige').css('width', "80px");
-         $('.anzeige').css('top', "16px");
-         $('.anzeige .total').css('bottom', "440px");
-         $('#list .list').css('height', "450px");
-         $('#list .list').css('width', "260px");
-        $('#list .list').css('top', "25px");
-         calc_height = 450;
-      }
-
-
-      $scope.stats = Stats.all();
-      $scope.available = Amount.getAvailable();
-      $scope.spentTotal = Amount.getSpentTotal($scope.stats);
-      $scope.stats = Stats.getHeights($scope.spentTotal, $scope.available, calc_height);
-      var date = new Date();
-      $scope.monthValue = date;
-
-      var height_available = $scope.available / ($scope.available + $scope.spentTotal) * calc_height;
-
-      console.log(height_available);
-      var check = 20;
-      if(calc_height > 350) {
-        check = 25;
-      }
-      if (height_available < check) {
-        $scope.height_available = check;
-      }
-      else {
-        $scope.height_available = height_available;
-      }
-
-
-      $("#list .item-elem").each(function (key, bar) {
-        /* Hoehe und Startwert (=bottom) muessen jedes Mal zurueck gesetzt werden,
-         *  damit die Animation wieder von vorne beginnt, wenn der Tab wieder geoeffnet wird
-         */
-        $('#line').hide();
-        $(".ausgaben").hide();
-        $(".total").hide();
-        $(this).css("height", "0px");
-        $(this).css("bottom", "0px");
-      });
-    });
 
   });
