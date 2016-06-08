@@ -44,7 +44,8 @@
           <span class="transaction_recipient">{{trans.recipient}}</span><br>
           <span class="transaction_date">{{trans.date | date: 'dd.MM.yy HH:mm'}}</span>
             <div class="transaction_tagzone">
-              <span class="transaction_nw" ng-class="{isNeed: trans.isNeed == true, isWant: trans.isNeed == false}">
+
+              <span style="{{(trans.type == 1 ? 'visibility: hidden' : '')}}" class="transaction_nw" ng-class="{isNeed: trans.isNeed == true, isWant: trans.isNeed == false}">
 
               {{(trans.isNeed ? "Gebraucht" : "Gewollt")}}
               </span>

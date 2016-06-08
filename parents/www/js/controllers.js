@@ -48,7 +48,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       $http.post(url + "updateRequestStatus",
         {
           "requestId": requestId,
-          "response": "Test",
+          "response": newResponse,
           "newStatus": newStatus
         });
     };

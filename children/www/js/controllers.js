@@ -119,8 +119,11 @@ angular.module('starter.controllers', [])
                         Amount.request(amount);
                         $scope.available = Amount.getAvailable();
                         $scope.webService.writeBalance();
+
+                        // show new amount
+                        $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
                         // TODO create a transaction
-                        var newT = $scope.transactionsService.createTransaction("Geldeingang", amount, 1);
+                        var newT = $scope.transactionsService.createTransaction("Geldeingang", amount, 7);
                         newT.type = 1; // asset
                         newT.writtenToServer = true; // do not write to server
                         newT.ephemeral = true; // will only exist within this app -- never written to server
@@ -138,7 +141,9 @@ angular.module('starter.controllers', [])
                       break;
                   }
         };
-    $scope.$on('$ionicView.beforeEnter', function () {
+    $scope.$on("$ionicView.loaded", function() {
+      // initialise the view
+      //'$ionicView.beforeEnter', function () {
       $scope.punktZuKomma = PunktZuKomma;
       $scope.webService = webService;
 
@@ -196,7 +201,7 @@ angular.module('starter.controllers', [])
             for (var i = 0; i < data.length; i++) {
               var thisRequest = data[i];
               // if this request was granted, create an ephemeral transaction representation to represent it
-              var newT= transactionsService.createTransaction("Geldeingang", thisRequest.amount, 1);
+              var newT= transactionsService.createTransaction("Geldeingang", thisRequest.amount, 7);
               newT.writtenToServer = true;
               newT.ephemeral = true;
               newT.type = 1; // asset
@@ -212,7 +217,9 @@ angular.module('starter.controllers', [])
 
       }
       webService.getUser().success(userCallback).error(userCallback);
+    //}
     });
+    //$scope.$on();
 
 
     $scope.stats = Stats.all();
