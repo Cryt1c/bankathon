@@ -84,7 +84,44 @@ angular.module('starter.controllers', [])
 
   .controller('DashCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats, PunktZuKomma, webService, transactionsService) {
     $scope.platform = ionic.Platform;
-
+    $scope.handleRequestStatusUpdate = function(eventData) {
+                  var requestId = eventData.requestId;
+                  var request = eventData["request"];
+                  var newStatus = eventData.newStatus;
+                  var response = eventData.response;
+                  var amount = eventData.amount;
+                  switch (newStatus) {
+                    case 0:
+                      // pending
+                      // do nothing
+                      break;
+                    case 1:
+                      // granted
+                      // show and create associated transaction
+                      var alertPopup = $ionicPopup.alert(  {title: "Deine Anfrage über " + amount + " € wurde angenommen. <strong>Nachricht:<strong><br><br>" + response, template: '<h2 style="color: green"> + ' + amount + '€ </h2>'});
+                      alertPopup.then(function() {
+                        Amount.request(amount);
+                        $scope.available = Amount.getAvailable();
+                        $scope.webService.writeBalance();
+                        // TODO create a transaction
+                        var newT = $scope.transactionsService.createTransaction("Geldeingang", amount, 1);
+                        newT.type = 1; // asset
+                        newT.writtenToServer = true; // do not write to server
+                        newT.ephemeral = true; // will only exist within this app -- never written to server
+                        //TODO assign request id
+                        $scope.transactionsService.addTransaction(newT);
+                      });
+                      break;
+                    case 2:
+                      // denied
+                      // show alert
+                      var alertPopup = $ionicPopup.alert(
+                        {title: "Deine Anfrage über " + amount + " € wurde abgelehnt. <strong>Begründung:<strong><br><br>" +
+                      response, template: ""});
+                      alertPopup.then(function() {});
+                      break;
+                  }
+        };
     $scope.$on('$ionicView.beforeEnter', function () {
       $scope.punktZuKomma = PunktZuKomma;
       $scope.webService = webService;
@@ -114,6 +151,10 @@ angular.module('starter.controllers', [])
               // finish payment
               $scope.finishPayment();
             }
+          }
+          else if (eventData.event == "MONEY_REQUEST_UPDATE") {
+            // parents are updating money
+            $scope.handleRequestStatusUpdate(eventData);
           }
         });
 
@@ -200,52 +241,14 @@ angular.module('starter.controllers', [])
             text: '<b>OK</b>',
             type: 'button-ok button-hidden button-positive',
             onTap: function (e) {
-              //$scope.webService.sendMoneyRequest(parseInt($scope.data.amount), $scope.data.message, $scope.user.parent_id);
-               var handleRequestStatusUpdate = function(eventData) {
-                  var requestId = eventData.requestId;
-                  var newStatus = eventData.newStatus;
-                  var response = eventData.response;
-                  var amount = eventData.amount;
-                  switch (newStatus) {
-                    case 0:
-                      // pending
-                      // do nothing
-                      break;
-                    case 1:
-                      // granted
-                      // show and create associated transaction
-                      var alertPopup = $ionicPopup.alert(  {title: "Deine Anfrage über " + amount + " € wurde angenommen. <strong>Nachricht:<strong><br><br>" + response, template: '<h2 style="color: green"> + ' + amount + '€ </h2>'});
-                      alertPopup.then(function() {
-                        Amount.request(amount);
-                        $scope.available = Amount.getAvailable();
-                        $scope.webService.writeBalance();
-                        // TODO create a transaction
-                        var newT = $scope.transactionsService.createTransaction("Geldeingang", amount, 1);
-                        newT.type = 1; // asset
-                        newT.writtenToServer = true; // do not write to server
-                        newT.ephemeral = true; // will only exist within this app -- never written to server
-                        //TODO assign request id
-                        $scope.transactionsService.addTransaction(newT);
-                      });
-                      break;
-                    case 2:
-                      // denied
-                      // show alert
-                      var alertPopup = $ionicPopup.alert(
-                        {title: "Deine Anfrage über " + amount + " € wurde abgelehnt. <strong>Begründung:<strong><br><br>" +
-                      response, template: ""});
-                      alertPopup.then(function() {});
-                      break;
-                  }
-                };
-
+              $scope.webService.sendMoneyRequest(parseInt($scope.data.amount), $scope.data.message, $scope.user.parent_id);
               setTimeout(function () {
-                handleRequestStatusUpdate({
+                /*$scope.handleRequestStatusUpdate({
                   requestId: 0,
                   newStatus: ( parseInt($scope.data.amount) <= 200 ? 1 : 2),
                   response: ( parseInt($scope.data.amount) <= 200 ? "Kein Problem, du warst sehr brav." : "Das ist jetzt wirklich zu teuer."),
                   amount: parseInt($scope.data.amount)
-                });
+                });*/
                 /*var answer;
                 var reason;
                 var amount = parseInt($scope.data.amount);

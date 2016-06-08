@@ -1,10 +1,11 @@
 angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-control'])
   .service('webService', function ($http, Amount) {
-    var url = "/api/"; // change this for production -- gets proxied on to heroku app location
-    // var userId = 1;
-    // this.getUser = function () {
-    //   return $http.get(url + "getChild?childId=" + userId);
-    // };
+    var runningOnMobile = ionic.Platform.isIOS() || ionic.Platform.isAndroid();
+    var url = (runningOnMobile ? "http://pommo-backend.herokuapp.com/" : "/api/");
+     var userId = 1;
+     this.getUser = function () {
+       return $http.get(url + "getParent?parentId=" + userId);
+     };
     // this.getTransactions = function () {
     //   return $http.get(url + "getTransactionsByChild?childId=" + userId);
     // };
@@ -33,6 +34,18 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
         setTimeout(this.initWebSockets, 1000);
       };
     };
+    this.getMoneyRequests = function() {
+      //returns money requests for this parent
+      return $http.get(url + "getRequestsForParent?parentId=" + userId);
+    };
+    this.updateMoneyRequestStatus = function(requestId, newStatus, newResponse) {
+      $http.post(url + "updateRequestStatus",
+        {
+          "requestId": requestId,
+          "response": "Test",
+          "newStatus": newStatus
+        });
+    };
   })
 
   .service('kidsService', function () {
@@ -43,7 +56,19 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     $scope.platform = ionic.Platform;
 
     $scope.kids = Kids.getAll();
+    $scope.webService = webService;
 
+    // load requests
+    $scope.webService.getMoneyRequests().then(function(data) {
+      $scope.moneyRequests = data;
+
+      // check if there are any pending money requests
+      // if so, alert the user to the most recent one
+      var filteredData = $filter('orderBy')(data, "timestamp");
+      filteredData = $filter('filter')({"status": 0}); // filter to only elements with pending status
+      $scope.pendingRequests = data;
+
+    });
 
     //Set List to vertical center depending on how many items are in the list
     NumberUpdate = function () {
@@ -171,8 +196,8 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     });
 
     $scope.showConfirm = function (eventData) {
-      var requestPopup = new $ionicPopup.show({
-        title: "Geld Anfrage von " + eventData.name,
+      var requestPopup = new $ionicPopup.show({ // eventData.requestId enthält requestId
+        title: " - Geldanfrage von " + eventData.name,
         template: eventData.name + ' hätte gerne ' + eventData.amount + ' €, weil: "' + eventData.reason + '"',
         buttons: [
           {
@@ -185,7 +210,11 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
                 '<input type="text" id="message">',
                 buttons: [{
                   text: "Geld und Nachricht abschicken",
-                  type: 'button-positive'
+                  type: 'button-positive',
+                  onTap: function() {
+                    // grant request
+                    $scope.webService.updateMoneyRequestStatus(eventData.requestId, 1, $("#message").val());
+                  }
                 }]
               })
             }
@@ -200,7 +229,11 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
                 '<input type="text" id="message">',
                 buttons: [{
                   text: "Nachricht abschicken",
-                  type: 'button-positive'
+                  type: 'button-positive',
+                  onTap: function() {
+                    // deny request
+                    $scope.webService.updateMoneyRequestStatus(eventData.requestId, 2, $("#message").val());
+                  }
                 }]
               })
             }
