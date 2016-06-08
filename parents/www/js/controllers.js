@@ -3,6 +3,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     var runningOnMobile = ionic.Platform.isIOS() || ionic.Platform.isAndroid();
     var url = (runningOnMobile ? "http://pommo-backend.herokuapp.com/" : "/api/");
      var userId = 1;
+     this.webSocketsInitialised = false;
      this.getUser = function () {
        return $http.get(url + "getParent?parentId=" + userId);
      };
@@ -21,18 +22,23 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
       }
     }; */
+    var webService = this;
+    var incomingMessageHandler;
     this.initWebSockets = function (incomingEventHandler) {
       var host = "ws://pommo-backend.herokuapp.com/";//"ws://localhost:5000"; // url.replace(/^http/, 'ws');
       var ws = new WebSocket(host);
+      this.incomingMessageHandler = incomingEventHandler;
       ws.onmessage = function (msgEvent) {
         var msgData = JSON.parse(msgEvent.data);
-        if (msgData.event == "NEW_MONEY_REQUEST")
-          incomingEventHandler(msgData);
+        if (msgData.targetId == userId && msgData.targetType == "parent" && msgData.event == "NEW_MONEY_REQUEST" )
+          webService.incomingMessageHandler(msgData);
       };
       ws.onclose = function () {
         // websocket about to close -- reopen after time
-        setTimeout(this.initWebSockets, 1000);
+        console.log("ws CLOSE ");
+        setTimeout(webService.initWebSockets, 1000);
       };
+      this.webSocketsInitialised = true;
     };
     this.getMoneyRequests = function() {
       //returns money requests for this parent
@@ -189,11 +195,13 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
     // var userCallback = function (user) {
     // set up WebSockets
-    webService.initWebSockets(function (eventData) {
-      if (eventData.event == "NEW_MONEY_REQUEST") {
-        $scope.showConfirm(eventData);
-      }
-    });
+    if (!webService.webSocketsInitialised) {
+      webService.initWebSockets(function (eventData) {
+        if (eventData.event == "NEW_MONEY_REQUEST") {
+          $scope.showConfirm(eventData);
+        }
+      });
+    }
 
     $scope.showConfirm = function (eventData) {
       var requestPopup = new $ionicPopup.show({ // eventData.requestId enthält requestId

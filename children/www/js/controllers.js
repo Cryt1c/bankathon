@@ -4,6 +4,7 @@ angular.module('starter.controllers', [])
     var runningOnMobile = ionic.Platform.isIOS() || ionic.Platform.isAndroid();
     var url = (runningOnMobile ? "http://pommo-backend.herokuapp.com/" : "/api/"); // change this for production -- gets proxied on to heroku app location
     var userId = 1;
+    this.webSocketsInitialised = false;
     this.getUser = function () {
       return $http.get(url + "getChild?childId=" + userId);
     };
@@ -65,21 +66,36 @@ angular.module('starter.controllers', [])
 
       }
     };
-    this.initWebSockets = function (incomingEventHandler) {
+    var initWebSockets;
+    var incomingMessageHandler;
+    var webService = this;
+    initWebSockets = function (incomingEventHandler) {
       var host = "ws://pommo-backend.herokuapp.com/";
+      this.incomingMessageHandler = incomingEventHandler;
       /*"ws://localhost:5000"; // url.replace(/^http/, 'ws');*/
       var ws = new WebSocket(host);
       ws.onmessage = function (msgEvent) {
         var msgData = JSON.parse(msgEvent.data);
         if (msgData.targetType === "child" && msgData.targetId == userId)
-          incomingEventHandler(msgData);
+          webService.incomingMessageHandler(msgData);
 
+      };
+      ws.onopen = function() {
+        console.log("ws OPEN ");
+      };
+      ws.onerror = function() {
+        //debugger;
+        console.log("es ERROR");
       };
       ws.onclose = function () {
         // websocket about to close -- reopen after time
-        setTimeout(this.initWebSockets, 1000);
+        console.log("ws CLOSE ");
+        setTimeout(initWebSockets, 1000);
       };
+      this.webSocketsInitialised = true;
     };
+    this.initWebSockets = initWebSockets;
+
   })
 
   .controller('DashCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats, PunktZuKomma, webService, transactionsService) {
@@ -139,25 +155,26 @@ angular.module('starter.controllers', [])
         $scope.transactionsService = transactionsService;
 
         // set up WebSockets
-        webService.initWebSockets(function (eventData) {
-          if (eventData.event == "NEW_TRANSACTION_REQUEST") {
-            // someone requests a payment -- show screen
-            //$scope.showPay();
-            if ($scope.readyToPay && $scope.pendingTransaction) {
-              // update transaction information
-              var trans = $scope.pendingTransaction;
-              trans.amount = parseFloat(eventData.amount);
-              trans.recipient = eventData.vendor;
-              // finish payment
-              $scope.finishPayment();
+        if (!webService.webSocketsInitialised) {
+          webService.initWebSockets(function (eventData) {
+            if (eventData.event == "NEW_TRANSACTION_REQUEST") {
+              // someone requests a payment -- show screen
+              //$scope.showPay();
+              if ($scope.readyToPay && $scope.pendingTransaction) {
+                // update transaction information
+                var trans = $scope.pendingTransaction;
+                trans.amount = parseFloat(eventData.amount);
+                trans.recipient = eventData.vendor;
+                // finish payment
+                $scope.finishPayment();
+              }
             }
-          }
-          else if (eventData.event == "MONEY_REQUEST_UPDATE") {
-            // parents are updating money
-            $scope.handleRequestStatusUpdate(eventData);
-          }
-        });
-
+            else if (eventData.event == "MONEY_REQUEST_UPDATE") {
+              // parents are updating money
+              $scope.handleRequestStatusUpdate(eventData);
+            }
+          });
+        }
         // get transactions from this user since we now know they exist
         var transactionsCallback = function (data) {
           transactionsService.loadTransactionsJSON(data);
