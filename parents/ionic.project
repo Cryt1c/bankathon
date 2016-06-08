@@ -1,10 +1,5 @@
 {
   "name": "PoMMo Eltern",
   "app_id": "at.martinakrakty.pommoparentss",
-  "proxies": [
-    {
-      "path": "/api",
-      "proxyUrl": "http://pommo-backend.herokuapp.com/"
-    }
-  ]
+  "proxyUrl": "http://pommo-backend.herokuapp.com/"
 }
