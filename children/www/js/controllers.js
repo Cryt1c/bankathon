@@ -1,4 +1,4 @@
-angular.module('starter.controllers', [])
+angular.module('starter.controllers', ['ngCordova'])
 
   .service('webService', function ($http, transactionsService, Amount) {
     var runningOnMobile = ionic.Platform.isIOS() || ionic.Platform.isAndroid();
@@ -98,7 +98,7 @@ angular.module('starter.controllers', [])
 
   })
 
-  .controller('DashCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats, PunktZuKomma, webService, transactionsService) {
+  .controller('DashCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats, PunktZuKomma, webService, transactionsService, $cordovaToast) {
     $scope.platform = ionic.Platform;
     $scope.handleRequestStatusUpdate = function(eventData) {
                   var requestId = eventData.requestId;
@@ -265,6 +265,10 @@ angular.module('starter.controllers', [])
             text: '<b>OK</b>',
             type: 'button-ok button-hidden button-positive',
             onTap: function (e) {
+              var msg = "Deine Bitte um " + PunktZuKomma.parse($scope.data.amount)  + " € wurde gesendet";
+              console.log(msg);
+              //TODO: activate Toast before release (Toast not working in web browser); tested in emulator for ios + android
+              //$cordovaToast.show(msg,'long','center');
               $scope.webService.sendMoneyRequest(parseInt($scope.data.amount), $scope.data.message, $scope.user.parent_id);
               setTimeout(function () {
                 /*$scope.handleRequestStatusUpdate({
@@ -486,7 +490,7 @@ angular.module('starter.controllers', [])
       $scope.changeMonth(new Date());
       $scope.currentMonth = true;
       $scope.filterOpened = false;
-      $scope.resetFilter = false;
+      $scope.resetFilter = true;
 
       $scope.stats = Stats.all();
       $scope.stats[7].color = "#006B08";
@@ -551,9 +555,33 @@ angular.module('starter.controllers', [])
     };
 
     $scope.selectFilter = function(category) {
+
+      $scope.resetFilter = !$scope.resetFilter;
+
+      //change background color of the active category
+      var elements = document.getElementsByClassName("category_elem item");
+      for(var i = 0; i < elements.length; i++) {
+        elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = "transparent";
+      };
+
+      if(selectedCat == category.id) {
+        if($scope.resetFilter) {
+          selectedCat = -1;
+        }
+        else {
+          selectedCat = category.id;
+          var active = document.getElementById("cat-elem-" + selectedCat);
+          active.getElementsByClassName('category_span')[0].style.backgroundColor = category.color;
+        }
+      }
+      else {
+        selectedCat = category.id;
+        var active = document.getElementById("cat-elem-" + selectedCat);
+        active.getElementsByClassName('category_span')[0].style.backgroundColor = category.color;
+      }
+
+
       $scope.noItems = false;
-      $scope.resetFilter = true;
-      selectedCat = category.id;
       var selectedMonth = selectedDate.getMonth();
       var selectedYear = selectedDate.getYear();
       var trans = transactionsService.transactions();
@@ -565,7 +593,7 @@ angular.module('starter.controllers', [])
           if(selectedCat >= 0 && trans[i].category == selectedCat) {
             $scope.transactions.push(trans[i]);
           }
-          else if(!selectedCat == -1){
+          else if(selectedCat == -1){
             $scope.transactions.push(trans[i]);
           }
         }
@@ -573,46 +601,7 @@ angular.module('starter.controllers', [])
       if($scope.transactions.length == 0) {
         $scope.noItems = true;
       }
-
-      //change background color of the active category
-      var elements = document.getElementsByClassName("category_elem item");
-      for(var i = 0; i < elements.length; i++) {
-         elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = "transparent";
-      };
-
-      var active = document.getElementById("cat-elem-" + selectedCat);
-      active.getElementsByClassName('category_span')[0].style.backgroundColor = category.color;
-
-
     };
-
-    $scope.filterReset = function () {
-      $scope.resetFilter = false;
-      selectedCat = -1;
-      $scope.noItems = false;
-      var selectedMonth = selectedDate.getMonth();
-      var selectedYear = selectedDate.getYear();
-      var trans = transactionsService.transactions();
-      $scope.transactions = [];
-
-
-      //loop through transaction and filter for date without category
-      for(var i = 0; i < trans.length; i++) {
-        if(trans[i].date.getMonth() == selectedMonth && trans[i].date.getYear() == selectedYear) {
-            $scope.transactions.push(trans[i]);
-        }
-      }
-      if($scope.transactions.length == 0) {
-        $scope.noItems = true;
-      }
-
-      //change background color
-      var elements = document.getElementsByClassName("category_elem item");
-      for(var i = 0; i < elements.length; i++) {
-          elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = "transparent";
-      };
-    }
-
   })
 
 
@@ -763,11 +752,11 @@ angular.module('starter.controllers', [])
          *  um das linear auszufuehren, wird das mit dem jeweiligen Index multipliziert
          * (bei 400, 800, 1200 sek. eine Animation)
          */
-        $(this).delay(400 * index).animate({
+        $(this).delay(300 * index).animate({
             'height': height + "px"
           },
           {
-            duration: 500,
+            duration: 200,
             complete: function () {
               //Text + Icons werden direkt nach der Animation eingeblendet
               $(this).find(".child").show();

@@ -269,7 +269,12 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
   })
 
 
-  .controller('DetailCtrl', function ($scope, $state, $ionicHistory, kidsService, Kids, Amount, Stats, PunktZuKomma) {
+  .controller('DetailCtrl', function ($scope, $state, $ionicHistory, $ionicConfig, kidsService, Kids, Amount, Stats, PunktZuKomma) {
+    $scope.$on('$ionicView.beforeEnter', function () {
+      $ionicConfig.backButton.text("Übersicht");
+    });
+
+
     $scope.platform = ionic.Platform;
     $scope.kidsService = kidsService;
     $scope.paired = kidsService.selectedKid.paired;
@@ -290,9 +295,12 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
   })
 
-
-  .controller('StatCtrl', function ($document, $scope, $state, Stats, Months, ChartJsFactory) {
+  .controller('StatCtrl', function ($document, $scope, $state, $ionicConfig, kidsService, Stats, Months, ChartJsFactory) {
     $scope.platform = ionic.Platform;
+    $scope.$on('$ionicView.beforeEnter', function () {
+      $ionicConfig.backButton.text(kidsService.selectedKid.name);
+    });
+
 
     $scope.data = {};
     $scope.data.showStat = "lines";
@@ -346,8 +354,11 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
   })
 
-  .controller('SendCtrl', function ($scope, $state, $ionicHistory, $cordovaToast, PunktZuKomma) {
+  .controller('SendCtrl', function ($scope, $state, $ionicHistory, $cordovaToast, $ionicConfig, PunktZuKomma) {
     $scope.platform = ionic.Platform;
+    $scope.$on('$ionicView.beforeEnter', function () {
+      $ionicConfig.backButton.text("Abbrechen");
+    });
 
     $scope.sendTransaction = function (form) {
 
@@ -367,12 +378,13 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
   })
 
 
-  .controller('OrderCtrl', function ($scope, $state, $ionicHistory, $cordovaToast, PunktZuKomma, Days, Intervall, Order) {
+  .controller('OrderCtrl', function ($scope, $state, $ionicHistory, $ionicConfig,  $cordovaToast, PunktZuKomma, Days, Intervall, Order) {
     $scope.platform = ionic.Platform;
     $scope.order = Order;
 
     $scope.$on('$ionicView.beforeEnter', function () {
       $scope.intervalls = Intervall.getList();
+      $ionicConfig.backButton.text("Abbrechen");
       $scope.selectedIntervall = Intervall.getDefault();
 
       $scope.setDays($scope.selectedIntervall);
@@ -384,7 +396,6 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       $scope.reason = 'Dauerauftrag Taschengeld';
       $scope.selectedDay = $scope.days[$scope.order.getDay()];
     });
-
 
     $scope.setDays = function (selectedIntervall) {
       //set dropdown either for montly or weekly
@@ -402,7 +413,6 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       }
     };
 
-
     $scope.saveOrder = function (orderForm) {
 
       var intervall = orderForm.intervall.$modelValue.name;
@@ -418,8 +428,13 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     };
   })
 
-  .controller('HistorieCtrl', function ($scope, $state, Amount, Months, PunktZuKomma) {
+  .controller('HistorieCtrl', function ($scope, $state, $ionicConfig, kidsService, Amount, Months, PunktZuKomma) {
     $scope.platform = ionic.Platform;
+
+    $scope.$on('$ionicView.beforeEnter', function () {
+      $ionicConfig.backButton.text(kidsService.selectedKid.name);
+    });
+
 
     $scope.available = Amount.getAvailable();
     $scope.punktZuKomma = PunktZuKomma;

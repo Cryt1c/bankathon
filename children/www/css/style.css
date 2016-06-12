@@ -401,12 +401,6 @@ hr {
   padding-right: 0px;
 }
 
-
-.transaction_name {
-  width: 65%;
-  float: left;
-}
-
 .transaction_cat {
   width: 8%;
   text-align: center;
@@ -416,41 +410,52 @@ hr {
   margin: 5px;
   color: #000;
   margin-right: 10px;
+  border-radius:20px;
 }
 
+.transaction_name {
+  width: 60%;
+  float: left;
+}
+.transaction_recipient{
+  font-size: 18px;
+}
+
+.transaction_date {
+  font-size: 12px;
+  float: left;
+}
 
 .transaction_nw {
   text-align: center;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 8px;
-  padding-right: 8px;
+  padding: 5px;
   border: 2px dotted #ddd;
-  margin-left: 10%;
-
-
-}
-
-.isNeed {
-  -moz-border-radius: 100px / 50px;
-  border-radius: 100px / 50px;
-}
-
-.isWant {
-  -moz-border-radius: 0px;
-  border-radius: 0px;
+  margin-left: 20%;
+  color: White;
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 15px;
+  border: silver 1px solid;
+  color: silver;
 }
 
 .transaction_amount {
-  width: 20%;
-  float: left;
+  font-size: 18px;
+  margin-right: 20px;
+  margin-left: -20px;
+  width: 25%;
+  float:right;
   text-align: right;
   padding-top: 8px;
 }
 
+
 .amount-green {
   color: #006B08;
 }
+
+
 
 #top-area {
   padding: 15px;
@@ -490,41 +495,6 @@ hr {
     right: 10px;
     width: auto !important;
 
-}
-
-/* ------- */
-.transaction_nw {
-    text-align: center;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-left: 8px;
-    padding-right: 8px;
-    margin-left: 10%;
-    /*  background: rgba(98, 171, 65, 0.47);*/
-    color: White;
-    text-transform: uppercase;
-    font-size: 10px;
-    font-weight: bold;
-    padding: 5px;
-    border-radius: 15px;
-    border: silver 1px solid;
-    color: silver;
-}
-.transaction_recipient, .transaction_amount {
-  font-size: 18px;
-}
-.transaction_date {
-  font-size: 12px;
-}
-.transaction_cat {
-  border-radius:20px;
-}
-.transaction_tagzone {
-    padding-top: 15px;
-    width: 200px;
-    position: absolute;
-    right: 0px;
-    top: 25px;
 }
 
 .isWant {

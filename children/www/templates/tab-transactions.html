@@ -16,11 +16,6 @@
           <i class="icon {{cat.icon_ios}}"></i>
         </span>
       </ion-item>
-      <ion-item class="category_elem" ng-show="resetFilter" ng-click="filterReset()">
-        <span class="category_span" style="border: 1px solid #444;">
-          <i class="icon ion-close"></i>
-        </span>
-      </ion-item>
     </ion-list>
 
     <label class="item item-input item-month">
@@ -40,16 +35,11 @@
             </span>
         </div>
         <div class="transaction_name">
-
           <span class="transaction_recipient">{{trans.recipient}}</span><br>
           <span class="transaction_date">{{trans.date | date: 'dd.MM.yy HH:mm'}}</span>
-            <div class="transaction_tagzone">
-
-              <span style="{{(trans.type == 1 ? 'visibility: hidden' : '')}}" class="transaction_nw" ng-class="{isNeed: trans.isNeed == true, isWant: trans.isNeed == false}">
-
-              {{(trans.isNeed ? "Gebraucht" : "Gewollt")}}
-              </span>
-            </div>
+            <span style="{{(trans.type == 1 ? 'visibility: hidden' : '')}}" class="transaction_nw">
+            {{(trans.isNeed ? "Gebraucht" : "Gewollt")}}
+            </span>
         </div>
         <div class="transaction_amount" ng-class="{'amount-green':trans.type == 1 }">
           {{(trans.type == 1 ? "+ " : "- ")}}{{punktZuKomma.parse(trans.amount)}} €

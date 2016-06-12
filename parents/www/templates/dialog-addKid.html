@@ -11,11 +11,16 @@
       <ion-slide>
         <form name="addForm" ng-model="addForm" novalidate>
           <ion-list>
-              <p class="description">Geben Sie hier bitte den Namen Ihres Kindes an, um ein neues Konto einzurichten.</p>
+              <p class="description">Geben Sie bitte den Namen Ihres Kindes an, um ein neues Konto einzurichten.</p>
             <ion-item class="item item-input item-stacked-label" id="add_input">
               <p class="input-label">Name</p>
               <input type="text" name="name" ng-model="name" required/>
             </ion-item>
+            <ion-item class="item item-input item-stacked-label" id="add_input_img">
+              <p class="input-label">Foto</p>
+              <input type="file" name="photo" ng-model="photo" accept="image/*">
+            </ion-item>
+
             <div class="padding order-errors">
               <p ng-show="addForm.name.$error.required && !addForm.name.$pristine">* Bitte geben Sie einen Namen ein.</p>
             </div>
@@ -25,8 +30,6 @@
           </ion-list>
         </form>
       </ion-slide>
-
-
       <ion-slide class="padding">
         <h3 class="qr_dialog">QR-Code scannen</h3>
         <div class="scan">

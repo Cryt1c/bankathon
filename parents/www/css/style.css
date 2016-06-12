@@ -76,6 +76,15 @@ button.button-header {
 .qr_img {
   width: 80%;
 }
+.profile {
+  text-align: center;
+}
+
+.profile_img {
+ width: 80%;
+  margin-left: 15px;
+}
+
 .scan {
   text-align: center;
 }
