@@ -146,6 +146,7 @@ angular.module('starter.controllers', ['ngCordova'])
       //'$ionicView.beforeEnter', function () {
       $scope.punktZuKomma = PunktZuKomma;
       $scope.webService = webService;
+      $scope.available = 0;
 
       //TODO move to separate method
       // set up user interface
@@ -752,11 +753,11 @@ angular.module('starter.controllers', ['ngCordova'])
          *  um das linear auszufuehren, wird das mit dem jeweiligen Index multipliziert
          * (bei 400, 800, 1200 sek. eine Animation)
          */
-        $(this).delay(300 * index).animate({
+        $(this).delay(250 * index).animate({
             'height': height + "px"
           },
           {
-            duration: 200,
+            duration: 150,
             complete: function () {
               //Text + Icons werden direkt nach der Animation eingeblendet
               $(this).find(".child").show();

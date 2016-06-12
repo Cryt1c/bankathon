@@ -16,11 +16,6 @@
               <p class="input-label">Name</p>
               <input type="text" name="name" ng-model="name" required/>
             </ion-item>
-            <ion-item class="item item-input item-stacked-label" id="add_input_img">
-              <p class="input-label">Foto</p>
-              <input type="file" name="photo" ng-model="photo" accept="image/*">
-            </ion-item>
-
             <div class="padding order-errors">
               <p ng-show="addForm.name.$error.required && !addForm.name.$pristine">* Bitte geben Sie einen Namen ein.</p>
             </div>
