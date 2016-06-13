@@ -210,8 +210,7 @@ button.button-header {
 }
 
 canvas.chart {
-  margin-top: 20px;
-  padding: 10px;
+  padding: 10px 10px 0 10px;
 }
 
 .noData {
@@ -235,4 +234,24 @@ canvas.chart {
 .legend_name {
   padding-top: 10px;
   font-size: 20px;
+}
+
+#yLabel {
+  margin: 50px auto 0 20px;
+  font-size: 17px;
+}
+
+#xLabel {
+  font-size: 17px;
+  text-align: right;
+  margin-right: 20px;
+}
+
+ul.line-legend{
+  display: none;
+}
+
+#category, #needWant {
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
