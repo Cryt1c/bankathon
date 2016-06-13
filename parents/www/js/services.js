@@ -156,21 +156,21 @@ angular.module('starter.services', [])
         }
         return legend;
       },
-      getNames: function (month, year) {
+      getNames: function () {
         var names = [];
         for (var i = 0; i < categories.length; i++) {
           names[i] = categories[i].name;
         }
         return names;
       },
-      getSpent: function (month, year) {
+      getSpent: function () {
         var spent = [0, 0, 0, 0, 0, 0, 0];
         for (var i = 0; i < transactions.length; i++) {
           spent[transactions[i].category] += transactions[i].amount;
         }
         return spent;
       },
-      getColors: function (month, year) {
+      getColors: function () {
         var colors = [];
         for (var i = 0; i < categories.length; i++) {
           colors[i] = categories[i].color;
@@ -196,7 +196,9 @@ angular.module('starter.services', [])
             hasData = true;
           }
         }
-        if(hasData) {return [line];}
+        if (hasData) {
+          return [line];
+        }
         return hasData;
       }
     };

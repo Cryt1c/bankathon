@@ -7,37 +7,62 @@
       <ti-segmented-control-button class="button-positive" title="'needWant'">B/W</ti-segmented-control-button>
     </ti-segmented-control>
 
+    <label class="item item-input">
+      <span class="input-label">Monat</span>
+      <input type="month" ng-model="data.month">
+    </label>
+
     <div ng-switch="data.showStat">
       <div ng-switch-when="lines">
-        <label class="item item-input">
-          <span class="input-label">Monat</span>
-          <input type="month" ng-model="data.month">
-        </label>
-        <canvas id="lineChart" class="chart chart-line" chart-data="data.line"
-                chart-labels="data.labels" chart-legend="true" chart-series="series" chart-options="data.options"
-                ng-if="data.line">
-        </canvas>
-        <div ng-if="!data.line" id="noData">In diesem Monat wurden keine Transaktionen getätigt.</div>
+        <div ng-if="data.line">
+          <canvas id="lineChart" class="chart chart-line" chart-data="data.line"
+                  chart-labels="data.labels" chart-legend="true" chart-series="series" chart-options="data.options">
+          </canvas>
+        </div>
+        <div ng-if="!data.line" class="noData">In diesem Monat wurden keine Transaktionen getätigt.</div>
       </div>
 
 
-      <div ng-switch-when="doughnut">
-        <canvas id="doughnut" class="chart chart-doughnut"
-                chart-data="data.spent" chart-labels="data.names" chart-colours="data.colors">
-        </canvas>
-        <ion-list>
-          <ion-item ng-repeat="category in data.legend">
-            <div style="background-color: {{category.color}}"></div>
-            <div class="legend_icons">
+      <div ng-switch-when="categories">
+        <div ng-if="data.line">
+          <canvas id="category" class="chart chart-doughnut"
+                  chart-data="data.cat.spent" chart-labels="data.cat.names" chart-colours="data.cat.colors">
+          </canvas>
+          <ion-list>
+            <ion-item ng-repeat="category in data.cat.legend">
+              <div style="background-color: {{category.color}}"></div>
+              <div class="legend_icons">
              <span class="legend_cat" style="background-color: {{category.color}}">
                 <i class="icon {{category.icon_ios}}"></i>
             </span>
-            </div>
-            <div class="legend_name">{{category.name}}</div>
-
-          </ion-item>
-        </ion-list>
+              </div>
+              <div class="legend_name">{{category.name}}</div>
+            </ion-item>
+          </ion-list>
+        </div>
+        <div ng-if="!data.line" class="noData">In diesem Monat wurden keine Transaktionen getätigt.</div>
       </div>
+
+      <div ng-switch-when="needWant">
+        <div ng-if="data.line">
+          <canvas id="needWant" class="chart chart-doughnut"
+                  chart-data="data.nw.spent" chart-labels="data.nw.names" chart-colours="data.nw.colors">
+          </canvas>
+          <ion-list>
+            <ion-item ng-repeat="needWant in data.nw.legend">
+              <div style="background-color: {{needWant.color}}"></div>
+              <div class="legend_icons">
+             <span class="legend_cat" style="background-color: {{needWant.color}}">
+                <i class="icon {{needWant.icon_ios}}"></i>
+            </span>
+              </div>
+              <div class="legend_name">{{needWant.name}}</div>
+            </ion-item>
+          </ion-list>
+        </div>
+        <div ng-if="!data.line" class="noData">In diesem Monat wurden keine Transaktionen getätigt.</div>
+      </div>
+
     </div>
   </ion-content>
 </ion-view>

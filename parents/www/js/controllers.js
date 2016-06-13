@@ -2,11 +2,11 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
   .service('webService', function ($http, Amount) {
     var runningOnMobile = ionic.Platform.isIOS() || ionic.Platform.isAndroid();
     var url = (runningOnMobile ? "http://pommo-backend.herokuapp.com/" : "/api/");
-     var userId = 1;
-     this.webSocketsInitialised = false;
-     this.getUser = function () {
-       return $http.get(url + "getParent?parentId=" + userId);
-     };
+    var userId = 1;
+    this.webSocketsInitialised = false;
+    this.getUser = function () {
+      return $http.get(url + "getParent?parentId=" + userId);
+    };
     // this.getTransactions = function () {
     //   return $http.get(url + "getTransactionsByChild?childId=" + userId);
     // };
@@ -30,7 +30,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       this.incomingMessageHandler = incomingEventHandler;
       ws.onmessage = function (msgEvent) {
         var msgData = JSON.parse(msgEvent.data);
-        if (msgData.targetId == userId && msgData.targetType == "parent" && msgData.event == "NEW_MONEY_REQUEST" )
+        if (msgData.targetId == userId && msgData.targetType == "parent" && msgData.event == "NEW_MONEY_REQUEST")
           webService.incomingMessageHandler(msgData);
       };
       ws.onclose = function () {
@@ -40,11 +40,11 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       };
       this.webSocketsInitialised = true;
     };
-    this.getMoneyRequests = function() {
+    this.getMoneyRequests = function () {
       //returns money requests for this parent
       return $http.get(url + "getRequestsForParent?parentId=" + userId);
     };
-    this.updateMoneyRequestStatus = function(requestId, newStatus, newResponse) {
+    this.updateMoneyRequestStatus = function (requestId, newStatus, newResponse) {
       $http.post(url + "updateRequestStatus",
         {
           "requestId": requestId,
@@ -65,7 +65,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     $scope.webService = webService;
 
     // load requests
-    $scope.webService.getMoneyRequests().then(function(data) {
+    $scope.webService.getMoneyRequests().then(function (data) {
       $scope.moneyRequests = data;
 
       // check if there are any pending money requests
@@ -219,7 +219,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
                 buttons: [{
                   text: "Geld und Nachricht abschicken",
                   type: 'button-positive',
-                  onTap: function() {
+                  onTap: function () {
                     // grant request
                     $scope.webService.updateMoneyRequestStatus(eventData.requestId, 1, $("#message").val());
                   }
@@ -238,7 +238,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
                 buttons: [{
                   text: "Nachricht abschicken",
                   type: 'button-positive',
-                  onTap: function() {
+                  onTap: function () {
                     // deny request
                     $scope.webService.updateMoneyRequestStatus(eventData.requestId, 2, $("#message").val());
                   }
@@ -301,51 +301,57 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       $ionicConfig.backButton.text(kidsService.selectedKid.name);
     });
 
-
     $scope.data = {};
+    $scope.data.cat = {};
+    $scope.data.nw = {};
     $scope.data.showStat = "lines";
-    $scope.data.showNeed = false;
-    $scope.data.toggleLabel = 'Kategorien';
-    $scope.data.months = Months.getAll();
-    $scope.data.spent = Stats.getSpent();
-    $scope.data.names = Stats.getNames();
-    $scope.data.legend = Stats.getLegend();
+
+    // initialize categories diagram
+    $scope.data.cat.names = Stats.getNames();
+    $scope.data.cat.colors = Stats.getColors();
+
+    // initialize need want diagramm
+    $scope.data.nw.names = ["Gebraucht", "Gewollt"];
+    $scope.data.nw.colors = ["#0D7DBF", "#38D42F"];
+    $scope.data.nw.legend = [{
+      name: "Gebraucht",
+      color: "#0D7DBF",
+      icon_ios: "ion-ios-minus-empty"
+    }, {name: "Gewollt", color: "#38D42F", icon_ios: "ion-ios-minus-empty"}];
     $scope.data.labels = ["1.", "", "", "", "5.", "", "", "", "", "10.", "", "", "", "", "15.", "", "", "", "", "20.", "", "", "", "", "25.", "", "", "", "", "", "31."];
     $scope.data.month = new Date();
 
-    $scope.data.options = {pointDot: false, scaleShowHorizontalLines: true, pointHitDetectionRadius: 1, scaleFontSize: 20};
+    $scope.data.options = {
+      pointDot: false,
+      scaleShowHorizontalLines: true,
+      pointHitDetectionRadius: 1,
+      scaleFontSize: 20
+    };
 
     $scope.$watch('data.month', function (value) {
+      var month, year;
       if (value != undefined) {
-        var month = Stats.getMonth(value.getMonth(), value.getFullYear());
-        $scope.data.line = month;
+        month = value.getMonth();
+        year = value.getFullYear();
+        $scope.data.line = Stats.getMonth(month, year);
+        if ($scope.data.line) {
+          $scope.data.cat.spent = Stats.getSpent(month, year);
+          $scope.data.cat.legend = Stats.getLegend(month, year);
+          $scope.data.nw.spent = Stats.getNeedWant(month, year);
+        }
       }
     });
+
     $scope.buttonClicked = function (index) {
       switch (index) {
         case 0:
           $scope.data.showStat = "lines";
           break;
         case 1:
-          $scope.data.toggleLabel = 'Kategorien';
-          $scope.data.spent = Stats.getSpent();
-          $scope.data.names = Stats.getNames();
-          $scope.data.colors = Stats.getColors();
-          $scope.data.showStat = "doughnut";
-          $scope.data.legend = Stats.getLegend();
+          $scope.data.showStat = "categories";
           break;
         case 2:
-          $scope.data.toggleLabel = 'Gewollt/Gebraucht';
-          $scope.data.spent = Stats.getNeedWant();
-          $scope.data.names = ["Gebraucht", "Gewollt"];
-          $scope.data.colors = ["#0D7DBF", "#38D42F"];
-          $scope.data.showStat = "doughnut";
-          $scope.data.legend = [{
-            name: "Gebraucht",
-            color: "#0D7DBF",
-            icon_ios: "ion-ios-minus-empty"
-          }, {name: "Gewollt", color: "#38D42F", icon_ios: "ion-ios-minus-empty"}];
-
+          $scope.data.showStat = "needWant";
           break;
       }
       ;
@@ -378,7 +384,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
   })
 
 
-  .controller('OrderCtrl', function ($scope, $state, $ionicHistory, $ionicConfig,  $cordovaToast, PunktZuKomma, Days, Intervall, Order) {
+  .controller('OrderCtrl', function ($scope, $state, $ionicHistory, $ionicConfig, $cordovaToast, PunktZuKomma, Days, Intervall, Order) {
     $scope.platform = ionic.Platform;
     $scope.order = Order;
 
