@@ -455,41 +455,30 @@ angular.module('starter.controllers', ['ngCordova'])
 
     $scope.$on('$ionicView.loaded', function () {
       $scope.platform = ionic.Platform;
-    })
+      $scope.filterMonth = new Date();
+    });
 
 
     $scope.$on('$ionicView.beforeEnter', function () {
-
-      console.log('beforeEnter');
       selectedCat = -1;
-      $scope.filterMonth = new Date();
 
       $scope.punktZuKomma = PunktZuKomma;
       $scope.available = Amount.getAvailable();
       $scope.transactionsService = transactionsService;
-      $scope.changeMonth(new Date());
+      $scope.changeMonth($scope.filterMonth);
       $scope.currentMonth = true;
       $scope.filterOpened = false;
       $scope.resetFilter = true;
 
       $scope.stats = Stats.all();
       $scope.stats[7].color = "#006B08";
-      // $scope.filterMonth = new Date();
-      //console.log($scope.filterMonth);
     });
 
 
-    $scope.$on('$ionicView.enter', function () {
-      console.log('enter, vorher: ');
-      console.log($scope.filterMonth);
-      $scope.filterMonth = new Date();
-      console.log($scope.filterMonth);
-
-    })
+    $scope.$on('$ionicView.enter', function () {});
 
     $scope.changeMonth = function (filterMonth) {
-      console.log('change');
-      console.log("param: " + filterMonth);
+      $scope.filterMonth = filterMonth;
 
       $scope.noItems = false;
       selectedDate = filterMonth;
@@ -592,6 +581,7 @@ angular.module('starter.controllers', ['ngCordova'])
     $scope.$on('$ionicView.loaded', function () {
       $scope.platform = ionic.Platform;
       $scope.Math = window.Math;
+      $scope.filterMonth = new Date();
 
       //set width + height of statistics depending on device
       dev_width = $window.innerWidth;
@@ -650,7 +640,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
     $scope.$on('$ionicView.beforeEnter', function () {
       resetPot();
-      setup(new Date());
+      setup($scope.filterMonth);
     });
 
     $scope.$on('$ionicView.enter', function () {
