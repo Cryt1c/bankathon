@@ -203,6 +203,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       });
     }
 
+
     $scope.showConfirm = function (eventData) {
       var requestPopup = new $ionicPopup.show({ // eventData.requestId enthält requestId
         title: " - Geldanfrage von " + eventData.name,
@@ -215,10 +216,10 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
               var responsePopup = new $ionicPopup.show({
                 title: 'Zustimmen',
                 template: '<label for="message">Nachricht</label>' +
-                '<input type="text" id="message">',
+                '<input type="text" id="message" ng-model="data.message" ng-change="changeButton()>',
                 buttons: [{
                   text: "Geld und Nachricht abschicken",
-                  type: 'button-positive',
+                  type: 'button-positive button-hidden button-ok',
                   onTap: function () {
                     // grant request
                     $scope.webService.updateMoneyRequestStatus(eventData.requestId, 1, $("#message").val());
@@ -234,10 +235,10 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
               var responsePopup = new $ionicPopup.show({
                 title: 'Ablehnen',
                 template: '<label for="message">Begründung</label>' +
-                '<input type="text" id="message">',
+                '<input type="text" id="message" ng-model="data.message" ng-change="changeButton()>',
                 buttons: [{
                   text: "Nachricht abschicken",
-                  type: 'button-positive',
+                  type: 'button-positive button-hidden button-ok',
                   onTap: function () {
                     // deny request
                     $scope.webService.updateMoneyRequestStatus(eventData.requestId, 2, $("#message").val());
@@ -249,6 +250,14 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
         ]
       });
     }
+
+    $scope.changeButton = function () {
+      if ($scope.data.message && !isNaN(parseFloat($scope.data.amount)) && $scope.data.amount > 0) {
+        $('.button-ok').removeClass('button-hidden');
+      } else {
+        $('.button-ok').addClass('button-hidden');
+      }
+    };
 
     // // get transactions from this user since we now know they exist
     // var transactionsCallback = function (data) {
