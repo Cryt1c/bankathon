@@ -26,7 +26,7 @@ angular.module('starter.controllers', ['ngCordova'])
               "category": tTrans.category,
               "child_id": userId,
               "is_need": tTrans.isNeed,
-              "type": (tTrans["type"] || 0),
+              "type": (tTrans["type"] || 0),
               "request_id": (tTrans["requestId"] || 0)
             });
           //flag as already written
@@ -46,7 +46,7 @@ angular.module('starter.controllers', ['ngCordova'])
       $http.post(url + "setBalance", json);
 
     };
-    this.sendMoneyRequest = function(amount, message, parentId) {
+    this.sendMoneyRequest = function (amount, message, parentId) {
       var json = {
         "amount": amount,
         "reason": message,
@@ -80,10 +80,10 @@ angular.module('starter.controllers', ['ngCordova'])
           webService.incomingMessageHandler(msgData);
 
       };
-      ws.onopen = function() {
+      ws.onopen = function () {
         console.log("ws OPEN ");
       };
-      ws.onerror = function() {
+      ws.onerror = function () {
         //debugger;
         console.log("es ERROR");
       };
@@ -100,48 +100,54 @@ angular.module('starter.controllers', ['ngCordova'])
 
   .controller('DashCtrl', function ($scope, $state, $ionicPopup, $ionicHistory, $ionicSlideBoxDelegate, Amount, Stats, PunktZuKomma, webService, transactionsService, $cordovaToast) {
     $scope.platform = ionic.Platform;
-    $scope.handleRequestStatusUpdate = function(eventData) {
-                  var requestId = eventData.requestId;
-                  var request = eventData["request"];
-                  var newStatus = eventData.newStatus;
-                  var response = eventData.response;
-                  var amount = eventData.amount;
-                  switch (newStatus) {
-                    case 0:
-                      // pending
-                      // do nothing
-                      break;
-                    case 1:
-                      // granted
-                      // show and create associated transaction
-                      var alertPopup = $ionicPopup.alert(  {title: "Deine Anfrage über " + amount + " € wurde angenommen. <strong>Nachricht:<strong><br><br>" + response, template: '<h2 style="color: green"> + ' + amount + '€ </h2>'});
-                      alertPopup.then(function() {
-                        Amount.request(amount);
-                        $scope.available = Amount.getAvailable();
-                        $scope.webService.writeBalance();
+    $scope.handleRequestStatusUpdate = function (eventData) {
+      var requestId = eventData.requestId;
+      var request = eventData["request"];
+      var newStatus = eventData.newStatus;
+      var response = eventData.response;
+      var amount = eventData.amount;
+      switch (newStatus) {
+        case 0:
+          // pending
+          // do nothing
+          break;
+        case 1:
+          // granted
+          // show and create associated transaction
+          var alertPopup = $ionicPopup.alert({
+            title: "Deine Anfrage über " + amount + " € wurde angenommen. <strong>Nachricht:<strong><br><br>" + response,
+            template: '<h2 style="color: green"> + ' + amount + '€ </h2>'
+          });
+          alertPopup.then(function () {
+            Amount.request(amount);
+            $scope.available = Amount.getAvailable();
+            $scope.webService.writeBalance();
 
-                        // show new amount
-                        $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
-                        // TODO create a transaction
-                        var newT = $scope.transactionsService.createTransaction("Geldeingang", amount, 7);
-                        newT.type = 1; // asset
-                        newT.writtenToServer = true; // do not write to server
-                        newT.ephemeral = true; // will only exist within this app -- never written to server
-                        //TODO assign request id
-                        $scope.transactionsService.addTransaction(newT);
-                      });
-                      break;
-                    case 2:
-                      // denied
-                      // show alert
-                      var alertPopup = $ionicPopup.alert(
-                        {title: "Deine Anfrage über " + amount + " € wurde abgelehnt. <strong>Begründung:<strong><br><br>" +
-                      response, template: ""});
-                      alertPopup.then(function() {});
-                      break;
-                  }
-        };
-    $scope.$on("$ionicView.loaded", function() {
+            // show new amount
+            $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
+            // TODO create a transaction
+            var newT = $scope.transactionsService.createTransaction("Geldeingang", amount, 7);
+            newT.type = 1; // asset
+            newT.writtenToServer = true; // do not write to server
+            newT.ephemeral = true; // will only exist within this app -- never written to server
+            //TODO assign request id
+            $scope.transactionsService.addTransaction(newT);
+          });
+          break;
+        case 2:
+          // denied
+          // show alert
+          var alertPopup = $ionicPopup.alert(
+            {
+              title: "Deine Anfrage über " + amount + " € wurde abgelehnt. <strong>Begründung:<strong><br><br>" +
+              response, template: ""
+            });
+          alertPopup.then(function () {
+          });
+          break;
+      }
+    };
+    $scope.$on("$ionicView.loaded", function () {
       // initialise the view
       //'$ionicView.beforeEnter', function () {
       $scope.punktZuKomma = PunktZuKomma;
@@ -193,32 +199,32 @@ angular.module('starter.controllers', ['ngCordova'])
 
 
         };
-         webService.getTransactions().success(transactionsCallback).error(transactionsCallback);
+        webService.getTransactions().success(transactionsCallback).error(transactionsCallback);
 
         // also get requests and add them (for now only as ephemeral transactions)
         var moneyRequestCallback = function (data) {
           // data is in json format -- an array
 
-            for (var i = 0; i < data.length; i++) {
-              var thisRequest = data[i];
-              // if this request was granted, create an ephemeral transaction representation to represent it
-              var newT= transactionsService.createTransaction("Geldeingang", thisRequest.amount, 7);
-              newT.writtenToServer = true;
-              newT.ephemeral = true;
-              newT.type = 1; // asset
-              newT.date = new Date(thisRequest.timestamp);
-              $scope.transactionsService.addTransaction(newT);
+          for (var i = 0; i < data.length; i++) {
+            var thisRequest = data[i];
+            // if this request was granted, create an ephemeral transaction representation to represent it
+            var newT = transactionsService.createTransaction("Geldeingang", thisRequest.amount, 7);
+            newT.writtenToServer = true;
+            newT.ephemeral = true;
+            newT.type = 1; // asset
+            newT.date = new Date(thisRequest.timestamp);
+            $scope.transactionsService.addTransaction(newT);
 
-            }
-            Stats.resetSpent();
-              Stats.setSpent($scope.transactionsService.transactions());
+          }
+          Stats.resetSpent();
+          Stats.setSpent($scope.transactionsService.transactions());
         };
         webService.getMoneyRequests().success(moneyRequestCallback).error(moneyRequestCallback);
 
 
       }
       webService.getUser().success(userCallback).error(userCallback);
-    //}
+      //}
     });
     //$scope.$on();
 
@@ -260,46 +266,19 @@ angular.module('starter.controllers', ['ngCordova'])
           {
             text: 'Abbrechen',
             type: 'button-stable',
-            onTap: function() {myRequest.close();}
+            onTap: function () {
+              myRequest.close();
+            }
           },
           {
             text: '<b>OK</b>',
             type: 'button-ok button-hidden button-positive',
             onTap: function (e) {
-              var msg = "Deine Bitte um " + PunktZuKomma.parse($scope.data.amount)  + " € wurde gesendet";
+              var msg = "Deine Bitte um " + PunktZuKomma.parse($scope.data.amount) + " € wurde gesendet";
               console.log(msg);
               //TODO: activate Toast before release (Toast not working in web browser); tested in emulator for ios + android
               //$cordovaToast.show(msg,'long','center');
               $scope.webService.sendMoneyRequest(parseInt($scope.data.amount), $scope.data.message, $scope.user.parent_id);
-              setTimeout(function () {
-                /*$scope.handleRequestStatusUpdate({
-                  requestId: 0,
-                  newStatus: ( parseInt($scope.data.amount) <= 200 ? 1 : 2),
-                  response: ( parseInt($scope.data.amount) <= 200 ? "Kein Problem, du warst sehr brav." : "Das ist jetzt wirklich zu teuer."),
-                  amount: parseInt($scope.data.amount)
-                });*/
-                /*var answer;
-                var reason;
-                var amount = parseInt($scope.data.amount);
-                if (amount <= 200) {
-                  answer = true;
-                  reason = "";
-                  Amount.request(amount);
-                  $scope.available = Amount.getAvailable();
-                  $scope.webService.writeBalance();
-                }
-                else {
-                  answer = false;
-                  reason = '"Hallo Michael, du hast diesen Monat schon genug für ' + $scope.data.message + ' ausgegeben."';
-                }
-                var alertPopup = $ionicPopup.alert({
-                  title: (answer ? '"Hallo Michi, weil du so brav warst, darfst du dir  ' + $scope.data.message + ' kaufen."' : reason),
-                  template: (answer ? '<h2 style="color: green"> + ' + $scope.data.amount + '€ </h2>' : "")
-                });
-                alertPopup.then(function () {
-                  $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
-                });*/
-              }, 1000);
             }
           }
         ]
@@ -420,7 +399,7 @@ angular.module('starter.controllers', ['ngCordova'])
             type: 'button-positive',
             onTap: function () {
               $scope.pendingTransaction.isNeed = true;
-               $scope.pendingTransaction.writtenToServer = false;
+              $scope.pendingTransaction.writtenToServer = false;
               $scope.transactionsService.addTransaction($scope.pendingTransaction);
               $scope.pendingTransaction = null;
 
@@ -474,7 +453,7 @@ angular.module('starter.controllers', ['ngCordova'])
   .controller('HistoryCtrl', function ($scope, $state, $ionicSlideBoxDelegate, Amount, transactionsService, Stats, PunktZuKomma) {
     var selectedCat, selectedDate;
 
-    $scope.$on('$ionicView.loaded', function() {
+    $scope.$on('$ionicView.loaded', function () {
       $scope.platform = ionic.Platform;
     })
 
@@ -495,7 +474,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
       $scope.stats = Stats.all();
       $scope.stats[7].color = "#006B08";
-     // $scope.filterMonth = new Date();
+      // $scope.filterMonth = new Date();
       //console.log($scope.filterMonth);
     });
 
@@ -508,7 +487,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
     })
 
-    $scope.changeMonth = function(filterMonth) {
+    $scope.changeMonth = function (filterMonth) {
       console.log('change');
       console.log("param: " + filterMonth);
 
@@ -518,7 +497,7 @@ angular.module('starter.controllers', ['ngCordova'])
       var selectedYear = filterMonth.getYear();
 
       var current = new Date();
-      if(selectedMonth == current.getMonth() && selectedYear == current.getYear()) {
+      if (selectedMonth == current.getMonth() && selectedYear == current.getYear()) {
         $scope.currentMonth = true;
       }
       else {
@@ -529,24 +508,24 @@ angular.module('starter.controllers', ['ngCordova'])
       $scope.transactions = [];
 
       //loop through transaction and filter for date and category
-      for(var i = 0; i < trans.length; i++) {
-        if(trans[i].date.getMonth() == selectedMonth && trans[i].date.getYear() == selectedYear) {
-          if(selectedCat >= 0 && trans[i].category == selectedCat) {
+      for (var i = 0; i < trans.length; i++) {
+        if (trans[i].date.getMonth() == selectedMonth && trans[i].date.getYear() == selectedYear) {
+          if (selectedCat >= 0 && trans[i].category == selectedCat) {
             $scope.transactions.push(trans[i]);
           }
-          else if(selectedCat == -1){
+          else if (selectedCat == -1) {
             $scope.transactions.push(trans[i]);
           }
         }
       }
-      if($scope.transactions.length == 0) {
+      if ($scope.transactions.length == 0) {
         $scope.noItems = true;
       }
     };
 
-    $scope.openFilter = function() {
+    $scope.openFilter = function () {
       $scope.filterOpened = !$scope.filterOpened;
-      if($scope.filterOpened) {
+      if ($scope.filterOpened) {
         document.getElementById('icon_filter').classList.add('on');
       }
       else {
@@ -555,18 +534,19 @@ angular.module('starter.controllers', ['ngCordova'])
 
     };
 
-    $scope.selectFilter = function(category) {
+    $scope.selectFilter = function (category) {
 
       $scope.resetFilter = !$scope.resetFilter;
 
       //change background color of the active category
       var elements = document.getElementsByClassName("category_elem item");
-      for(var i = 0; i < elements.length; i++) {
+      for (var i = 0; i < elements.length; i++) {
         elements[i].getElementsByClassName('category_span')[0].style.backgroundColor = "transparent";
-      };
+      }
+      ;
 
-      if(selectedCat == category.id) {
-        if($scope.resetFilter) {
+      if (selectedCat == category.id) {
+        if ($scope.resetFilter) {
           selectedCat = -1;
         }
         else {
@@ -589,17 +569,17 @@ angular.module('starter.controllers', ['ngCordova'])
       $scope.transactions = [];
 
       //loop through transaction and filter for date and category
-      for(var i = 0; i < trans.length; i++) {
-        if(trans[i].date.getMonth() == selectedMonth && trans[i].date.getYear() == selectedYear) {
-          if(selectedCat >= 0 && trans[i].category == selectedCat) {
+      for (var i = 0; i < trans.length; i++) {
+        if (trans[i].date.getMonth() == selectedMonth && trans[i].date.getYear() == selectedYear) {
+          if (selectedCat >= 0 && trans[i].category == selectedCat) {
             $scope.transactions.push(trans[i]);
           }
-          else if(selectedCat == -1){
+          else if (selectedCat == -1) {
             $scope.transactions.push(trans[i]);
           }
         }
       }
-      if($scope.transactions.length == 0) {
+      if ($scope.transactions.length == 0) {
         $scope.noItems = true;
       }
     };
@@ -677,7 +657,7 @@ angular.module('starter.controllers', ['ngCordova'])
       animate();
     })
 
-    resetPot = function() {
+    resetPot = function () {
       $("#list .item-elem").each(function (key, bar) {
         /* Hoehe und Startwert (=bottom) muessen jedes Mal zurueck gesetzt werden,
          *  damit die Animation wieder von vorne beginnt, wenn der Tab wieder geoeffnet wird
@@ -690,7 +670,7 @@ angular.module('starter.controllers', ['ngCordova'])
       });
     }
 
-    setup = function(filterMonth) {
+    setup = function (filterMonth) {
       $scope.punktZuKomma = PunktZuKomma;
       $scope.filterMonth = filterMonth;
       var selectedMonth = $scope.filterMonth.getMonth();
@@ -705,23 +685,23 @@ angular.module('starter.controllers', ['ngCordova'])
 
       var transactions = transactionsService.transactions();
 
-      for(var i = 0; i < transactions.length; i++) {
-        if(transactions[i].date.getMonth() == selectedMonth && transactions[i].date.getYear() == selectedYear) {
+      for (var i = 0; i < transactions.length; i++) {
+        if (transactions[i].date.getMonth() == selectedMonth && transactions[i].date.getYear() == selectedYear) {
 
           $scope.stats[transactions[i].category].spent += transactions[i].amount;
 
-          if(transactions[i].category != 7) { //keine einnahme
+          if (transactions[i].category != 7) { //keine einnahme
             $scope.total += transactions[i].amount;
           }
         }
       }
-      if($scope.total == 0) {
+      if ($scope.total == 0) {
         $scope.noItems = true;
       }
 
 
       var current = new Date();
-      if(current.getMonth() == selectedMonth && current.getYear() == selectedYear) {
+      if (current.getMonth() == selectedMonth && current.getYear() == selectedYear) {
         $scope.stats[7].spent = Amount.getAvailable();
         $scope.stats[7].name = "Taschengeld";
       }
@@ -731,7 +711,7 @@ angular.module('starter.controllers', ['ngCordova'])
       $scope.stats = Stats.setHeights($scope.total, $scope.available, calc_height);
     }
 
-    animate = function() {
+    animate = function () {
       var bottom = 0;
       var len = $("#list .item-elem").length;
       var height_ausgaben = 0;
@@ -747,7 +727,8 @@ angular.module('starter.controllers', ['ngCordova'])
           $('#line').css("bottom", bottom);
           height_ausgaben = bottom - 10;
           $(".ausgaben").css("bottom", height_ausgaben);
-        };
+        }
+        ;
 
         /* Animation; jede Animation wird verzoegert ausgeloest;
          *  um das linear auszufuehren, wird das mit dem jeweiligen Index multipliziert
@@ -779,7 +760,7 @@ angular.module('starter.controllers', ['ngCordova'])
 
     }
 
-    $scope.changeMonth = function(filterMonth) {
+    $scope.changeMonth = function (filterMonth) {
       resetPot();
       setup(filterMonth);
       animate();

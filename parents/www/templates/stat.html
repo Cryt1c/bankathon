@@ -15,9 +15,11 @@
     <div ng-switch="data.showStat">
       <div ng-switch-when="lines">
         <div ng-if="data.line">
+          <div id="yLabel">Euro</div>
           <canvas id="lineChart" class="chart chart-line" chart-data="data.line"
                   chart-labels="data.labels" chart-legend="true" chart-series="series" chart-options="data.options">
           </canvas>
+          <div id="xLabel">Tag</div>
         </div>
         <div ng-if="!data.line" class="noData">In diesem Monat wurden keine Transaktionen getätigt.</div>
       </div>
@@ -26,7 +28,7 @@
       <div ng-switch-when="categories">
         <div ng-if="data.line">
           <canvas id="category" class="chart chart-doughnut"
-                  chart-data="data.cat.spent" chart-labels="data.cat.names" chart-colours="data.cat.colors">
+                  chart-data="data.cat.spent" chart-labels="data.cat.names" chart-colours="data.cat.colors" chart-options="data.nw.options">
           </canvas>
           <ion-list>
             <ion-item ng-repeat="category in data.cat.legend">
@@ -46,7 +48,7 @@
       <div ng-switch-when="needWant">
         <div ng-if="data.line">
           <canvas id="needWant" class="chart chart-doughnut"
-                  chart-data="data.nw.spent" chart-labels="data.nw.names" chart-colours="data.nw.colors">
+                  chart-data="data.nw.spent" chart-labels="data.nw.names" chart-colours="data.nw.colors" chart-options="data.nw.options">
           </canvas>
           <ion-list>
             <ion-item ng-repeat="needWant in data.nw.legend">

@@ -328,6 +328,10 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       scaleFontSize: 20
     };
 
+    $scope.data.nw.options = {
+      animation: false
+    };
+
     $scope.$watch('data.month', function (value) {
       var month, year;
       if (value != undefined) {
