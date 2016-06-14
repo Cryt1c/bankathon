@@ -236,3 +236,11 @@ canvas.chart {
   padding-top: 10px;
   font-size: 20px;
 }
+
+/*
+  Popup
+*/
+
+.button-hidden {
+  display: none !important;
+}
