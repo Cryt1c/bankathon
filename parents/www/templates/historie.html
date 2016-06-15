@@ -27,30 +27,19 @@
 -->
 
     <ion-list class="transaction_list">
-      <ion-item class="transaction_elem">
+      <ion-item class="transaction_elem" ng-repeat="request in moneyRequests">
         <div>
           <div class="transaction_name">
             Überweisung<br>
-            &nbsp;01.05.16 14:15
+            &nbsp;{{request.date}}
           </div>
           <div class="transaction_amount">
-            3,40 €
+            {{request.amount}} €
           </div>
         </div>
       </ion-item>
 
 
-      <ion-item class="transaction_elem">
-          <div class="transaction_name">
-            Taschengeld<br>
-            &nbsp;01.05.16 08:55
-          </div>
-
-          <div class="transaction_amount">
-            15,00 €
-          </div>
-        </div>
-      </ion-item>
     </ion-list>
 
   </ion-content>

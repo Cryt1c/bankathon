@@ -1,5 +1,11 @@
 angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-control'])
-  .service('webService', function ($http, Amount) {
+  .service('requestsService', function() {
+    var requests;
+    this.setRequests = function(requests) {
+      this.requests = requests;
+    }
+  })
+  .service('webService', function ($http, Amount, $filter) {
     var runningOnMobile = ionic.Platform.isIOS() || ionic.Platform.isAndroid();
     var url = (runningOnMobile ? "http://pommo-backend.herokuapp.com/" : "/api/");
     var userId = 1;
@@ -58,23 +64,24 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     this.selectedKid;
   })
 
-  .controller('StartCtrl', function ($scope, $state, $ionicModal, $ionicPopup, $ionicSlideBoxDelegate, Kids, kidsService, webService) {
+  .controller('StartCtrl', function ($scope, requestsService, $state, $ionicModal, $ionicPopup, $ionicSlideBoxDelegate, Kids, kidsService, webService) {
     $scope.platform = ionic.Platform;
 
     $scope.kids = Kids.getAll();
     $scope.webService = webService;
 
     // load requests
-    $scope.webService.getMoneyRequests().then(function (data) {
+    var getMoneyRequestsCallback = function(data) {
       $scope.moneyRequests = data;
-
+      requestsService.setRequests(data);
+      console.log(data);
       // check if there are any pending money requests
       // if so, alert the user to the most recent one
-      var filteredData = $filter('orderBy')(data, "timestamp");
-      filteredData = $filter('filter')({"status": 0}); // filter to only elements with pending status
+      //var filteredData = $filter('orderBy')(data, "timestamp");
+      //filteredData = $filter('filter')({"status": 0}); // filter to only elements with pending status
       $scope.pendingRequests = data;
 
-    });
+    };
 
     //Set List to vertical center depending on how many items are in the list
     NumberUpdate = function () {
@@ -92,6 +99,8 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
         $('.kids_list .list').css('padding-top', '50px');
       }
     };
+    $scope.webService.getMoneyRequests().error(getMoneyRequestsCallback).success(getMoneyRequestsCallback);
+
 
     NumberUpdate();
 
@@ -278,12 +287,12 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
   })
 
 
-  .controller('DetailCtrl', function ($scope, $state, $ionicHistory, $ionicConfig, kidsService, Kids, Amount, Stats, PunktZuKomma) {
+  .controller('DetailCtrl', function ($scope, $state, $ionicHistory, requestsService, $ionicConfig, kidsService, Kids, Amount, Stats, PunktZuKomma) {
     $scope.$on('$ionicView.beforeEnter', function () {
       $ionicConfig.backButton.text("Übersicht");
     });
 
-
+    $scope.moneyRequests = requestsService.requests;
     $scope.platform = ionic.Platform;
     $scope.kidsService = kidsService;
     $scope.paired = kidsService.selectedKid.paired;
@@ -430,7 +439,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
         Intervall.setDefault(0, false);
         Intervall.setDefault(1, true);
       }
-    };
+   };
 
     $scope.saveOrder = function (orderForm) {
 
@@ -447,9 +456,9 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     };
   })
 
-  .controller('HistorieCtrl', function ($scope, $state, $ionicConfig, kidsService, Amount, Months, PunktZuKomma) {
+  .controller('HistorieCtrl', function ($scope, $state, $ionicConfig, kidsService, Amount, Months, PunktZuKomma, requestsService) {
     $scope.platform = ionic.Platform;
-
+    $scope.moneyRequests = requestsService.requests;
     $scope.$on('$ionicView.beforeEnter', function () {
       $ionicConfig.backButton.text(kidsService.selectedKid.name);
     });
