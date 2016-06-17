@@ -307,8 +307,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 // webService.getUser().success(userCallback).error(userCallback);
 
   })
-
-
+  
   .controller('DetailCtrl', function ($scope, $state, $ionicHistory, requestsService, $ionicConfig, kidsService, Kids, Amount, Stats, PunktZuKomma) {
     $scope.$on('$ionicView.beforeEnter', function () {
       $ionicConfig.backButton.text("Übersicht");
@@ -321,9 +320,9 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
     $scope.punktZuKomma = PunktZuKomma;
 
+    //TODO select kid and get data from backend: get available balance of the kid
+    $scope.lastRequest = $scope.moneyRequests[$scope.moneyRequests.length-1];
     $scope.available = Amount.getAvailable();
-
-    //TODO select kid and get data from backend - available + last transaction to the kid
 
     $scope.pairingDone = function (kid) {
 
@@ -335,7 +334,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
   })
 
-  .controller('StatCtrl', function ($document, $scope, $state, $ionicConfig, kidsService, Stats, Months, ChartJsFactory) {
+  .controller('StatCtrl', function ($document, $scope, $state, $ionicConfig, kidsService, Stats, ChartJsFactory) {
     $scope.platform = ionic.Platform;
     $scope.$on('$ionicView.beforeEnter', function () {
       $ionicConfig.backButton.text(kidsService.selectedKid.name);
@@ -478,16 +477,43 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     };
   })
 
-  .controller('HistorieCtrl', function ($scope, $state, $ionicConfig, kidsService, Amount, Months, PunktZuKomma, requestsService) {
-    $scope.platform = ionic.Platform;
-    $scope.moneyRequests = requestsService.requests;
-    $scope.$on('$ionicView.beforeEnter', function () {
-      $ionicConfig.backButton.text(kidsService.selectedKid.name);
+  .controller('HistorieCtrl', function ($scope, $state, $ionicConfig, kidsService, Amount, PunktZuKomma, requestsService) {
+
+    $scope.$on('$ionicView.loaded', function () {
+      $scope.platform = ionic.Platform;
+      $scope.filterMonth = new Date();
     });
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+      $ionicConfig.backButton.text(kidsService.selectedKid.name);
+      $scope.punktZuKomma = PunktZuKomma;
+      $scope.changeMonth($scope.filterMonth);
+    });
 
-    $scope.available = Amount.getAvailable();
-    $scope.punktZuKomma = PunktZuKomma;
-    $scope.months = Months.getAll();
+    $scope.$on('$ionicView.enter', function () {});
+
+    $scope.changeMonth = function (filterMonth) {
+      $scope.filterMonth = filterMonth;
+
+      $scope.noItems = false;
+      var selectedMonth = filterMonth.getMonth();
+      var selectedYear = filterMonth.getYear();
+
+      var requests = requestsService.requests;
+      console.log(requests);
+      $scope.moneyRequests = [];
+
+      //loop through requests and filter for date
+      for (var i = 0; i < requests.length; i++) {
+        var date = new Date(requests[i].date);
+        if (date.getMonth() == selectedMonth && date.getYear() == selectedYear) {
+         $scope.moneyRequests.push(requests[i]);
+        }
+      }
+      if ($scope.moneyRequests.length == 0) {
+        $scope.noItems = true;
+      }
+    };
+
 
   });

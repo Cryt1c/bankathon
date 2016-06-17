@@ -2,44 +2,27 @@
 
 
   <ion-content>
-    <label class="item item-input">
-      <span class="input-label">Monat</span>
-      <input type="month" ng-model="month">
+    <label class="item item-input item-month">
+      <span class="input-label">Monat:</span>
+      <input type="month" ng-model="filterMonth" value="{{filterMonth | date: yyyy-MM}}"  ng-change="changeMonth(filterMonth)">
+      <i class="icon ion-android-arrow-dropdown"></i>
     </label>
-
-      <h2 class="label">Aktuelles Taschengeld: {{punktZuKomma.parse(available)}} €</h2>
-
-
-<!--
-    <ion-list class="transaction_list">
-      <ion-item class="transaction_elem" ng-repeat="trans in transactionsService.transactions()">
-        <div>
-          <div class="transaction_name">
-            {{trans.recipient}}<br>
-            &nbsp;05.05.16 14:15
-          </div>
-          <div class="transaction_amount">
-            € {{punktZuKomma.parse(trans.amount)}}
-          </div>
-        </div>
-      </ion-item>
-    </ion-list>
--->
 
     <ion-list class="transaction_list">
       <ion-item class="transaction_elem" ng-repeat="request in moneyRequests">
         <div>
           <div class="transaction_name">
             Überweisung<br>
-            &nbsp;{{request.date}}
+            &nbsp;{{request.date| date: 'dd.MM.yy HH:mm'}}
           </div>
           <div class="transaction_amount">
-            {{request.amount}} €
+            {{punktZuKomma.parse(request.amount)}} €
           </div>
         </div>
       </ion-item>
-
-
+      <ion-item ng-show="noItems">
+        <p id="noItems">Keine Ausgaben in diesem Monat</p>
+      </ion-item>
     </ion-list>
 
   </ion-content>

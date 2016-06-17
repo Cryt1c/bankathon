@@ -6,10 +6,6 @@ angular.module('starter.services', [])
       id: 0,
       name: 'Michael',
       paired: true
-    }, {
-      id: 1,
-      name: 'Sophie',
-      paired: false
     }];
     var kidsNum = kids.length;
 
@@ -203,36 +199,7 @@ angular.module('starter.services', [])
       }
     };
   })
-
-  .factory('Months', function () {
-
-    var months = [
-      {id: 1, name: 'Jänner'},
-      {id: 2, name: 'Februar'},
-      {id: 3, name: 'März'},
-      {id: 4, name: 'April'},
-      {id: 5, name: 'Mai'},
-      {id: 6, name: 'Juni'},
-      {id: 7, name: 'Juli'},
-      {id: 8, name: 'August'},
-      {id: 9, name: 'September'},
-      {id: 10, name: 'Oktober'},
-      {id: 11, name: 'November'},
-      {id: 12, name: 'Dezember'},
-    ];
-
-    return {
-      getMonth: function (id) {
-        return months[id].name;
-      },
-      getAll: function () {
-        return months;
-      }
-    };
-
-  })
-
-
+  
   .factory('Days', function () {
 
     var monthdays = [{
