@@ -589,12 +589,16 @@ angular.module('starter.controllers', ['ngCordova'])
       calc_height = 350;
       $scope.dev_height = dev_height;
       $scope.dev_width = dev_width;
+      console.log(dev_height);
+      console.log(dev_width);
 
       if (dev_height > 600 && dev_width < 370) { //galaxy S4
         $('.border').css('height', "470px");
         $('.border').css('width', "260px");
         $('.border').css('top', "65px");
         $('#line').css('width', "330px");
+        $('#line').css('margin-bottom', "-6px");
+
         $('.anzeige').css('height', "470px");
         $('.anzeige').css('width', "80px");
         $('.anzeige').css('top', "16px");
@@ -609,6 +613,7 @@ angular.module('starter.controllers', ['ngCordova'])
         $('.border').css('width', "280px");
         $('.border').css('top', "65px");
         $('#line').css('width', "350px");
+        $('#line').css('margin-bottom', "-6px");
         $('.anzeige').css('height', "470px");
         $('.anzeige').css('width', "80px");
         $('.anzeige').css('top', "16px");
@@ -618,33 +623,41 @@ angular.module('starter.controllers', ['ngCordova'])
         $('#list .list').css('top', "20px");
         calc_height = 450;
       }
-      if (dev_height > 600) {
-        var elements = document.getElementsByClassName("child__icon");
-        for (var i = 0; i < elements.length; i++) {
-          elements[i].style.fontSize = "25px";
-          elements[i].style.paddingLeft = "10px";
-        }
-        ;
-        var elements = document.getElementsByClassName("child__name");
-        for (var i = 0; i < elements.length; i++) {
-          elements[i].style.paddingLeft = "65px";
-        }
-        ;
-        var elements = document.getElementsByClassName("child__betrag");
-        for (var i = 0; i < elements.length; i++) {
-          elements[i].style.paddingLeft = "165px";
-        }
-        ;
-      }
     })
 
     $scope.$on('$ionicView.beforeEnter', function () {
+
+
       resetPot();
       setup($scope.filterMonth);
     });
 
     $scope.$on('$ionicView.enter', function () {
-      animate();
+
+      if (dev_height > 600) {
+        el = document.getElementById("noItems");
+        el.style.fontSize = "14px";
+
+        var elements = document.getElementsByClassName("child__icon");
+        for(var i = 0; i < elements.length; i++) {
+          elements[i].style.fontSize = "20px";
+          elements[i].style.left = "25px";
+        };
+        var elements = document.getElementsByClassName("child__name");
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].style.left = "65px";
+          elements[i].style.fontSize = "14px";
+        };
+        var elements = document.getElementsByClassName("child__betrag");
+        for (var i = 0; i < elements.length; i++) {
+          elements[i].style.right = "35px";
+          elements[i].style.fontSize = "14px";
+        };
+      }
+
+      if(!$scope.noItems) {
+        animate();
+      }
     })
 
     resetPot = function () {
@@ -656,7 +669,10 @@ angular.module('starter.controllers', ['ngCordova'])
         $(".ausgaben").hide();
         $(".total").hide();
         $(this).css("height", "0px");
-        $(this).css("bottom", "0px");
+        $(this).css("bottom", "15px");
+        if(key == 0) {
+          $(this).css("bottom", "0px");
+        }
       });
     }
 
@@ -695,6 +711,9 @@ angular.module('starter.controllers', ['ngCordova'])
         $scope.stats[7].spent = Amount.getAvailable();
         $scope.stats[7].name = "Taschengeld";
       }
+      else {
+        $scope.stats[7].name = "Einnahmen";
+      }
 
       $scope.stats[7].color = "#FFFFFF";
       $scope.available = $scope.stats[7].spent;
@@ -706,26 +725,27 @@ angular.module('starter.controllers', ['ngCordova'])
       var len = $("#list .item-elem").length;
       var height_ausgaben = 0;
 
-      $("#list .item-elem").each(function (index, element) {
+      $("#list .item-elem.item").each(function (index, element) {
         //Hoehe holen
+        $(this).css("height", "0px");
         var height = Stats.getHeight(index);
 
         //Bottom ist der Startwert fuer das Element
-        $(this).css("bottom", bottom);
+        //$(this).css("bottom", bottom);
 
         if (index == len - 1) {
           $('#line').css("bottom", bottom);
           height_ausgaben = bottom - 10;
           $(".ausgaben").css("bottom", height_ausgaben);
-        }
-        ;
+        };
 
         /* Animation; jede Animation wird verzoegert ausgeloest;
          *  um das linear auszufuehren, wird das mit dem jeweiligen Index multipliziert
          * (bei 400, 800, 1200 sek. eine Animation)
          */
-        $(this).delay(250 * index).animate({
-            'height': height + "px"
+        $(this).delay(200 * index).animate({
+            'height': height + "px",
+            'bottom': bottom + "px"
           },
           {
             duration: 150,
@@ -736,14 +756,13 @@ angular.module('starter.controllers', ['ngCordova'])
               if (index == len - 2) {
                 $('#line').show();
                 $(".ausgaben").show();
-              }
-              ;
+              };
               if (index == len - 1) {
                 $(".total").show();
-              }
-              ;
+              };
             },
           });
+
         //Startwert fuer das naechste Element erhoehen
         bottom += parseFloat(height);
       });
@@ -753,8 +772,8 @@ angular.module('starter.controllers', ['ngCordova'])
     $scope.changeMonth = function (filterMonth) {
       resetPot();
       setup(filterMonth);
-      animate();
+      if(!$scope.noItems) {
+        animate();
+      }
     }
-
-
   });

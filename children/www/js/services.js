@@ -153,7 +153,7 @@ angular.module('starter.services', [])
       height: 0,
       icon_android: 'ion-plus',
       icon_ios: 'ion-plus'
-    },];
+    }];
 
     return {
       all: function () {

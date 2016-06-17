@@ -153,7 +153,7 @@ h2, p {
 .item-elem {
   border: none;
   text-align: center;
-  padding: 10px;
+  padding: 0px;
   display: none;
   height: 0px;
 }
@@ -208,7 +208,7 @@ h2, p {
   position: absolute;
 }
 
-hr {
+#line {
   display: none;
   position: absolute;
   height: 4px;
@@ -218,7 +218,7 @@ hr {
   z-index: 100;
   background-color: red;
   margin-top: 0px;
-  margin-bottom: -6px;
+  margin-bottom: -12px;
   margin-left: -15px;
   padding: 0px;
   border: none;
@@ -229,7 +229,7 @@ hr {
   position: relative;
   height: 370px;
   width: 80px;
-  top: 30px;
+  top: 35px;
 }
 
 .anzeige .total {
@@ -262,6 +262,7 @@ hr {
   bottom: 0;
   width: 100%;
   margin: auto;
+  height: 0px;
 }
 
 .item-elem:nth-child(1) {
@@ -276,12 +277,14 @@ hr {
   text-align: center;
   vertical-align: middle;
   font-size: 14px;
+  height: 0px;
 }
 
 .child .child__icon {
-  font-size: 16px;
-  padding-left: 10px;
+  font-size: 14px;
+  left: 25px;
 }
+
 .child__name {
   display: -webkit-box;
   display: -webkit-flex;
@@ -296,8 +299,8 @@ hr {
   position: absolute;
   top: 0;
   height: 100%;
-  padding-left: 40px;
-  font-size: 14px;
+  left: 55px;
+  font-size: 12px;
 }
 
 .child__betrag {
@@ -314,10 +317,15 @@ hr {
   position: absolute;
   top: 0;
   height: 100%;
-  padding-left: 140px;
+  right: 35px;
   text-align: right;
-  font-size: 14px;
+  font-size: 12px;
 }
+
+#noItems {
+  font-size: 10px;
+}
+
 
 .cat-elem {
   float:left;

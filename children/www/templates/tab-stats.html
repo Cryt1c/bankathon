@@ -28,9 +28,9 @@
     </div>
 
     <ion-list class="list" id="list">
-      <ion-item class="item-elem" ng-repeat="stat in stats" style="background-color:{{stat.color}};" >
-        <div class="child" style="height: {{stat.height}}px;">
-          <a class="item-icon-left item-icon-right" href="#" style="height:{{stat.height}}px;">
+      <ion-item class="item-elem" ng-repeat="stat in stats" style="background-color:{{stat.color}}; z-index: -{{stat.id}};"  >
+        <div class="child">
+          <a class="item-icon-left item-icon-right" href="#">
             <i class="icon {{stat.icon_ios}} child__icon"></i>
               <span class="child__name">
                 {{stat.name}}:
@@ -42,7 +42,7 @@
         </div>
       </ion-item>
       <ion-item ng-show="noItems" style="border: none;">
-        <p>Keine Ausgaben in diesem Monat</p>
+        <p id="noItems">Keine Ausgaben in diesem Monat</p>
       </ion-item>
     </ion-list>
   </ion-content>
