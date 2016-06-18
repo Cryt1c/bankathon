@@ -532,7 +532,10 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       for (var i = 0; i < requests.length; i++) {
         var date = new Date(requests[i].date);
         if (date.getMonth() == selectedMonth && date.getYear() == selectedYear) {
-         $scope.moneyRequests.push(requests[i]);
+
+          if(requests[i].child_id == 1) {
+            $scope.moneyRequests.push(requests[i]);
+          }
         }
       }
       if ($scope.moneyRequests.length == 0) {
