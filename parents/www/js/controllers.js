@@ -307,7 +307,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 // webService.getUser().success(userCallback).error(userCallback);
 
   })
-  
+
   .controller('DetailCtrl', function ($scope, $state, $ionicHistory, requestsService, $ionicConfig, kidsService, Kids, Amount, Stats, PunktZuKomma) {
     $scope.$on('$ionicView.beforeEnter', function () {
       $ionicConfig.backButton.text("Übersicht");
@@ -507,7 +507,10 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       for (var i = 0; i < requests.length; i++) {
         var date = new Date(requests[i].date);
         if (date.getMonth() == selectedMonth && date.getYear() == selectedYear) {
-         $scope.moneyRequests.push(requests[i]);
+
+          if(requests[i].child_id == 1) {
+            $scope.moneyRequests.push(requests[i]);
+          }
         }
       }
       if ($scope.moneyRequests.length == 0) {

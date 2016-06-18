@@ -7,7 +7,6 @@
           <img src="img/dummy.png" alt="profile" class="profile_img">
         </div>
         <div class=item-text-info>
-          Michael hat aktuell: {{punktZuKomma.parse(available)}} € <br>
           Letzte Überweisung war am {{lastRequest.date | date: 'dd.MM.yy'}}:   {{punktZuKomma.parse(lastRequest.amount)}} €
         </div>
       </ion-item>
