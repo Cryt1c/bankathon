@@ -445,8 +445,8 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
       //TODO: activate Toast before release (Toast not working in web browser); tested in emulator for ios + android
       var msg = PunktZuKomma.parse(newTransaction.amount) + " € gesendet";
-      console.log(msg);
-      //$cordovaToast.show(msg,'long','center');
+      //console.log(msg);
+      $cordovaToast.show(msg,'long','center');
       $ionicHistory.goBack();
 
     }
@@ -496,8 +496,8 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
       //TODO: activate Toast before release (Toast not working in web browser); tested in emulator for ios + android
       var msg = "Dauerauftrag über " + PunktZuKomma.parse($scope.order.getAmount()) + " € " + intervall + " gespeichert";
-      console.log(msg);
-      //$cordovaToast.show(msg,'long','center');
+      //console.log(msg);
+      $cordovaToast.show(msg,'long','center');
       $ionicHistory.goBack();
     };
   })
@@ -532,8 +532,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       for (var i = 0; i < requests.length; i++) {
         var date = new Date(requests[i].date);
         if (date.getMonth() == selectedMonth && date.getYear() == selectedYear) {
-
-          if(requests[i].child_id == 1) {
+          if(requests[i].child_id == 1 && requests[i].status == 1) {
             $scope.moneyRequests.push(requests[i]);
           }
         }

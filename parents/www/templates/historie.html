@@ -12,8 +12,8 @@
       <ion-item class="transaction_elem" ng-repeat="request in moneyRequests">
         <div>
           <div class="transaction_name">
-            Überweisung<br>
-            &nbsp;{{request.date| date: 'dd.MM.yy HH:mm'}}
+            {{request.reason}}<br>
+            &nbsp;{{request.timestamp| date: 'dd.MM.yy HH:mm'}}
           </div>
           <div class="transaction_amount">
             {{punktZuKomma.parse(request.amount)}} €

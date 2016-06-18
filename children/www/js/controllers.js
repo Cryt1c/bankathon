@@ -208,13 +208,14 @@ angular.module('starter.controllers', ['ngCordova'])
           for (var i = 0; i < data.length; i++) {
             var thisRequest = data[i];
             // if this request was granted, create an ephemeral transaction representation to represent it
-            var newT = transactionsService.createTransaction("Geldeingang", thisRequest.amount, 7);
-            newT.writtenToServer = true;
-            newT.ephemeral = true;
-            newT.type = 1; // asset
-            newT.date = new Date(thisRequest.timestamp);
-            $scope.transactionsService.addTransaction(newT);
-
+            if(thisRequest.status == 1) {
+              var newT = transactionsService.createTransaction(thisRequest.reason, thisRequest.amount, 7);
+              newT.writtenToServer = true;
+              newT.ephemeral = true;
+              newT.type = 1; // asset
+              newT.date = new Date(thisRequest.timestamp);
+              $scope.transactionsService.addTransaction(newT);
+            }
           }
           Stats.resetSpent();
           Stats.setSpent($scope.transactionsService.transactions());
@@ -277,7 +278,7 @@ angular.module('starter.controllers', ['ngCordova'])
               var msg = "Deine Bitte um " + PunktZuKomma.parse($scope.data.amount) + " € wurde gesendet";
               console.log(msg);
               //TODO: activate Toast before release (Toast not working in web browser); tested in emulator for ios + android
-              //$cordovaToast.show(msg,'long','center');
+              $cordovaToast.show(msg,'long','center');
               $scope.webService.sendMoneyRequest(parseInt($scope.data.amount), $scope.data.message, $scope.user.parent_id);
             }
           }
