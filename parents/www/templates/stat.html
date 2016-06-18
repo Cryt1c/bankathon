@@ -31,7 +31,7 @@
                   chart-data="data.cat.spent" chart-labels="data.cat.names" chart-colours="data.cat.colors" chart-options="data.nw.options">
           </canvas>
           <ion-list>
-            <ion-item ng-repeat="category in data.cat.legend">
+            <ion-item ng-repeat="category in data.cat.legend" ng-if="category" class="legendCat">
               <div style="background-color: {{category.color}}"></div>
               <div class="legend_icons">
              <span class="legend_cat" style="background-color: {{category.color}}">

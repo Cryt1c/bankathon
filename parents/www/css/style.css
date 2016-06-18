@@ -235,7 +235,7 @@ button.button-header {
 */
 
 .ti-segmented-control {
-  margin: 5px auto;
+  margin: 2px auto;
   width: 350px;
 }
 
@@ -256,7 +256,7 @@ canvas.chart {
   float: left;
   font-size: 20px;
   padding: 5px;
-  margin: 5px;
+  margin: 4px;
   color: #000;
   margin-right: 10px;
 }
@@ -282,8 +282,12 @@ ul.line-legend{
 }
 
 #category, #needWant {
-  margin-bottom: 20px;
-  margin-top: 20px;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.legendCat {
+  padding: 0 !important;
 }
 
 /*

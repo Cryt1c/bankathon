@@ -5,7 +5,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       this.requests = requests;
     }
   })
-  .service('webService', function ($http, Amount, $filter) {
+  .service('webService', function ($http, transactionsService, Amount, $filter) {
     var runningOnMobile = ionic.Platform.isIOS() || ionic.Platform.isAndroid();
     var url = (runningOnMobile ? "http://pommo-backend.herokuapp.com/" : "/api/");
     var userId = 1;
@@ -28,6 +28,11 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
       }
     }; */
+
+    this.getTransactions = function () {
+      return $http.get(url + "getTransactionsByChild?childId=" + userId);
+    };
+
     var webService = this;
     var incomingMessageHandler;
     this.initWebSockets = function (incomingEventHandler) {
@@ -64,7 +69,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     this.selectedKid;
   })
 
-  .controller('StartCtrl', function ($scope, requestsService, $state, $ionicModal, $ionicPopup, $ionicSlideBoxDelegate, Kids, kidsService, webService) {
+  .controller('StartCtrl', function ($scope, requestsService, transactionsService, $state, Stats, $ionicModal, $ionicPopup, $ionicSlideBoxDelegate, Kids, kidsService, webService) {
     $scope.platform = ionic.Platform;
 
     $scope.kids = Kids.getAll();
@@ -74,7 +79,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     var getMoneyRequestsCallback = function (data) {
       $scope.moneyRequests = data;
       requestsService.setRequests(data);
-      console.log(data);
+      //console.log(data);
       // check if there are any pending money requests
       // if so, alert the user to the most recent one
       //var filteredData = $filter('orderBy')(data, "timestamp");
@@ -212,6 +217,27 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       });
     }
 
+    // load user data
+    var userCallback = function (user) {
+      $scope.user = user;
+      $scope.transactionsService = transactionsService;
+
+      // get transactions from this user since we now know they exist
+      var transactionsCallback = function (data) {
+        transactionsService.loadTransactionsJSON(data);
+        // $scope.$apply();
+        var trans = transactionsService.transactions();
+
+        Stats.setTransactions();
+      };
+
+
+      webService.getTransactions().success(transactionsCallback).error(transactionsCallback);
+
+    }
+    webService.getUser().success(userCallback).error(userCallback);
+    //}
+
 
     $scope.showConfirm = function (eventData) {
       $scope.data = {};
@@ -334,7 +360,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
   })
 
-  .controller('StatCtrl', function ($document, $scope, $state, $ionicConfig, kidsService, Stats, ChartJsFactory) {
+  .controller('StatCtrl', function ($document, $scope, $state, $ionicConfig, kidsService, Stats) {
     $scope.platform = ionic.Platform;
     $scope.$on('$ionicView.beforeEnter', function () {
       $ionicConfig.backButton.text(kidsService.selectedKid.name);
@@ -385,6 +411,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       }
     });
 
+
     $scope.buttonClicked = function (index) {
       switch (index) {
         case 0:
@@ -396,8 +423,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
         case 2:
           $scope.data.showStat = "needWant";
           break;
-      }
-      ;
+      };
       $scope.$apply();
     }
 
@@ -425,7 +451,6 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
     }
   })
-
 
   .controller('OrderCtrl', function ($scope, $state, $ionicHistory, $ionicConfig, $cordovaToast, PunktZuKomma, Days, Intervall, Order) {
     $scope.platform = ionic.Platform;
