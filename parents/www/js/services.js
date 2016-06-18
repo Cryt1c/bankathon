@@ -22,7 +22,6 @@ angular.module('starter.services', [])
     };
   })
 
-
   .factory('Amount', function () {
     var available = 47.00;
     var spentTotal = 0.00;
@@ -44,7 +43,55 @@ angular.module('starter.services', [])
     };
   })
 
-  .factory('Stats', function () {
+  .service('transactionsService', function () {
+    var _transactions = [];
+
+    this.transactions = function () {
+      return _transactions;
+    };
+
+    this.createTransaction = function (recipient, amount, category, is_need) {
+      return {recipient: recipient, amount: amount, category: category, isNeed: is_need, writtenToServer: false};
+    };
+
+    this.addTransaction = function (transaction) {
+      //trans.writtenToServer = false;
+      if (!transaction.date) transaction.date = new Date();
+      _transactions.push(transaction);
+    };
+
+    this.loadTransactionsJSON = function (existingTransactions) {
+      //_transactions = existingTransactions;
+      _transactions = _transactions.filter(function(value) {
+        return (value.type == 1);
+      });
+      for (var i = 0; i < existingTransactions.length; i++) {
+        var thisT = existingTransactions[i];
+        var trans = this.createAndAddTransaction(thisT.recipient, thisT.amount, thisT.category);
+        trans.isNeed = thisT.is_need;
+        trans.date = new Date(thisT.timestamp);
+        trans.writtenToServer = true; // flag this as already being written to the server
+      }
+
+    };
+
+    this.createAndAddTransaction = function (recipient, amount, category, is_need) {
+      var trans = this.createTransaction(recipient, amount, category, is_need);
+      trans.writtenToServer = false;
+      this.addTransaction(trans);
+      return trans;
+    };
+
+    this.all = function () {
+      return _transactions;
+    };
+
+    this.get = function (index) {
+      return _transactions[index];
+    };
+  })
+
+  .factory('Stats', function (transactionsService) {
 
     var categories = [{
       id: 0,
@@ -112,7 +159,7 @@ angular.module('starter.services', [])
       icon_ios: 'ion-heart'
     }];
 
-    transactions = [{
+    /*transactions= [{
       id: 1,
       amount: 10,
       recipient: "Spar",
@@ -131,12 +178,20 @@ angular.module('starter.services', [])
         is_need: false,
         child_id: 1,
         timestamp: "2016-05-04T12:31:54.624Z"
-      }];
+      }];*/
+
+    transactions = transactionsService.transactions();
 
 
     return {
       all: function () {
         return categories;
+      },
+      setTransactions: function () {
+        transactions = transactionsService.transactions();
+      },
+      getTransactions: function() {
+        return transactions;
       },
       getLegend: function () {
         var legend = [];
@@ -176,6 +231,7 @@ angular.module('starter.services', [])
       getNeedWant: function () {
         var needwant = [0, 0];
         for (var i = 0; i < transactions.length; i++) {
+          console.log(transactions[i].category);
           categories[transactions[i].category].spent += transactions[i].amount;
           if (transactions[i].is_need) needwant[0] += transactions[i].amount;
           else needwant[1] += transactions[i].amount;
@@ -186,7 +242,7 @@ angular.module('starter.services', [])
         var line = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         var hasData = false;
         for (var i = 0; i < transactions.length; i++) {
-          var date = new Date(transactions[i].timestamp);
+          var date = new Date(transactions[i].date);
           if (date.getMonth() == month && date.getFullYear() == year) {
             line[date.getDate() - 1] += transactions[i].amount;
             hasData = true;
@@ -199,7 +255,7 @@ angular.module('starter.services', [])
       }
     };
   })
-  
+
   .factory('Days', function () {
 
     var monthdays = [{
