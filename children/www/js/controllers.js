@@ -450,12 +450,16 @@ angular.module('starter.controllers', ['ngCordova'])
   })
 
 
-  .controller('HistoryCtrl', function ($scope, $state, $ionicSlideBoxDelegate, Amount, transactionsService, Stats, PunktZuKomma) {
-    var selectedCat, selectedDate;
+  .controller('HistoryCtrl', function ($scope, $state,  $window, $ionicSlideBoxDelegate, Amount, transactionsService, Stats, PunktZuKomma) {
+    var selectedCat, selectedDate, dev_height, dev_width;
 
     $scope.$on('$ionicView.loaded', function () {
       $scope.platform = ionic.Platform;
       $scope.filterMonth = new Date();
+      dev_width = $window.innerWidth;
+      dev_height = $window.innerHeight;
+      $scope.dev_height = dev_height;
+      $scope.dev_width = dev_width;
     });
 
 
@@ -475,7 +479,16 @@ angular.module('starter.controllers', ['ngCordova'])
     });
 
 
-    $scope.$on('$ionicView.enter', function () {});
+    $scope.$on('$ionicView.enter', function () {
+
+      if (dev_height > 600) {
+        var elements = document.getElementsByClassName("transaction_nw");
+        for(var i = 0; i < elements.length; i++) {
+          elements[i].style.marginLeft = "20%";
+
+        };
+      }
+    });
 
     $scope.changeMonth = function (filterMonth) {
       $scope.filterMonth = filterMonth;
@@ -589,8 +602,6 @@ angular.module('starter.controllers', ['ngCordova'])
       calc_height = 350;
       $scope.dev_height = dev_height;
       $scope.dev_width = dev_width;
-      console.log(dev_height);
-      console.log(dev_width);
 
       if (dev_height > 600 && dev_width < 370) { //galaxy S4
         $('.border').css('height', "470px");
@@ -626,8 +637,6 @@ angular.module('starter.controllers', ['ngCordova'])
     })
 
     $scope.$on('$ionicView.beforeEnter', function () {
-
-
       resetPot();
       setup($scope.filterMonth);
     });
@@ -636,6 +645,8 @@ angular.module('starter.controllers', ['ngCordova'])
 
       if (dev_height > 600) {
         el = document.getElementById("noItems");
+        el.style.fontSize = "14px";
+        el = document.getElementById("anzeige");
         el.style.fontSize = "14px";
 
         var elements = document.getElementsByClassName("child__icon");

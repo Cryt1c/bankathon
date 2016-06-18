@@ -18,12 +18,12 @@
     <div class="border">
       <hr id="line" ng-hide="noItems"/>
     </div>
-    <div class="anzeige" ng-hide="noItems">
+    <div class="anzeige" id="anzeige" ng-hide="noItems">
       <p class="total">
-        {{punktZuKomma.parse(Math.round(total+available))}} €
+        {{punktZuKomma.parse(total+available)}} €
       </p>
       <p class="ausgaben" ng-hide="noItems">
-        {{punktZuKomma.parse(Math.round(total))}} €
+        {{punktZuKomma.parse(total)}} €
       </p>
     </div>
 

@@ -232,6 +232,10 @@ h2, p {
   top: 35px;
 }
 
+#anzeige {
+  font-size: 12px;
+}
+
 .anzeige .total {
   display: none;
   position: absolute;
@@ -266,8 +270,8 @@ h2, p {
 }
 
 .item-elem:nth-child(1) {
-  border-bottom-right-radius: 60px;
-  border-bottom-left-radius: 60px;
+  border-bottom-right-radius: 55px;
+  border-bottom-left-radius: 55px;
 }
 
 
@@ -282,7 +286,7 @@ h2, p {
 
 .child .child__icon {
   font-size: 14px;
-  left: 25px;
+  left: 20px;
 }
 
 .child__name {
@@ -299,7 +303,7 @@ h2, p {
   position: absolute;
   top: 0;
   height: 100%;
-  left: 55px;
+  left: 50px;
   font-size: 12px;
 }
 
@@ -317,7 +321,7 @@ h2, p {
   position: absolute;
   top: 0;
   height: 100%;
-  right: 35px;
+  right: 30px;
   text-align: right;
   font-size: 12px;
 }
@@ -438,7 +442,7 @@ h2, p {
   text-align: center;
   padding: 5px;
   border: 2px dotted #ddd;
-  margin-left: 20%;
+  margin-left: 5%;
   color: White;
   text-transform: uppercase;
   font-size: 10px;
