@@ -7,10 +7,12 @@
       <ti-segmented-control-button class="button-positive" title="'needWant'">B/W</ti-segmented-control-button>
     </ti-segmented-control>
 
-    <label class="item item-input">
-      <span class="input-label">Monat</span>
+    <label class="item item-input item-month">
+      <span class="input-label">Monat:</span>
       <input type="month" ng-model="data.month">
+      <i class="icon ion-android-arrow-dropdown"></i>
     </label>
+
 
     <div ng-switch="data.showStat">
       <div ng-switch-when="lines">
