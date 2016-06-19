@@ -9,10 +9,10 @@
     </label>
 
     <ion-list class="transaction_list">
-      <ion-item class="transaction_elem" ng-repeat="request in moneyRequests">
+      <ion-item class="transaction_elem" ng-repeat="request in moneyRequests | orderBy:'-timestamp':false">
         <div>
           <div class="transaction_name">
-            {{request.reason}}<br>
+            Überweisung<br>
             &nbsp;{{request.timestamp| date: 'dd.MM.yy HH:mm'}}
           </div>
           <div class="transaction_amount">

@@ -3,9 +3,16 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     var requests;
     this.setRequests = function (requests) {
       this.requests = requests;
-    }
+    },
+    this.addRequest = function (request) {
+      this.requests.push(request);
+      console.log(this.requests[this.requests.length-1]);
+    },
+    this.createRequest = function (amount, reason, childId, parentId, status, date, timestamp) {
+        return {amount: amount, reason: reason, child_id: childId, parent_id: parentId, status: status, date: date, timestamp: timestamp};
+      };
   })
-  .service('webService', function ($http, transactionsService, Amount, $filter) {
+  .service('webService', function ($http, transactionsService, Amount, $filter, requestsService) {
     var runningOnMobile = ionic.Platform.isIOS() || ionic.Platform.isAndroid();
     var url = (runningOnMobile ? "http://pommo-backend.herokuapp.com/" : "/api/");
     var userId = 1;
@@ -77,8 +84,17 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
         "name": "Michael", //TODO remove
         "status": 1 // granted
       };
-      console.log(json);
+      //console.log(json);
       waitingForRequest = true;
+
+      var date = new Date();
+
+      var newR = requestsService.createRequest(amount, message, childId, userId, 1, date, date.toISOString());
+      requestsService.addRequest(newR);
+      console.log(newR);
+      //console.log(requestsService.requests);
+
+
       $http.post(url + "initRequest", json);//.success({
       //  this.updateMoneyRequestStatus()
       //});
@@ -159,7 +175,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
     $scope.onKidDelete = function (kid) {
 
-      console.log(kid);
+      //console.log(kid);
       var confirmPopup = $ionicPopup.confirm({
         title: kid.name + ' entfernen?',
         template: 'Sind Sie sicher, dass Sie das Konto von ' + kid.name + ' löschen wollen? ' +
@@ -296,6 +312,12 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
                     type: 'button-positive button-hidden button-ok',
                     onTap: function () {
                       // grant request
+                      //var newR = $scope.requestsService.createRequest(eventData.requestId, 1, eventData.reason, eventData.amount, 1);
+                      //newR.type = 1; // asset
+                      //newR.writtenToServer = true; // do not write to server
+                      //newR.ephemeral = true; // will only exist within this app -- never written to server
+                      //$scope.requestsService.addRequest(newR);
+
                       $scope.webService.updateMoneyRequestStatus(eventData.requestId, 1, $("#message").val());
                     }
                   }]
@@ -335,7 +357,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     };
 
     $scope.changeButton = function () {
-      console.log("message " + $scope.data.message);
+      //console.log("message " + $scope.data.message);
       if ($scope.data.message) {
         $('.button-ok').removeClass('button-hidden');
       } else {
@@ -365,24 +387,38 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
   .controller('DetailCtrl', function ($scope, $state, $ionicHistory, requestsService, $ionicConfig, kidsService, Kids, Amount, Stats, PunktZuKomma) {
     $scope.$on('$ionicView.beforeEnter', function () {
       $ionicConfig.backButton.text("Übersicht");
+      $scope.moneyRequests = requestsService.requests;
+      $scope.platform = ionic.Platform;
+      $scope.kidsService = kidsService;
+      $scope.paired = kidsService.selectedKid.paired;
+
+      $scope.punktZuKomma = PunktZuKomma;
+
+
+      //TODO select kid and get data from backend: get available balance of the kid
+
+      var req = $scope.moneyRequests;
+      var date = '1970-01-01T00:00:00.000Z';
+
+      for(var i = 0; i < req.length; i++) {
+        if(req[i].child_id == 1 && req[i].status == 1) {
+          if(req[i].timestamp > date) {
+            $scope.lastRequest = req[i];
+            date = req[i].timestamp;
+          }
+        }
+      };
+      //console.log($scope.lastRequest);
+
+      $scope.available = Amount.getAvailable();
+
+
     });
 
-    $scope.moneyRequests = requestsService.requests;
-    $scope.platform = ionic.Platform;
-    $scope.kidsService = kidsService;
-    $scope.paired = kidsService.selectedKid.paired;
-
-    $scope.punktZuKomma = PunktZuKomma;
-
-    //TODO select kid and get data from backend: get available balance of the kid
-    $scope.lastRequest = $scope.moneyRequests[$scope.moneyRequests.length-1];
-    $scope.available = Amount.getAvailable();
 
     $scope.pairingDone = function (kid) {
-
       //TODO: check ob pairing mit kind passt - wenn ja, nachfolgende Zeile ausführen
       //Kids.setPaired(kid.id, true);
-
       $ionicHistory.goBack();
     }
 
@@ -553,7 +589,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       var selectedYear = filterMonth.getYear();
 
       var requests = requestsService.requests;
-      console.log(requests);
+      //console.log(requests);
       $scope.moneyRequests = [];
 
       //loop through requests and filter for date
