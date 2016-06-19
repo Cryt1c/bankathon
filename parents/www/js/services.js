@@ -23,7 +23,7 @@ angular.module('starter.services', [])
   })
 
   .factory('Amount', function () {
-    var available = 47.00;
+    var available = 18.82;
     var spentTotal = 0.00;
 
     return {

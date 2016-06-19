@@ -91,9 +91,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
       var newR = requestsService.createRequest(amount, message, childId, userId, 1, date, date.toISOString());
       requestsService.addRequest(newR);
-      console.log(newR);
-      //console.log(requestsService.requests);
-
+      Amount.setAvailable(amount);
 
       $http.post(url + "initRequest", json);//.success({
       //  this.updateMoneyRequestStatus()
@@ -393,6 +391,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       $scope.paired = kidsService.selectedKid.paired;
 
       $scope.punktZuKomma = PunktZuKomma;
+      $scope.available = Amount.getAvailable();
 
 
       //TODO select kid and get data from backend: get available balance of the kid
@@ -561,7 +560,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       //TODO: activate Toast before release (Toast not working in web browser); tested in emulator for ios + android
       var msg = "Dauerauftrag über " + PunktZuKomma.parse($scope.order.getAmount()) + " € " + intervall + " gespeichert";
       //console.log(msg);
-      $cordovaToast.show(msg,'long','center');
+      //$cordovaToast.show(msg,'long','center');
       $ionicHistory.goBack();
     };
   })
