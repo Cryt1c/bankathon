@@ -89,7 +89,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     this.selectedKid;
   })
 
-  .controller('StartCtrl', function ($scope, requestsService, transactionsService, $state, Stats, $ionicModal, $ionicPopup, $ionicSlideBoxDelegate, Kids, kidsService, webService) {
+  .controller('StartCtrl', function ($scope, requestsService, PunktZuKomma, transactionsService, $state, Stats, $ionicModal, $ionicPopup, $ionicSlideBoxDelegate, Kids, kidsService, webService) {
     $scope.platform = ionic.Platform;
 
     $scope.kids = Kids.getAll();
@@ -272,7 +272,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       $scope.eventData = eventData;
       var requestPopup = new $ionicPopup.show({ // eventData.requestId enthält requestId
         title: "Geldanfrage von " + eventData.name,
-        template: eventData.name + ' hätte gerne ' + eventData.amount + ' €, weil: "' + eventData.reason + '"',
+        template: eventData.name + ' hätte gerne ' + PunktZuKomma.parse(eventData.amount) + ' €, weil: "' + eventData.reason + '"',
         buttons: [
           {
             text: 'Zustimmen',

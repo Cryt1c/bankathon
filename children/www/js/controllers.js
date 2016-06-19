@@ -114,10 +114,10 @@ angular.module('starter.controllers', ['ngCordova'])
         case 1:
           // granted
           // show and create associated transaction
-          var messageString = (response.substring(0, "(pregranted)".length) == "(pregranted)" ? "Du hast Geld erhalten! Nachricht: <br><br>" + response.substring(11) : "Deine Anfrage über " + amount + " € wurde angenommen. <strong>Nachricht:<strong><br><br>" + response);
+          var messageString = (response.substring(0, "(pregranted)".length) == "(pregranted)" ? "Du hast Geld erhalten! Nachricht: <br><br>" + response.substring(12) : "Deine Anfrage über " + PunktZuKomma.parse(amount) + " € wurde angenommen. <strong>Nachricht:<strong><br><br>" + response);
           var alertPopup = $ionicPopup.alert({
             title: messageString,
-            template: '<h2 style="color: green"> + ' + amount + '€ </h2>'
+            template: '<h2 style="color: green"> + ' + PunktZuKomma.parse(amount) + ' € </h2>'
           });
           alertPopup.then(function () {
             Amount.request(amount);
@@ -127,7 +127,7 @@ angular.module('starter.controllers', ['ngCordova'])
             // show new amount
             $("#available-moneystack").moneystack("setMoney", Amount.getAvailable());
             // TODO create a transaction
-            var newT = $scope.transactionsService.createTransaction("Geldeingang", amount, 7);
+            var newT = $scope.transactionsService.createTransaction("Geldanfrage", amount, 7);
             newT.type = 1; // asset
             newT.writtenToServer = true; // do not write to server
             newT.ephemeral = true; // will only exist within this app -- never written to server
@@ -140,7 +140,7 @@ angular.module('starter.controllers', ['ngCordova'])
           // show alert
           var alertPopup = $ionicPopup.alert(
             {
-              title: "Deine Anfrage über " + amount + " € wurde abgelehnt. <strong>Begründung:<strong><br><br>" +
+              title: "Deine Anfrage über " + PunktZuKomma.parse(amount) + " € wurde abgelehnt. <strong>Begründung:<strong><br><br>" +
               response, template: ""
             });
           alertPopup.then(function () {
@@ -280,7 +280,7 @@ angular.module('starter.controllers', ['ngCordova'])
               console.log(msg);
               //TODO: activate Toast before release (Toast not working in web browser); tested in emulator for ios + android
               //if ($cordovaToast && $cordovaToast.show) $cordovaToast.show(msg,'long','center');
-              $scope.webService.sendMoneyRequest(parseInt($scope.data.amount), $scope.data.message, $scope.user.parent_id);
+              $scope.webService.sendMoneyRequest(parseFloat($scope.data.amount), $scope.data.message, $scope.user.parent_id);
             }
           }
         ]
@@ -482,12 +482,10 @@ angular.module('starter.controllers', ['ngCordova'])
 
 
     $scope.$on('$ionicView.enter', function () {
-
       if (dev_height > 600) {
         var elements = document.getElementsByClassName("transaction_nw");
         for(var i = 0; i < elements.length; i++) {
           elements[i].style.marginLeft = "20%";
-
         };
       }
     });
