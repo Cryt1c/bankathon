@@ -35,7 +35,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
     var webService = this;
     var incomingMessageHandler;
-    this.initWebSockets = function (incomingEventHandler) {
+    var initWebSockets = function (incomingEventHandler) {
       var host = "ws://pommo-backend.herokuapp.com/";//"ws://localhost:5000"; // url.replace(/^http/, 'ws');
       var ws = new WebSocket(host);
       this.incomingMessageHandler = incomingEventHandler;
@@ -49,8 +49,12 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
         console.log("ws CLOSE ");
         setTimeout(webService.initWebSockets, 1000);
       };
+      ws.onopen = function () {
+        console.log("ws OPEN ");
+      };
       this.webSocketsInitialised = true;
     };
+    this.initWebSockets = initWebSockets;
     this.getMoneyRequests = function () {
       //returns money requests for this parent
       return $http.get(url + "getRequestsForParent?parentId=" + userId);
@@ -62,6 +66,22 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
           "response": newResponse,
           "newStatus": newStatus
         });
+    };
+    var waitingForRequest = false;
+    this.immediatelyGrantMoneyRequest = function (amount, message, childId) {
+      var json = {
+        "amount": amount,
+        "reason": "(pregranted)" + message,
+        "childId": childId,
+        "parentId": userId,
+        "name": "Michael", //TODO remove
+        "status": 1 // granted
+      };
+      console.log(json);
+      waitingForRequest = true;
+      $http.post(url + "initRequest", json);//.success({
+      //  this.updateMoneyRequestStatus()
+      //});
     };
   })
 
@@ -212,7 +232,15 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     if (!webService.webSocketsInitialised) {
       webService.initWebSockets(function (eventData) {
         if (eventData.event == "NEW_MONEY_REQUEST") {
-          $scope.showConfirm(eventData);
+          if (webService.waitingForRequest) {
+            // we're waiting for a request we made ourselves -- auto grant
+            $scope.webService.updateMoneyRequestStatus(eventData.requestId, 1, "Zahlung");
+            webService.waitingForRequest = false;
+          }
+          else {
+            // incoming request from kid -- let parent decide
+            $scope.showConfirm(eventData);
+          }
         }
       });
     }
@@ -429,7 +457,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
   })
 
-  .controller('SendCtrl', function ($scope, $state, $ionicHistory, $cordovaToast, $ionicConfig, PunktZuKomma) {
+  .controller('SendCtrl', function ($scope, $state, $ionicHistory, $cordovaToast, $ionicConfig, PunktZuKomma, webService) {
     $scope.platform = ionic.Platform;
     $scope.$on('$ionicView.beforeEnter', function () {
       $ionicConfig.backButton.text("Abbrechen");
@@ -442,11 +470,11 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
       newTransaction.text = form.reason.$modelValue;
 
       //TODO: send Transaction to backend here; when successful, run the next lines of code, otherwise show some error
-
+       webService.immediatelyGrantMoneyRequest(parseFloat(newTransaction.amount), newTransaction.text, 1); // Michael TODO make dynamic
       //TODO: activate Toast before release (Toast not working in web browser); tested in emulator for ios + android
       var msg = PunktZuKomma.parse(newTransaction.amount) + " € gesendet";
       //console.log(msg);
-      $cordovaToast.show(msg,'long','center');
+      //$cordovaToast.show(msg,'long','center');
       $ionicHistory.goBack();
 
     }

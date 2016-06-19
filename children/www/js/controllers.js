@@ -114,8 +114,9 @@ angular.module('starter.controllers', ['ngCordova'])
         case 1:
           // granted
           // show and create associated transaction
+          var messageString = (response.substring(0, "(pregranted)".length) == "(pregranted)" ? "Du hast Geld erhalten! Nachricht: <br><br>" + response.substring(11) : "Deine Anfrage über " + amount + " € wurde angenommen. <strong>Nachricht:<strong><br><br>" + response);
           var alertPopup = $ionicPopup.alert({
-            title: "Deine Anfrage über " + amount + " € wurde angenommen. <strong>Nachricht:<strong><br><br>" + response,
+            title: messageString,
             template: '<h2 style="color: green"> + ' + amount + '€ </h2>'
           });
           alertPopup.then(function () {
@@ -278,7 +279,7 @@ angular.module('starter.controllers', ['ngCordova'])
               var msg = "Deine Bitte um " + PunktZuKomma.parse($scope.data.amount) + " € wurde gesendet";
               console.log(msg);
               //TODO: activate Toast before release (Toast not working in web browser); tested in emulator for ios + android
-              $cordovaToast.show(msg,'long','center');
+              //if ($cordovaToast && $cordovaToast.show) $cordovaToast.show(msg,'long','center');
               $scope.webService.sendMoneyRequest(parseInt($scope.data.amount), $scope.data.message, $scope.user.parent_id);
             }
           }
