@@ -12,6 +12,7 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
         return {amount: amount, reason: reason, child_id: childId, parent_id: parentId, status: status, date: date, timestamp: timestamp};
       };
   })
+
   .service('webService', function ($http, transactionsService, Amount, $filter, requestsService) {
     var runningOnMobile = ionic.Platform.isIOS() || ionic.Platform.isAndroid();
     var url = (runningOnMobile ? "http://pommo-backend.herokuapp.com/" : "/api/");
@@ -102,8 +103,109 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
   .service('kidsService', function () {
     this.selectedKid;
   })
+  .run(function($rootScope, webService, $ionicPopup, PunktZuKomma) {
+        if (!webService.webSocketsInitialised) {
+          webService.initWebSockets(function (eventData) {
+            if (eventData.event == "NEW_MONEY_REQUEST") {
+              //if (webService.waitingForRequest) {
+                // we're waiting for a request we made ourselves -- auto grant
+                //$scope.webService.updateMoneyRequestStatus(eventData.requestId, 1, "Zahlung");
+                webService.waitingForRequest = false;
+              //}
+              //else {
+                // incoming request from kid -- let parent decide
+                $rootScope.showConfirm(eventData);
+              //}
+            }
+          });
+        }
 
-  .controller('StartCtrl', function ($scope, requestsService, PunktZuKomma, transactionsService, $state, Stats, $ionicModal, $ionicPopup, $ionicSlideBoxDelegate, Kids, kidsService, webService) {
+      $rootScope.showConfirm = function (eventData) {
+      $rootScope.data = {};
+      $rootScope.eventData = eventData;
+      $rootScope.webService = webService;
+
+      var requestPopup = new $ionicPopup.show({ // eventData.requestId enthält requestId
+        title: "Geldanfrage von " + eventData.name,
+        template: eventData.name + ' hätte gerne ' + PunktZuKomma.parse(eventData.amount) + ' €, weil: "' + eventData.reason + '"',
+        buttons: [
+          {
+            text: 'Zustimmen',
+            type: 'button-positive',
+            onTap: function (e) {
+              var responsePopup = new $ionicPopup.show({
+                title: 'Zustimmen',
+                scope: $rootScope,
+                template: '<label for="message">Nachricht</label>' +
+                '<input type="text" id="message" required="required" ng-model="data.message" ng-change="changeButton()">',
+                buttons: [{
+                  text: 'Zurück',
+                  type: 'button-stable',
+                  onTap: function () {
+                    responsePopup.close();
+                    $rootScope.showConfirm($rootScope.eventData);
+                  }
+                },
+                  {
+                    text: "Geld und Nachricht abschicken",
+                    type: 'button-positive button-hidden button-ok',
+                    onTap: function () {
+                      // grant request
+                      //var newR = $scope.requestsService.createRequest(eventData.requestId, 1, eventData.reason, eventData.amount, 1);
+                      //newR.type = 1; // asset
+                      //newR.writtenToServer = true; // do not write to server
+                      //newR.ephemeral = true; // will only exist within this app -- never written to server
+                      //$scope.requestsService.addRequest(newR);
+
+                     $rootScope.webService.updateMoneyRequestStatus(eventData.requestId, 1, $("#message").val());
+                    }
+                  }]
+              })
+            }
+          },
+          {
+            text: 'Ablehnen',
+            type: 'button-positive',
+            onTap: function (e) {
+              var responsePopup = new $ionicPopup.show({
+                title: 'Ablehnen',
+                scope: $rootScope,
+                template: '<label for="message">Begründung</label>' +
+                '<input type="text" id="message" ng-model="data.message" required="required" ng-change="changeButton()">',
+                buttons: [{
+                  text: 'Zurück',
+                  type: 'button-stable',
+                  onTap: function () {
+                    responsePopup.close();
+                    $rootScope.showConfirm($rootScope.eventData);
+                  }
+                },
+                  {
+                    text: "Nachricht abschicken",
+                    type: 'button-positive button-hidden button-ok',
+                    onTap: function () {
+                      // deny request
+                      $rootScope.webService.updateMoneyRequestStatus(eventData.requestId, 2, $("#message").val());
+                    }
+                  }]
+              })
+            }
+          }
+        ]
+      });
+    };
+
+    $rootScope.changeButton = function () {
+      //console.log("message " + $scope.data.message);
+      if ($rootScope.data.message) {
+        $('.button-ok').removeClass('button-hidden');
+      } else {
+        $('.button-ok').addClass('button-hidden');
+      }
+    };
+
+  })
+  .controller('StartCtrl', function ($scope, $rootScope, requestsService, PunktZuKomma, transactionsService, $state, Stats, $ionicModal, $ionicPopup, $ionicSlideBoxDelegate, Kids, kidsService, webService) {
     $scope.platform = ionic.Platform;
 
     $scope.kids = Kids.getAll();
@@ -243,21 +345,21 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
     // var userCallback = function (user) {
     // set up WebSockets
-    if (!webService.webSocketsInitialised) {
+    /*if (!webService.webSocketsInitialised) {
       webService.initWebSockets(function (eventData) {
         if (eventData.event == "NEW_MONEY_REQUEST") {
-          if (webService.waitingForRequest) {
+          //if (webService.waitingForRequest) {
             // we're waiting for a request we made ourselves -- auto grant
-            $scope.webService.updateMoneyRequestStatus(eventData.requestId, 1, "Zahlung");
+            //$scope.webService.updateMoneyRequestStatus(eventData.requestId, 1, "Zahlung");
             webService.waitingForRequest = false;
-          }
-          else {
+          //}
+          //else {
             // incoming request from kid -- let parent decide
-            $scope.showConfirm(eventData);
-          }
+            $rootScope.showConfirm(eventData);
+          //}
         }
       });
-    }
+    }*/
 
     // load user data
     var userCallback = function (user) {
@@ -281,87 +383,6 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
     //}
 
 
-    $scope.showConfirm = function (eventData) {
-      $scope.data = {};
-      $scope.eventData = eventData;
-      var requestPopup = new $ionicPopup.show({ // eventData.requestId enthält requestId
-        title: "Geldanfrage von " + eventData.name,
-        template: eventData.name + ' hätte gerne ' + PunktZuKomma.parse(eventData.amount) + ' €, weil: "' + eventData.reason + '"',
-        buttons: [
-          {
-            text: 'Zustimmen',
-            type: 'button-positive',
-            onTap: function (e) {
-              var responsePopup = new $ionicPopup.show({
-                title: 'Zustimmen',
-                scope: $scope,
-                template: '<label for="message">Nachricht</label>' +
-                '<input type="text" id="message" required="required" ng-model="data.message" ng-change="changeButton()">',
-                buttons: [{
-                  text: 'Zurück',
-                  type: 'button-stable',
-                  onTap: function () {
-                    responsePopup.close();
-                    $scope.showConfirm($scope.eventData);
-                  }
-                },
-                  {
-                    text: "Geld und Nachricht abschicken",
-                    type: 'button-positive button-hidden button-ok',
-                    onTap: function () {
-                      // grant request
-                      //var newR = $scope.requestsService.createRequest(eventData.requestId, 1, eventData.reason, eventData.amount, 1);
-                      //newR.type = 1; // asset
-                      //newR.writtenToServer = true; // do not write to server
-                      //newR.ephemeral = true; // will only exist within this app -- never written to server
-                      //$scope.requestsService.addRequest(newR);
-
-                      $scope.webService.updateMoneyRequestStatus(eventData.requestId, 1, $("#message").val());
-                    }
-                  }]
-              })
-            }
-          },
-          {
-            text: 'Ablehnen',
-            type: 'button-positive',
-            onTap: function (e) {
-              var responsePopup = new $ionicPopup.show({
-                title: 'Ablehnen',
-                scope: $scope,
-                template: '<label for="message">Begründung</label>' +
-                '<input type="text" id="message" ng-model="data.message" required="required" ng-change="changeButton()">',
-                buttons: [{
-                  text: 'Zurück',
-                  type: 'button-stable',
-                  onTap: function () {
-                    responsePopup.close();
-                    $scope.showConfirm($scope.eventData);
-                  }
-                },
-                  {
-                    text: "Nachricht abschicken",
-                    type: 'button-positive button-hidden button-ok',
-                    onTap: function () {
-                      // deny request
-                      $scope.webService.updateMoneyRequestStatus(eventData.requestId, 2, $("#message").val());
-                    }
-                  }]
-              })
-            }
-          }
-        ]
-      });
-    };
-
-    $scope.changeButton = function () {
-      //console.log("message " + $scope.data.message);
-      if ($scope.data.message) {
-        $('.button-ok').removeClass('button-hidden');
-      } else {
-        $('.button-ok').addClass('button-hidden');
-      }
-    };
 
 
     // // get transactions from this user since we now know they exist
