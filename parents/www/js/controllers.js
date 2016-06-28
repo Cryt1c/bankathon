@@ -92,7 +92,9 @@ angular.module('starter.controllers', ['ngCordova', 'chart.js', 'ti-segmented-co
 
       var newR = requestsService.createRequest(amount, message, childId, userId, 1, date, date.toISOString());
       requestsService.addRequest(newR);
-      Amount.setAvailable(amount);
+
+      var available = Amount.getAvailable();
+      Amount.setAvailable(available + amount);
 
       $http.post(url + "initRequest", json);//.success({
       //  this.updateMoneyRequestStatus()
